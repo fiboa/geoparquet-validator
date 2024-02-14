@@ -1,0 +1,11 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editors
+/.idea/
+/.vscode/
+
+# Python
+__pycache__/
+*.egg-info/
