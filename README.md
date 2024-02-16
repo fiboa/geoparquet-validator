@@ -1,6 +1,6 @@
 # fiboa CLI
 
-CLI tools for fiboa.
+CLI tools such as validation and file format conversion for fiboa.
 
 ## Installation
 

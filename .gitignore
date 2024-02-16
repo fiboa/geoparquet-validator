@@ -7,5 +7,6 @@ Thumbs.db
 /.vscode/
 
 # Python
+dist/
 __pycache__/
 *.egg-info/

@@ -7,6 +7,10 @@ def get_version():
 setup(
     name="fiboa-cli",
     version=get_version(),
+    license="Apache-2.0",
+    description="CLI tools such as validation and file format conversion for fiboa.",
+    author="Matthias Mohr",
+    url="https://github.com/fiboa/cli",
     install_requires=[
         "jsonschema>=4.4",
         "pyyaml>=5.1",
@@ -23,5 +27,9 @@ setup(
         "console_scripts": [
             "fiboa=fiboa_cli:cli"
         ]
-    }
+    },
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Programming Language :: Python :: 3',
+    ],
 )
