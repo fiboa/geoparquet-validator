@@ -41,9 +41,15 @@ def create(config):
     # Load all extension schemas
     extensions = {}
     if "fiboa_extensions" in collection and isinstance(collection["fiboa_extensions"], list):
+        ext_map = config.get("extension_schemas", [])
         for ext in collection["fiboa_extensions"]:
             try:
-                extensions[ext] = load_file(ext)
+                if ext in ext_map:
+                    path = ext_map[ext]
+                    log(f"Redirecting {ext} to {path}", "info")
+                else:
+                    path = ext
+                extensions[ext] = load_file(path)
                 properties.update(extensions[ext]["properties"])
             except Exception as e:
                 log(f"Extension schema for {ext} can't be loaded: {e}", "warning")

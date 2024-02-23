@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - ...
 
+## [v0.0.6] - 2024-02-23
+
+- Add `-e` option for create command to support extension schema mapping to local files
+
 ## [v0.0.5] - 2024-02-23
 
 - Add `-e` option for validate command to support extension schema mapping to local files
@@ -50,7 +54,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release
 
-[Unreleased]: <https://github.com/radiantearth/stac-spec/compare/v0.0.5...main>
+[Unreleased]: <https://github.com/radiantearth/stac-spec/compare/v0.0.6...main>
+[v0.0.6]: <https://github.com/radiantearth/stac-spec/compare/v0.0.5...v0.0.6>
 [v0.0.5]: <https://github.com/radiantearth/stac-spec/compare/v0.0.4...v0.0.5>
 [v0.0.4]: <https://github.com/radiantearth/stac-spec/compare/v0.0.3...v0.0.4>
 [v0.0.3]: <https://github.com/radiantearth/stac-spec/compare/v0.0.2...v0.0.3>

@@ -56,7 +56,7 @@ def validate(files, schema, ext_schema, fiboa_version, collection, data):
         "extension_schemas": ext_schema,
         "fiboa_version": fiboa_version,
         "collection": collection,
-        "data": data
+        "data": data,
     }
     for file in files:
         log(f"Validating {file}", "info")
@@ -90,7 +90,13 @@ def validate(files, schema, ext_schema, fiboa_version, collection, data):
     type=click.Path(exists=True),
     help='fiboa Schema to work against. If not provided, uses the fiboa version from the collection to load the schema for the released version.'
 )
-def create(files, out, collection, schema):
+@click.option(
+    '--ext-schema', '-e',
+    multiple=True,
+    callback=check_ext_schema_for_cli,
+    help='Maps a remote fiboa extension schema url to a local file. First the URL, then the local file path. Separated with a comma character. Example: https://example.com/schema.json,/path/to/schema.json',
+)
+def create(files, out, collection, schema, ext_schema):
     """
     Create a fiboa file from GeoJSON file(s).
     """
@@ -99,7 +105,8 @@ def create(files, out, collection, schema):
         "files": files,
         "out": out,
         "schema": schema,
-        "collection": collection
+        "collection": collection,
+        "extension_schemas": ext_schema,
     }
     try:
         create_(config)
