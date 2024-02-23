@@ -4,6 +4,7 @@ import pyarrow as pa
 
 from .const import PA_TYPE_MAP, GP_TYPE_MAP
 from .util import log, load_fiboa_schema, load_file
+from .geopandas import to_parquet
 from geopandas import GeoDataFrame
 from shapely.geometry import shape
 
@@ -62,8 +63,11 @@ def create(config):
         if not name in properties:
             log(f"{name}: No schema defined", "warning")
             continue
-        pa_type = create_type(properties[name])
-        pq_fields.append(pa.field(name, pa_type))
+        prop_schema = properties[name]
+        pa_type = create_type(prop_schema)
+        nullable = not prop_schema.get("required", False)
+        field = pa.field(name, pa_type, nullable = nullable)
+        pq_fields.append(field)
 
     # Define the schema for the Parquet file
     pq_schema = pa.schema(pq_fields)
@@ -73,16 +77,15 @@ def create(config):
     data = create_dataframe(features, columns, fiboa_schema)
 
     # Write the data to the Parquet file
-    data.to_parquet(
+    # Proprietary function exported from geopandas to solve
+    # https://github.com/geopandas/geopandas/issues/3182
+    to_parquet(
+        data,
         output_file,
-        # todo: doesn't work: https://github.com/geopandas/geopandas/issues/3182
-        # schema = pq_schema,
+        schema = pq_schema,
         index = False,
         coerce_timestamps = "ms"
     )
-
-    log("File may not pass validation due to a bug in GeoPandas.", "warning")
-    log("See https://github.com/geopandas/geopandas/issues/3182", "warning")
 
     log(f"Wrote to {output_file}", "success")
 
@@ -133,8 +136,8 @@ def create_type(schema):
         if dtype == "array":
             pa_subtype = create_type(schema["items"])
             pa_type = pa_type(pa_subtype)
-            pa_type.nullable = schema.get("optional", False)
         elif dtype == "object":
+            log(f"Creation of object-typed properties not supported yet", "warning")
             pass # todo
 
     return pa_type
