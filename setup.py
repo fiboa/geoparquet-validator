@@ -19,12 +19,14 @@ setup(
     author="Matthias Mohr",
     url="https://github.com/fiboa/cli",
     install_requires=[
-        "jsonschema>=4.4",
-        "pyyaml>=5.1",
-        "pyarrow>=7.0",
-        "fsspec>=2022.3",
+        "jsonschema>=4.20",
+        "pyyaml>=6.0",
+        "pyarrow>=14.0",
+        "fsspec>=2024.0",
         "click>=8.1",
-        "geopandas>=0.14.1"
+        "geopandas>=0.14",
+        "requests>=2.30",
+        "aiohttp>=3.9"
     ],
     packages=find_packages(),
     package_data={

@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - ...
 
+## [v0.0.4] - 2024-02-23
+
+- Adds missing dependencies
+
 ## [v0.0.3] - 2024-02-23
 
 - Use extension schemas for conversion
@@ -42,6 +46,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release
 
-[Unreleased]: <https://github.com/radiantearth/stac-spec/compare/v0.0.2...main>
+[Unreleased]: <https://github.com/radiantearth/stac-spec/compare/v0.0.4...main>
+[v0.0.4]: <https://github.com/radiantearth/stac-spec/compare/v0.0.3...v0.0.4>
+[v0.0.3]: <https://github.com/radiantearth/stac-spec/compare/v0.0.2...v0.0.3>
 [v0.0.2]: <https://github.com/radiantearth/stac-spec/compare/v0.0.1...v0.0.2>
 [v0.0.1]: <https://github.com/radiantearth/stac-spec/tree/v0.0.1>

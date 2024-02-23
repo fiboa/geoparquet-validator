@@ -132,7 +132,7 @@ def validate_data(file, config):
         log(f"Data could not be read: {e}", "error")
         return False
 
-    log("Rading the file succeeded, but detailed data validation is not implemented yet", "warning")
+    log("Reading the file succeeded, but detailed data validation is not implemented yet", "warning")
 
 
 # todo: use stac_validator instead of our own validation routine
