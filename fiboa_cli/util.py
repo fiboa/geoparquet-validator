@@ -81,7 +81,18 @@ def is_valid_url(url):
         return False
 
 def valid_files_for_cli(ctx, param, value):
-    return [is_valid_file_uri(val) for val in value]
+    return [is_valid_file_uri(v) for v in value]
 
 def valid_file_for_cli(ctx, param, value):
     return is_valid_file_uri(value)
+
+def check_ext_schema_for_cli(ctx, param, value):
+    map = {}
+    for v in value:
+        try:
+            remote, local = v.split(",")
+            map[remote] = local
+        except ValueError:
+            raise click.BadParameter('Extension schema must be a URL and a local file path separated by a comma character')
+
+    return map

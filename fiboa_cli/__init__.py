@@ -3,7 +3,7 @@ import sys
 
 from .validate import validate as validate_
 from .create import create as create_
-from .util import log, valid_file_for_cli, valid_files_for_cli
+from .util import log, check_ext_schema_for_cli, valid_file_for_cli, valid_files_for_cli
 from .version import __version__
 
 @click.group()
@@ -20,6 +20,12 @@ def cli():
     '--schema', '-s',
     type=click.Path(exists=True),
     help='fiboa Schema to validate against. Can be a local file or a URL. If not provided, uses the fiboa version to load the schema for the released version.'
+)
+@click.option(
+    '--ext-schema', '-e',
+    multiple=True,
+    callback=check_ext_schema_for_cli,
+    help='Maps a remote fiboa extension schema url to a local file. First the URL, then the local file path. Separated with a comma character. Example: https://example.com/schema.json,/path/to/schema.json',
 )
 @click.option(
     '--fiboa-version', '-f',
@@ -40,13 +46,14 @@ def cli():
     help='Validate the data in the file. Enabling this might be slow. Default is False.',
     default=False
 )
-def validate(files, schema, fiboa_version, collection, data):
+def validate(files, schema, ext_schema, fiboa_version, collection, data):
     """
     Validates a fiboa GeoParquet file.
     """
     log(f"fiboa CLI {__version__} - Validator\n", "success")
     config = {
         "schema": schema,
+        "extension_schemas": ext_schema,
         "fiboa_version": fiboa_version,
         "collection": collection,
         "data": data

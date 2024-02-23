@@ -55,9 +55,15 @@ def validate(file, config):
             log("fiboa_extensions must be a list", "error")
             valid = False
         else:
+            ext_map = config.get("extension_schemas", [])
             for ext in collection["fiboa_extensions"]:
                 try:
-                    extensions[ext] = load_file(ext)
+                    if ext in ext_map:
+                        path = ext_map[ext]
+                        log(f"Redirecting {ext} to {path}", "info")
+                    else:
+                        path = ext
+                    extensions[ext] = load_file(path)
                 except Exception as e:
                     log(f"Extension {ext} can't be loaded: {e}", "error")
                     valid = False
