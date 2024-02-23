@@ -27,6 +27,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - ...
 
+## [v0.0.3] - 2024-02-23
+
+- Use extension schemas for conversion
+- Correctly write the Parquet schema and columns - workaround for <https://github.com/geopandas/geopandas/issues/3182>
+
 ## [v0.0.2] - 2024-02-16
 
 - Basic validation for collection
