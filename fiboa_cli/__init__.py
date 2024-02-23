@@ -3,7 +3,7 @@ import sys
 
 from .validate import validate as validate_
 from .create import create as create_
-from .util import log, check_ext_schema_for_cli, valid_file_for_cli, valid_files_for_cli
+from .util import log, check_ext_schema_for_cli, valid_file_for_cli, valid_files_folders_for_cli
 from .version import __version__
 
 @click.group()
@@ -15,7 +15,7 @@ def cli():
     pass
 
 @click.command()
-@click.argument('files', nargs=-1, callback=valid_files_for_cli)
+@click.argument('files', nargs=-1, callback=lambda ctx, param, value: valid_files_folders_for_cli(value, ["parquet", "geoparquet"]))
 @click.option(
     '--schema', '-s',
     type=click.Path(exists=True),
@@ -72,7 +72,7 @@ def validate(files, schema, ext_schema, fiboa_version, collection, data):
             sys.exit(2)
 
 @click.command()
-@click.argument('files', nargs=-1, callback=valid_files_for_cli)
+@click.argument('files', nargs=-1, callback=lambda ctx, param, value: valid_files_folders_for_cli(value, ["json", "geojson"]))
 @click.option(
     '--out', '-o',
     type=click.Path(exists=False),

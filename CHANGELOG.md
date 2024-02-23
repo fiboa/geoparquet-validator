@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - ...
 
+## [v0.0.7] - 2024-02-23
+
+- Allow folders to be specified as input files [#3](https://github.com/fiboa/cli/issues/3)
+
 ## [v0.0.6] - 2024-02-23
 
 - Add `-e` option for create command to support extension schema mapping to local files

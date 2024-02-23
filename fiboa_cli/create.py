@@ -23,14 +23,18 @@ def create(config):
 
     # Load all features from the GeoJSON files
     features = []
-    for file in config.get("files"):
+    files = config.get("files")
+    for file in files:
         geojson = load_file(file)
         if geojson["type"] == "Feature":
             features.append(geojson)
         elif geojson["type"] == "FeatureCollection":
             features += geojson.features
         else:
-            raise Exception("Unsupported GeoJSON type, must be Feature or FeatureCollection")
+            log(f"{file}: Skipped - Unsupported GeoJSON type, must be Feature or FeatureCollection")
+
+    if len(features) == 0:
+        raise Exception("No valid features provided as input files")
 
     properties = {}
 

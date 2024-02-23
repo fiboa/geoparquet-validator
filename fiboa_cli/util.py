@@ -80,8 +80,20 @@ def is_valid_url(url):
     except:
         return False
 
-def valid_files_for_cli(ctx, param, value):
-    return [is_valid_file_uri(v) for v in value]
+def valid_files_folders_for_cli(value, extensions = []):
+    files = []
+    for v in value:
+        v = is_valid_file_uri(v)
+        if os.path.isdir(v):
+            for f in os.listdir(v):
+                if len(extensions) > 0 and not f.endswith(tuple(extensions)):
+                    continue
+                if f == "collection.json" or f == "catalog.json": # likely STAC
+                    continue
+                files.append(os.path.join(v, f))
+        else:
+            files.append(v)
+    return files
 
 def valid_file_for_cli(ctx, param, value):
     return is_valid_file_uri(value)
