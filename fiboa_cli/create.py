@@ -31,8 +31,21 @@ def create(config):
         else:
             raise Exception("Unsupported GeoJSON type, must be Feature or FeatureCollection")
 
+    properties = {}
+
     # Load the data schema
     fiboa_schema = load_fiboa_schema(config)
+    properties.update(fiboa_schema["properties"])
+
+    # Load all extension schemas
+    extensions = {}
+    if "fiboa_extensions" in collection and isinstance(collection["fiboa_extensions"], list):
+        for ext in collection["fiboa_extensions"]:
+            try:
+                extensions[ext] = load_file(ext)
+                properties.update(extensions[ext]["properties"])
+            except Exception as e:
+                log(f"Extension schema for {ext} can't be loaded: {e}", "warning")
 
     # Get a list of the properties/columns (without duplicates)
     columns = set(["id", "geometry"])
@@ -46,7 +59,10 @@ def create(config):
     # Define the fields for the schema
     pq_fields = []
     for name in columns:
-        pa_type = create_type(fiboa_schema["properties"][name])
+        if not name in properties:
+            log(f"{name}: No schema defined", "warning")
+            continue
+        pa_type = create_type(properties[name])
         pq_fields.append(pa.field(name, pa_type))
 
     # Define the schema for the Parquet file
@@ -89,6 +105,8 @@ def create_dataframe(features, columns, schema):
 
     # Convert the data to the correct types
     for column in columns:
+        if column not in schema["properties"]:
+            continue
         dtype = schema["properties"][column].get("type", None)
         if dtype == "geometry":
             continue

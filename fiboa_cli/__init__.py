@@ -87,6 +87,7 @@ def create(files, out, collection, schema):
     """
     Create a fiboa file from GeoJSON file(s).
     """
+    log(f"fiboa CLI {__version__} - Create GeoParquet\n", "success")
     config = {
         "files": files,
         "out": out,
