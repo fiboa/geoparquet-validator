@@ -70,7 +70,7 @@ def describe(file, json):
     '--data', '-d',
     is_flag=True,
     type=click.BOOL,
-    help='Validate the data in the GeoParquet file. Enabling this might be slow. Default is False.',
+    help='EXPERIMENTAL: Validate the data in the GeoParquet file. Enabling this might be slow or exceed memory. Default is False.',
     default=False
 )
 def validate(files, schema, ext_schema, fiboa_version, collection, data):

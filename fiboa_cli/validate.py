@@ -5,7 +5,8 @@ import geopandas as gpd
 from jsonschema.validators import Draft7Validator
 from .const import PA_TYPE_CHECK
 from .jsonschema import create_jsonschema
-from .util import log as log_, load_datatypes, load_file, load_fiboa_schema, load_parquet_schema
+from .util import log as log_, load_datatypes, load_file, load_fiboa_schema, load_parquet_data, load_parquet_schema
+from .validate_data import validate_column
 
 STAC_COLLECTION_SCHEMA = "http://schemas.stacspec.org/v1.0.0/collection-spec/json-schema/collection.json"
 
@@ -179,6 +180,15 @@ def validate_parquet(file, config):
     # load the actual fiboa schema
     fiboa_schema = load_fiboa_schema(config)
 
+    # Load data if needed
+    df = None
+    if config.get("data"):
+        try:
+            df = load_parquet_data(file)
+        except Exception as e:
+            log(f"Data could not be read: {e}", "error")
+            valid = False
+
     # Compile all properties from the schemas
     properties = fiboa_schema["properties"]
     for ext in extensions.values():
@@ -229,24 +239,19 @@ def validate_parquet(file, config):
                 log(f"{key}: Map key datatype is not string", "error")
                 valid = False
 
-    if config.get("data"):
-        if not validate_data(file, config):
-            valid = False
-    else:
+        # Validate data of the column
+        if df is not None:
+            issues = validate_column(df[key], prop_schema)
+            if len(issues) > 0:
+                for issue in issues:
+                    log(f"{key}: {issue}")
+                valid = False
+
+    # Show a note once if data was not validated
+    if not config.get("data"):
         log("Data was not validated as the --data parameter was not provided", "info")
 
     return valid
-
-
-def validate_data(file, config):
-    # todo: validate data
-    try:
-        df = gpd.read_parquet(file)
-    except Exception as e:
-        log(f"Data could not be read: {e}", "error")
-        return False
-
-    log("Reading the file succeeded, but detailed data validation is not implemented yet", "warning")
 
 
 # todo: use stac_validator instead of our own validation routine
