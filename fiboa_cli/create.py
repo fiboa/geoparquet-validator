@@ -29,7 +29,7 @@ def create(config):
         if geojson["type"] == "Feature":
             features.append(geojson)
         elif geojson["type"] == "FeatureCollection":
-            features += geojson.features
+            features += geojson["features"]
         else:
             log(f"{file}: Skipped - Unsupported GeoJSON type, must be Feature or FeatureCollection")
 
