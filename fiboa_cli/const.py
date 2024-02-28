@@ -41,7 +41,7 @@ PA_TYPE_MAP = {
     "string": pa.string(),
     "array": lambda type: pa.list_(type),
     "object": None, # todo: lambda type: pa.map_(pa.string(), type)
-    "enum": None, # todo: ENUM (BYTE_ARRAY)
+    "enum": pa.string(), # todo: support other data types [ENUM (BYTE_ARRAY)]
     "date": pa.date32(),
     "date-time": pa.timestamp("ms", tz="UTC"),
     "geometry": pa.binary(),

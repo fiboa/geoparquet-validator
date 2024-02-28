@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - ...
 
+## [v0.0.9] - 2024-02-28
+
+- Support string enums
+
 ## [v0.0.8] - 2024-02-28
 
 - Fixed reading GeoJSON FeatureCollections
