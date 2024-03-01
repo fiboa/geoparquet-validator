@@ -3,6 +3,7 @@ import sys
 
 from .validate import validate as validate_
 from .create import create as create_
+from .jsonschema import jsonschema as jsonschema_
 from .util import log, check_ext_schema_for_cli, valid_file_for_cli, valid_files_folders_for_cli
 from .version import __version__
 
@@ -10,15 +11,18 @@ from .version import __version__
 @click.version_option(version=__version__)
 def cli():
     """
-    A simple CLI app.
+    The fiboa CLI.
     """
     pass
 
+
+## VALIDATE
 @click.command()
-@click.argument('files', nargs=-1, callback=lambda ctx, param, value: valid_files_folders_for_cli(value, ["parquet", "geoparquet"]))
+@click.argument('files', nargs=-1, callback=lambda ctx, param, value: valid_files_folders_for_cli(value, ["parquet", "geoparquet", "json", "geojson"]))
 @click.option(
     '--schema', '-s',
-    type=click.Path(exists=True),
+    type=click.STRING,
+    callback=valid_file_for_cli,
     help='fiboa Schema to validate against. Can be a local file or a URL. If not provided, uses the fiboa version to load the schema for the released version.'
 )
 @click.option(
@@ -43,12 +47,12 @@ def cli():
     '--data', '-d',
     is_flag=True,
     type=click.BOOL,
-    help='Validate the data in the file. Enabling this might be slow. Default is False.',
+    help='Validate the data in the GeoParquet file. Enabling this might be slow. Default is False.',
     default=False
 )
 def validate(files, schema, ext_schema, fiboa_version, collection, data):
     """
-    Validates a fiboa GeoParquet file.
+    Validates a fiboa GeoParquet or GeoJSON file.
     """
     log(f"fiboa CLI {__version__} - Validator\n", "success")
     config = {
@@ -60,17 +64,19 @@ def validate(files, schema, ext_schema, fiboa_version, collection, data):
     }
     for file in files:
         log(f"Validating {file}", "info")
-        try:
-            result = validate_(file, config)
-            if result:
-                log("  => VALID\n", "success")
-            else:
-                log("  => INVALID\n", "error")
-                sys.exit(1)
-        except Exception as e:
-            log(f"  => UNKNOWN: {e}\n", "error")
-            sys.exit(2)
+        result = validate_(file, config)
+        # try:
+        #     result = validate_(file, config)
+        #     if result:
+        #         log("  => VALID\n", "success")
+        #     else:
+        #         log("  => INVALID\n", "error")
+        #         sys.exit(1)
+        # except Exception as e:
+        #     log(f"  => UNKNOWN: {e}\n", "error")
+        #     sys.exit(2)
 
+## CREATE
 @click.command()
 @click.argument('files', nargs=-1, callback=lambda ctx, param, value: valid_files_folders_for_cli(value, ["json", "geojson"]))
 @click.option(
@@ -114,8 +120,53 @@ def create(files, out, collection, schema, ext_schema):
         log(e, "error")
         sys.exit(1)
 
+
+## JSON SCHEMA
+@click.command()
+@click.option(
+    '--schema', '-s',
+    type=click.STRING,
+    callback=valid_file_for_cli,
+    help='fiboa Schema to create the JSON Schema for. Can be a local file or a URL. If not provided, uses the fiboa version to load the schema for the released version.'
+)
+@click.option(
+    '--out', '-o',
+    type=click.Path(exists=False),
+    help='File to write the file to. If not provided, prints the file to the STDOUT.',
+    default=None
+)
+@click.option(
+    '--fiboa-version', '-f',
+    type=click.STRING,
+    help='The fiboa version to validate against. Defaults to 0.1.0.',
+    default='0.1.0'
+)
+@click.option(
+    '--id',
+    type=click.STRING,
+    help='The JSON Schema $id to use for the schema. If not provided, the $id will be omitted.',
+)
+def jsonschema(schema, out, fiboa_version, id):
+    """
+    Create a JSON Schema for a fiboa Schema
+    """
+    log(f"fiboa CLI {__version__} - Create JSON Schema\n", "success")
+    config = {
+        "schema": schema,
+        "out": out,
+        "fiboa_version": fiboa_version,
+        "id": id,
+    }
+    try:
+        jsonschema_(config)
+    except Exception as e:
+        log(e, "error")
+        sys.exit(1)
+
+
 cli.add_command(validate)
 cli.add_command(create)
+cli.add_command(jsonschema)
 
 if __name__ == '__main__':
     cli()

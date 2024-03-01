@@ -9,7 +9,7 @@ Run `pip install fiboa-cli` to install the validator.
 
 ## Validation
 
-To validate a fiboa GeoParquet file, you can for example run:
+To validate a fiboa GeoParquet or GeoJSON file, you can for example run:
 
 `fiboa validate example.json --collection collection.json`
 
@@ -31,6 +31,14 @@ you can for example run:
 `fiboa create geojson/example.json -o test.parquet -c geojson/collection.json`
 
 Check `fiboa create --help` for more details.
+
+## Create JSON Schema from fiboa Schema
+
+To create a JSON Schema for a fiboa Schema YAML file, you can for example run:
+
+`fiboa jsonschemaample.json --id=https://fiboa.github.io/specification/v0.0.2/geojson/schema.json -o schema.json`
+
+Check `fiboa jsonschema --help` for more details.
 
 ## Development
 

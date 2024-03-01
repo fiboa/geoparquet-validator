@@ -1,10 +1,10 @@
 import json
 import pyarrow.types as pat
-import geopandas as gpd
 
 from jsonschema.validators import Draft7Validator
 from .const import PA_TYPE_CHECK
-from .util import log as log_, load_file, load_fiboa_schema, load_parquet_schema
+from .jsonschema import create_jsonschema
+from .util import log as log_, load_datatypes, load_file, load_fiboa_schema, load_parquet_data, load_parquet_schema
 
 STAC_COLLECTION_SCHEMA = "http://schemas.stacspec.org/v1.0.0/collection-spec/json-schema/collection.json"
 
@@ -14,7 +14,137 @@ def log(text: str, status="info"):
 
 
 def validate(file, config):
+    if file.endswith(".json") or file.endswith(".geojson"):
+        return validate_geojson(file, config)
+    else:
+        return validate_parquet(file, config)
+
+
+def validate_collection(collection, config):
     valid = True
+
+    # Check fiboa version
+    if "fiboa_version" not in collection:
+        log("No fiboa_version found in collection metadata", "error")
+        valid = False
+    elif config.get("fiboa_version") is None:
+        config["fiboa_version"] = collection["fiboa_version"]
+
+    # Check STAC Collection
+    if not validate_colletion_schema(collection):
+        valid = False
+
+    # Check extensions
+    extensions = {}
+    if "fiboa_extensions" in collection:
+        if not isinstance(collection["fiboa_extensions"], list):
+            log("fiboa_extensions must be a list", "error")
+            valid = False
+        else:
+            ext_map = config.get("extension_schemas", [])
+            for ext in collection["fiboa_extensions"]:
+                try:
+                    if ext in ext_map:
+                        path = ext_map[ext]
+                        log(f"Redirecting {ext} to {path}", "info")
+                    else:
+                        path = ext
+                    extensions[ext] = load_file(path)
+                except Exception as e:
+                    log(f"Extension {ext} can't be loaded: {e}", "error")
+                    valid = False
+    
+    return valid, extensions
+
+
+def validate_geojson(file, config):
+    if not config.get("collection"):
+        log("No collection specified", "error")
+        return False
+
+    collection = load_file(config.get("collection"))
+
+    valid, extensions = validate_collection(collection, config)
+
+    core_schema = load_fiboa_schema(config)
+
+    datatypes = load_datatypes(config["fiboa_version"])
+
+    schema = create_jsonschema(core_schema, datatypes)
+
+    # Load extensions
+    ext_errors = []
+    for ext in extensions:
+        try:
+            uri = ext
+            if ext in config["ext_schema"]:
+                uri = config["ext_schema"][ext]
+            ext_schema = load_file(uri)
+            json_schema = create_jsonschema(ext_schema, datatypes)
+            extensions[ext] = lambda obj: validate_json_schema(obj, json_schema)
+        except Exception as error:
+            extensions[ext] = None
+            ext_errors.append(f"Failed to load extension {ext}: {str(error)}")
+    
+    extension_info = ", ".join(collection["fiboa_extensions"]) or "none"
+
+    log("fiboa extensions: " + extension_info)
+    for error in ext_errors:
+        log(error, "error")
+    
+    # Validate
+    try:
+        data = load_file(file)
+    except Exception as error:
+        log(error, "error")
+        return False
+
+    if not isinstance(data, dict):
+        log("Must be a JSON object")
+        return False
+
+    if data["type"] == "Feature":
+        features = [data]
+    elif data["type"] == "FeatureCollection":
+        features = data["features"]
+    elif data["type"] == "Collection":
+        # Skipping specific checks related to STAC Collection
+        return None
+    else:
+        log("Must be a GeoJSON Feature or FeatureCollection", "error")
+        return False
+
+    if len(features) == 0:
+        log("Must contain at least one Feature", "error")
+        return False
+
+    for index, feature in enumerate(features):
+        errors = validate_json_schema(feature, schema)
+        if len(errors) > 0:
+            valid = False
+        
+        label = feature.get("id", f"index: {index}")
+
+        if not valid:
+            for error in errors:
+                log(f"{label}: {error}", "error")
+        else:
+            for ext, validate_fn in extensions.items():
+                if validate_fn:
+                    ext_errors = validate_fn(feature)
+                    if len(ext_errors) > 0:
+                        for error in ext_errors:
+                            log(f"{label} (ext {ext}): {error}", "error")
+                        valid = False
+                else:
+                    log(f"{label}: Extension {ext} SKIPPED", "warning")
+            if valid:
+                log(f"{label}: VALID", "success")
+
+    return valid
+
+
+def validate_parquet(file, config):
     parquet_schema = load_parquet_schema(file)
 
     # Validate geo metadata in Parquet header
@@ -37,36 +167,8 @@ def validate(file, config):
     else:
         collection = json.loads(parquet_schema.metadata[b"fiboa"])
 
-    # Check fiboa version
-    if "fiboa_version" not in collection:
-        log("No fiboa_version found in collection metadata", "error")
-        valid = False
-    elif config.get("fiboa_version") is None:
-        config["fiboa_version"] = collection["fiboa_version"]
-
-    # Check STAC Collection
-    if not validate_json_schema(collection):
-        valid = False
-
-    # Check extensions
-    extensions = {}
-    if "fiboa_extensions" in collection:
-        if not isinstance(collection["fiboa_extensions"], list):
-            log("fiboa_extensions must be a list", "error")
-            valid = False
-        else:
-            ext_map = config.get("extension_schemas", [])
-            for ext in collection["fiboa_extensions"]:
-                try:
-                    if ext in ext_map:
-                        path = ext_map[ext]
-                        log(f"Redirecting {ext} to {path}", "info")
-                    else:
-                        path = ext
-                    extensions[ext] = load_file(path)
-                except Exception as e:
-                    log(f"Extension {ext} can't be loaded: {e}", "error")
-                    valid = False
+    # Validate Collection
+    valid, extensions = validate_collection(collection, config)
 
     # load the actual fiboa schema
     fiboa_schema = load_fiboa_schema(config)
@@ -142,15 +244,19 @@ def validate_data(file, config):
 
 
 # todo: use stac_validator instead of our own validation routine
-def validate_json_schema(obj):
+def validate_colletion_schema(obj):
     schema = load_file(STAC_COLLECTION_SCHEMA)
+    errors = validate_json_schema(obj, schema)
+    for error in errors:
+        log(f"Collection: {error.path}: {error.message}", "error")
 
+    return len(errors) == 0
+
+
+def validate_json_schema(obj, schema):
     if isinstance(obj, (bytearray, bytes, str)):
         obj = json.loads(obj)
 
     validator = Draft7Validator(schema)
     errors = sorted(validator.iter_errors(obj), key=lambda e: e.path)
-    for error in errors:
-        log(f"Collection: {error.path}: {error.message}", "error")
-
-    return len(errors) == 0
+    return errors
