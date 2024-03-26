@@ -12,28 +12,40 @@ from pyarrow.fs import FSSpecHandler, PyFileSystem
 
 from .const import LOG_STATUS_COLOR, SUPPORTED_PROTOCOLS
 
+cache = {}
+
 def log(text: str, status="info"):
     """Log a message with a severity level (which leads to different colors)"""
     click.echo(click.style(text, fg=LOG_STATUS_COLOR[status]))
 
 def load_file(uri):
     """Load files from various sources"""
+    if uri in cache:
+        return cache[uri]
+    
     fs = get_fs(uri)
     with fs.open(uri) as f:
         data = f.read()
 
     if uri.endswith(".yml") or uri.endswith(".yaml"):
-        return yaml.safe_load(data)
+        data = yaml.safe_load(data)
     elif uri.endswith(".json") or uri.endswith(".geojson"):
-        return json.loads(data)
-    else:
-        return data
+        data = json.loads(data)
+    
+    cache[uri] = data
+
+    return data
+    
+def get_pyarrow_file(uri):
+    fs = get_fs(uri)
+    pyarrow_fs = PyFileSystem(FSSpecHandler(fs))
+    return pyarrow_fs.open_input_file(uri)
+
 
 def load_parquet_schema(uri: str) -> pq.ParquetSchema:
     """Load schema from Parquet file"""
-    fs = get_fs(uri)
-    pyarrow_fs = PyFileSystem(FSSpecHandler(fs))
-    return pq.read_schema(pyarrow_fs.open_input_file(uri))
+    return pq.read_schema(get_pyarrow_file(uri))
+
 
 def load_fiboa_schema(config):
     """Load fiboa schema"""
@@ -42,6 +54,13 @@ def load_fiboa_schema(config):
     if not schema_url:
         schema_url = f"https://fiboa.github.io/specification/v{schema_version}/schema.yaml"
     return load_file(schema_url)
+
+
+def load_datatypes(version):
+    # todo: allow to define a seperate schema from a file (as in load_fiboa_schema)
+    dt_url = f"https://fiboa.github.io/specification/v{version}/geojson/datatypes.json"
+    response = load_file(dt_url)
+    return response["$defs"]
 
 def get_fs(url_or_path: str) -> AbstractFileSystem:
     """Choose fsspec filesystem by sniffing input url"""
@@ -62,7 +81,9 @@ def get_fs(url_or_path: str) -> AbstractFileSystem:
 
 def is_valid_file_uri(uri):
     """Determine if the input is a file path or a URL and handle it."""
-    if os.path.exists(uri):
+    if uri is None:
+        return None
+    elif os.path.exists(uri):
         return uri
     elif is_valid_url(uri):
         return uri
