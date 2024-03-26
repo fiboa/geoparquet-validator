@@ -6,7 +6,7 @@ def jsonschema(config):
     core_schema = load_fiboa_schema(config)
     datatypes = load_datatypes(config['fiboa_version'])
     schema = create_jsonschema(core_schema, datatypes, config.get('id'))
-    if 'out' in config:
+    if config['out']:
         with open(config['out'], 'w') as f:
             json.dump(schema, f, indent=2)
     else:
@@ -90,11 +90,11 @@ def convert_schema(prop_schema, datatypes):
                     }
                 ]
             }
-        elif (isinstance(datatype_schema.get('type'), list) or 
-             isinstance(datatype_schema.get('oneOf'), list) or 
-             isinstance(datatype_schema.get('anyOf'), list)):
+        elif (isinstance(datatype_schema.get('type'), list)):
             datatype_schema.get('type', []).append("null")
+        elif (isinstance(datatype_schema.get('oneOf'), list)):
             datatype_schema.get('oneOf', []).append({"type": "null"})
+        elif (isinstance(datatype_schema.get('anyOf'), list)):
             datatype_schema.get('anyOf', []).append({"type": "null"})
         else:
             print(f"Making schema {json.dumps(datatype_schema)} optional is not supported by this generator")

@@ -64,17 +64,16 @@ def validate(files, schema, ext_schema, fiboa_version, collection, data):
     }
     for file in files:
         log(f"Validating {file}", "info")
-        result = validate_(file, config)
-        # try:
-        #     result = validate_(file, config)
-        #     if result:
-        #         log("  => VALID\n", "success")
-        #     else:
-        #         log("  => INVALID\n", "error")
-        #         sys.exit(1)
-        # except Exception as e:
-        #     log(f"  => UNKNOWN: {e}\n", "error")
-        #     sys.exit(2)
+        try:
+            result = validate_(file, config)
+            if result:
+                log("\r\n  => VALID\n", "success")
+            else:
+                log("\r\n  => INVALID\n", "error")
+                sys.exit(1)
+        except Exception as e:
+            log(f"\r\n  => UNKNOWN: {e}\n", "error")
+            sys.exit(2)
 
 ## CREATE
 @click.command()

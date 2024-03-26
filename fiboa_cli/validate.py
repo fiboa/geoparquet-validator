@@ -1,10 +1,11 @@
 import json
 import pyarrow.types as pat
+import geopandas as gpd
 
 from jsonschema.validators import Draft7Validator
 from .const import PA_TYPE_CHECK
 from .jsonschema import create_jsonschema
-from .util import log as log_, load_datatypes, load_file, load_fiboa_schema, load_parquet_data, load_parquet_schema
+from .util import log as log_, load_datatypes, load_file, load_fiboa_schema, load_parquet_schema
 
 STAC_COLLECTION_SCHEMA = "http://schemas.stacspec.org/v1.0.0/collection-spec/json-schema/collection.json"
 
@@ -30,6 +31,11 @@ def validate_collection(collection, config):
     elif config.get("fiboa_version") is None:
         config["fiboa_version"] = collection["fiboa_version"]
 
+    log("fiboa extensions: " + collection["fiboa_version"])
+
+    if collection["fiboa_version"] != config["fiboa_version"]:
+        log(f"fiboa versions differs: Collection is {collection['fiboa_version']} and requested specification version is {config['fiboa_version']}", "warning")
+
     # Check STAC Collection
     if not validate_colletion_schema(collection):
         valid = False
@@ -53,7 +59,10 @@ def validate_collection(collection, config):
                 except Exception as e:
                     log(f"Extension {ext} can't be loaded: {e}", "error")
                     valid = False
-    
+
+    extension_info = ", ".join(collection["fiboa_extensions"]) or "none"
+    log("fiboa extensions: " + extension_info)
+
     return valid, extensions
 
 
@@ -85,13 +94,10 @@ def validate_geojson(file, config):
         except Exception as error:
             extensions[ext] = None
             ext_errors.append(f"Failed to load extension {ext}: {str(error)}")
-    
-    extension_info = ", ".join(collection["fiboa_extensions"]) or "none"
 
-    log("fiboa extensions: " + extension_info)
     for error in ext_errors:
         log(error, "error")
-    
+
     # Validate
     try:
         data = load_file(file)
@@ -122,7 +128,7 @@ def validate_geojson(file, config):
         errors = validate_json_schema(feature, schema)
         if len(errors) > 0:
             valid = False
-        
+
         label = feature.get("id", f"index: {index}")
 
         if not valid:
@@ -138,7 +144,7 @@ def validate_geojson(file, config):
                         valid = False
                 else:
                     log(f"{label}: Extension {ext} SKIPPED", "warning")
-            if valid:
+            if valid and len(features) > 1:
                 log(f"{label}: VALID", "success")
 
     return valid

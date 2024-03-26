@@ -36,7 +36,7 @@ Check `fiboa create --help` for more details.
 
 To create a JSON Schema for a fiboa Schema YAML file, you can for example run:
 
-`fiboa jsonschemaample.json --id=https://fiboa.github.io/specification/v0.0.2/geojson/schema.json -o schema.json`
+`fiboa jsonschema example.json --id=https://fiboa.github.io/specification/v0.1.0/geojson/schema.json -o schema.json`
 
 Check `fiboa jsonschema --help` for more details.
 
