@@ -3,6 +3,7 @@ import os
 import yaml
 import json
 import pyarrow.parquet as pq
+import pandas as pd
 
 from urllib.parse import urlparse
 from fsspec import AbstractFileSystem
@@ -22,7 +23,7 @@ def load_file(uri):
     """Load files from various sources"""
     if uri in cache:
         return cache[uri]
-    
+
     fs = get_fs(uri)
     with fs.open(uri) as f:
         data = f.read()
@@ -31,11 +32,11 @@ def load_file(uri):
         data = yaml.safe_load(data)
     elif uri.endswith(".json") or uri.endswith(".geojson"):
         data = json.loads(data)
-    
+
     cache[uri] = data
 
     return data
-    
+
 def get_pyarrow_file(uri):
     fs = get_fs(uri)
     pyarrow_fs = PyFileSystem(FSSpecHandler(fs))
@@ -45,6 +46,12 @@ def get_pyarrow_file(uri):
 def load_parquet_schema(uri: str) -> pq.ParquetSchema:
     """Load schema from Parquet file"""
     return pq.read_schema(get_pyarrow_file(uri))
+
+
+def load_parquet_data(uri: str) -> pd.DataFrame:
+    """Load data from Parquet file"""
+    table = pq.read_table(get_pyarrow_file(uri))
+    return table.to_pandas()
 
 
 def load_fiboa_schema(config):
@@ -79,9 +86,11 @@ def get_fs(url_or_path: str) -> AbstractFileSystem:
 
     return LocalFileSystem()
 
-def is_valid_file_uri(uri):
+def is_valid_file_uri(uri, extensions = []):
     """Determine if the input is a file path or a URL and handle it."""
-    if uri is None:
+    if not isinstance(uri, str):
+        return None
+    elif len(extensions) > 0 and not uri.endswith(tuple(extensions)):
         return None
     elif os.path.exists(uri):
         return uri
@@ -118,6 +127,9 @@ def valid_files_folders_for_cli(value, extensions = []):
 
 def valid_file_for_cli(ctx, param, value):
     return is_valid_file_uri(value)
+
+def valid_file_for_cli_with_ext(value, extensions):
+    return is_valid_file_uri(value, extensions)
 
 def check_ext_schema_for_cli(ctx, param, value):
     map = {}

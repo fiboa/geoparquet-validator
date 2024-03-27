@@ -26,7 +26,8 @@ setup(
         "click>=8.1",
         "geopandas>=0.14",
         "requests>=2.30",
-        "aiohttp>=3.9"
+        "aiohttp>=3.9",
+        "shapely>=2.0"
     ],
     packages=find_packages(),
     package_data={

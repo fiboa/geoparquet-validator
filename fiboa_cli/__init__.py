@@ -1,11 +1,12 @@
 import click
 import sys
 
-from .validate import validate as validate_
 from .create import create as create_
+from .describe import describe as describe_
 from .jsonschema import jsonschema as jsonschema_
-from .util import log, check_ext_schema_for_cli, valid_file_for_cli, valid_files_folders_for_cli
+from .validate import validate as validate_
 from .version import __version__
+from .util import log, check_ext_schema_for_cli, valid_file_for_cli, valid_file_for_cli_with_ext, valid_files_folders_for_cli
 
 @click.group()
 @click.version_option(version=__version__)
@@ -14,6 +15,28 @@ def cli():
     The fiboa CLI.
     """
     pass
+
+
+## DESCRIBE
+@click.command()
+@click.argument('file', nargs=1, callback=lambda ctx, param, value: valid_file_for_cli_with_ext(value, ["parquet", "geoparquet"]))
+@click.option(
+    '--json', '-j',
+    is_flag=True,
+    type=click.BOOL,
+    help='Print the JSON metadata.',
+    default=False
+)
+def describe(file, json):
+    """
+    Inspects the content of a fiboa GeoParquet file.
+    """
+    log(f"fiboa CLI {__version__} - Describe {file}\n", "success")
+    try:
+        describe_(file, json)
+    except Exception as e:
+        log(e, "error")
+        sys.exit(1)
 
 
 ## VALIDATE
@@ -67,12 +90,12 @@ def validate(files, schema, ext_schema, fiboa_version, collection, data):
         try:
             result = validate_(file, config)
             if result:
-                log("\r\n  => VALID\n", "success")
+                log("\n  => VALID\n", "success")
             else:
-                log("\r\n  => INVALID\n", "error")
+                log("\n  => INVALID\n", "error")
                 sys.exit(1)
         except Exception as e:
-            log(f"\r\n  => UNKNOWN: {e}\n", "error")
+            log(f"\n  => UNKNOWN: {e}\n", "error")
             sys.exit(2)
 
 ## CREATE
@@ -163,6 +186,7 @@ def jsonschema(schema, out, fiboa_version, id):
         sys.exit(1)
 
 
+cli.add_command(describe)
 cli.add_command(validate)
 cli.add_command(create)
 cli.add_command(jsonschema)
