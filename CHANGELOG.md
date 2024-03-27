@@ -27,6 +27,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - ...
 
+## [v0.1.0] - 2024-03-27
+
+- Add `describe` command to inspect fiboa GeoParquet files
+- Add `jsonschema` command to create JSON Schema from fiboa schema
+- Add validateion for GeoJSON
+
 ## [v0.0.9] - 2024-02-28
 
 - Support string enums
@@ -66,7 +72,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release
 
-[Unreleased]: <https://github.com/radiantearth/stac-spec/compare/v0.0.6...main>
+[Unreleased]: <https://github.com/radiantearth/stac-spec/compare/v0.1.0...main>
+[v0.1.0]: <https://github.com/radiantearth/stac-spec/compare/v0.0.9...v0.1.0>
+[v0.0.9]: <https://github.com/radiantearth/stac-spec/compare/v0.0.8...v0.0.9>
+[v0.0.8]: <https://github.com/radiantearth/stac-spec/compare/v0.0.7...v0.0.8>
+[v0.0.7]: <https://github.com/radiantearth/stac-spec/compare/v0.0.6...v0.0.7>
 [v0.0.6]: <https://github.com/radiantearth/stac-spec/compare/v0.0.5...v0.0.6>
 [v0.0.5]: <https://github.com/radiantearth/stac-spec/compare/v0.0.4...v0.0.5>
 [v0.0.4]: <https://github.com/radiantearth/stac-spec/compare/v0.0.3...v0.0.4>
