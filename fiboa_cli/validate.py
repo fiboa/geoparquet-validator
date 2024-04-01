@@ -194,6 +194,13 @@ def validate_parquet(file, config):
     for ext in extensions.values():
         properties.update(ext["properties"])
 
+    # Check that all required fields are present
+    for key, schema in properties.items():
+        required = schema.get("required", False)
+        if required and key not in parquet_schema.names:
+            log(f"{key}: Required field is missing", "error")
+            valid = False
+
     # Validate whether the Parquet schema complies with the property schemas
     for key in parquet_schema.names:
         # Ignore fields without a schema
