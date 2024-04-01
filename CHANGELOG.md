@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- ...
+- Converter framework (`fiboa convert`)
+- Converter for NRW, Germany (`de_nrw`)
 
 ### Changed
 

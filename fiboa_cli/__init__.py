@@ -1,11 +1,12 @@
 import click
 import sys
 
+from .convert import convert as convert_
 from .create import create as create_
 from .describe import describe as describe_
 from .jsonschema import jsonschema as jsonschema_
 from .validate import validate as validate_
-from .version import __version__
+from .version import __version__, fiboa_version
 from .util import log, check_ext_schema_for_cli, valid_file_for_cli, valid_file_for_cli_with_ext, valid_files_folders_for_cli
 
 @click.group()
@@ -104,7 +105,7 @@ def validate(files, schema, ext_schema, fiboa_version, collection, data):
 @click.option(
     '--out', '-o',
     type=click.Path(exists=False),
-    help='File to write the file to. If not provided, prints the file to the STDOUT.',
+    help='File to write the file to.',
     required=True
 )
 @click.option(
@@ -160,8 +161,8 @@ def create(files, out, collection, schema, ext_schema):
 @click.option(
     '--fiboa-version', '-f',
     type=click.STRING,
-    help='The fiboa version to validate against. Defaults to 0.1.0.',
-    default='0.1.0'
+    help=f'The fiboa version to validate against. Defaults to {fiboa_version}.',
+    default=fiboa_version
 )
 @click.option(
     '--id',
@@ -186,10 +187,32 @@ def jsonschema(schema, out, fiboa_version, id):
         sys.exit(1)
 
 
+## CONVERT
+@click.command()
+@click.argument('dataset', nargs=1)
+@click.option(
+    '--out', '-o',
+    type=click.Path(exists=False),
+    help='File to write the GeoParquet file to.',
+    required=True
+)
+def convert(dataset, out):
+    """
+    Converts existing field boundary datasets to fiboa.
+    """
+    log(f"fiboa CLI {__version__} - Convert {dataset}\n", "success")
+    try:
+        convert_(dataset, out)
+    except Exception as e:
+        log(e, "error")
+        sys.exit(1)
+
+
 cli.add_command(describe)
 cli.add_command(validate)
 cli.add_command(create)
 cli.add_command(jsonschema)
+cli.add_command(convert)
 
 if __name__ == '__main__':
     cli()

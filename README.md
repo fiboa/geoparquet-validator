@@ -49,6 +49,23 @@ To create a JSON Schema for a fiboa Schema YAML file, you can for example run:
 
 Check `fiboa jsonschema --help` for more details.
 
+## Converter for existing datasets
+
+To convert an existing dataset to fiboa using the pre-defined converters:
+
+- `fiboa convert de_nrw`
+
+Available converters:
+- `de_nrw` (Germany, NRW from Shapefile)
+
+### Implement a converter
+
+1. Create a new file in `fiboa_cli/datasets` based on the `template.py`
+2. Implement the `convert()` function
+3. Add missing dependencies into a separate dependency group in `setup.py`
+4. Add the converter to the list above
+5. Create a PR to submit your converter for review
+
 ## Development
 
 To install in development mode run `pip install -e .` in this folder.

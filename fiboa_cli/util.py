@@ -10,21 +10,49 @@ from fsspec import AbstractFileSystem
 from fsspec.implementations.http import HTTPFileSystem
 from fsspec.implementations.local import LocalFileSystem
 from pyarrow.fs import FSSpecHandler, PyFileSystem
+from tempfile import NamedTemporaryFile
 
 from .const import LOG_STATUS_COLOR, SUPPORTED_PROTOCOLS
 
-cache = {}
+small_file_cache = {}
+big_file_cache = {}
 
 def log(text: str, status="info"):
     """Log a message with a severity level (which leads to different colors)"""
     click.echo(click.style(text, fg=LOG_STATUS_COLOR[status]))
 
+
+def download_file(uri):
+    """Download files from various sources"""
+    if uri not in big_file_cache:
+        fs = get_fs(uri)
+        if isinstance(fs, LocalFileSystem):
+            big_file_cache[uri] = uri
+        else:
+            chunk_size = 10 * 1024 * 1024
+            _, extension = os.path.splitext(uri)
+            with NamedTemporaryFile(delete=False, suffix=extension) as tmp_file:
+                with fs.open(uri, mode='rb') as f:
+                    while True:
+                        chunk = f.read(chunk_size)
+                        if not chunk:
+                            break
+                        tmp_file.write(chunk)
+
+            big_file_cache[uri] = tmp_file.name
+
+    path = big_file_cache[uri]
+
+    return path
+
+
 def load_file(uri):
     """Load files from various sources"""
-    if uri in cache:
-        return cache[uri]
+    if uri in small_file_cache:
+        return small_file_cache[uri]
 
     fs = get_fs(uri)
+
     with fs.open(uri) as f:
         data = f.read()
 
@@ -33,7 +61,7 @@ def load_file(uri):
     elif uri.endswith(".json") or uri.endswith(".geojson"):
         data = json.loads(data)
 
-    cache[uri] = data
+    small_file_cache[uri] = data
 
     return data
 

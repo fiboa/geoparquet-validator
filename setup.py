@@ -29,6 +29,12 @@ setup(
         "aiohttp>=3.9",
         "shapely>=2.0"
     ],
+    extras_require={
+        # Optional dependencies for datasets converters go here
+        'de_nrw': [
+            # No optional dependencies for de_nrw datasets converter needed
+        ]
+    },
     packages=find_packages(),
     package_data={
         "fiboa_cli": []

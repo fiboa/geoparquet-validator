@@ -2,6 +2,7 @@ import pyarrow as pa
 import pyarrow.types as pat
 import pandas as pd
 
+# fiboa datatypes to geopandas datatypes
 GP_TYPE_MAP = {
     "boolean": "bool",
     "int8": "int8",
@@ -25,6 +26,7 @@ GP_TYPE_MAP = {
     "bounding-box": None # todo
 }
 
+# fiboa datatypes to pyarrow datatypes
 PA_TYPE_MAP = {
     "boolean": pa.bool_(),
     "int8": pa.int8(),
@@ -48,6 +50,34 @@ PA_TYPE_MAP = {
     "bounding-box": None # todo
 }
 
+# geopandas datatypes to pyarrow datatypes
+GP_TO_PA_TYPE_MAP = {
+    "string": pa.string(),
+    "|S0": pa.string(), # todo
+    "<U0": pa.string(), # todo
+    "bool": pa.bool_(),
+    "int8": pa.int8(),
+    "uint8": pa.uint8(),
+    "int16": pa.int16(),
+    "uint16": pa.uint16(),
+    "int32": pa.int32(),
+    "uint32": pa.uint32(),
+    "int64": pa.int64(),
+    "uint64": pa.uint64(),
+    "float16": pa.float16(),
+    "float32": pa.float32(),
+    "float64": pa.float64(),
+    "float128": None, # todo
+    "complex64": None, # todo
+    "complex128": None, # todo
+    "complex256": None, # todo
+    "object": pa.string(),
+    "datetime64": pa.timestamp("ms", tz="UTC"),
+    "record": None, # todo
+    "timedelta64": None # todo
+}
+
+# checks pyarrow datatypes
 PA_TYPE_CHECK = {
     "boolean": pat.is_boolean,
     "int8": pat.is_int8,
