@@ -2,7 +2,7 @@ from ..util import log, download_file
 from ..version import fiboa_version
 from ..create import create_parquet
 import geopandas as gpd
-from datetime import datetime
+import pandas as pd
 
 URI = "https://www.opengeodata.nrw.de/produkte/umwelt_klima/bodennutzung/landwirtschaft/DGL_EPSG25832_Shape.zip"
 COLUMNS = {
@@ -38,7 +38,7 @@ def convert(output_file):
     gdf = gdf.rename(columns = actual_columns)
 
     log("Creating GeoParquet file: " + output_file, "info")
-    collection = create_collection()
+    collection = create_collection(gdf)
     config = {
         "fiboa_version": fiboa_version,
     }
@@ -48,11 +48,14 @@ def convert(output_file):
     log("Finished", "success")
 
 
-def create_collection():
+def create_collection(gdf):
     """
     Creates a collection for the DE NRW field boundary datasets.
     """
-    year = datetime.now().year
+    dates = pd.to_datetime(gdf['determination_datetime'])
+    min_time = dates.min().isoformat() + "Z"
+    max_time = dates.max().isoformat() + "Z"
+
     return {
         "fiboa_version": fiboa_version,
         "fiboa_extensions": [
@@ -68,13 +71,13 @@ def create_collection():
                 "bbox": [[5.8659988131,50.3226989435,9.4476584861,52.5310351488]]
             },
             "temporal": {
-                "interval": [[f"{year}-01-01T00:00:00Z",f"{year}-12-31T23:59:59Z"]]
+                "interval": [[min_time, max_time]]
             }
         },
         "links": [
             {
                 "href": "https://www.govdata.de/dl-de/by-2-0",
-                "title": "Datenlizenz Deutschland Namensnennung 2.0",
+                "title": "Data licence Germany - attribution - Version 2.0",
                 "type": "text/html",
                 "rel": "license"
             }
