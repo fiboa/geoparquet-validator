@@ -1,9 +1,11 @@
+import re
 from setuptools import setup, find_packages
 from pathlib import Path
 
 def get_version():
     with open('fiboa_cli/version.py', 'r') as file:
-        return file.read().split('=')[-1].strip().strip('\'"')
+        content = file.read()
+        return re.match(r'__version__\s*=\s*"([^"]+)"', content)[1]
 
 def get_description():
     this_directory = Path(__file__).parent
