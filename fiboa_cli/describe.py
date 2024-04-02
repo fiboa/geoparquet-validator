@@ -16,7 +16,7 @@ def wkb_to_wkt(data):
     return wkb.loads(data)
 
 
-def describe(file, json):
+def describe(file, display_json=False):
     schema = load_parquet_schema(file)
 
     log("== GEOPARQUET ==", "success")
@@ -29,7 +29,7 @@ def describe(file, json):
         columns_str = ", ".join(geo_columns)
         log(f"Geometry columns: {columns_str}")
 
-        if (json):
+        if (display_json):
             log(json.dumps(geo, indent=2))
 
     log("\n== COLLECTION ==", "success")
@@ -44,7 +44,7 @@ def describe(file, json):
         if "license" in collection:
             log(f"license: {collection['license']}")
 
-        if (json):
+        if (display_json):
             log(json.dumps(collection, indent=2))
 
     log("\n== SCHEMA ==", "success")

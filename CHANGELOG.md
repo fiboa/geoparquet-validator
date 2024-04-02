@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Validator for GeoParquet recognizes missing fields
+- `--json` option for describe command doesn't throw error
 
 ## [v0.1.1] - 2024-03-27
 
