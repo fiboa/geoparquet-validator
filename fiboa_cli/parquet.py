@@ -8,9 +8,6 @@ from geopandas import GeoDataFrame
 from shapely.geometry import shape
 
 def create_parquet(data, columns, collection, output_file, config):
-    columns = list(columns)
-    columns.sort()
-
     # Load the data schema
     fiboa_schema = load_fiboa_schema(config)
     properties = {}

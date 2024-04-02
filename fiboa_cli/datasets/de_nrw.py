@@ -4,17 +4,16 @@ from ..create import create_parquet
 import geopandas as gpd
 import pandas as pd
 
-URI = "https://www.opengeodata.nrw.de/produkte/umwelt_klima/bodennutzung/landwirtschaft/DGL_EPSG25832_Shape.zip"
+URI = "https://www.opengeodata.nrw.de/produkte/umwelt_klima/bodennutzung/landwirtschaft/LFK-AKTI_EPSG25832_Shape.zip"
 COLUMNS = {
     'geometry': 'geometry',
     'ID': 'id',
     'INSPIRE_ID': 'inspire:id',
     'FLIK': 'flik',
     'GUELT_VON': 'determination_datetime',
-    # not present anymore?
-    # 'NUTZ_CODE': 'nutz_code',
-    # 'NUTZ_TXT': 'nutz_txt',
-    # 'AREA_HA': 'area'
+    'NUTZ_CODE': 'nutz_code',
+    'NUTZ_TXT': 'nutz_txt',
+    'AREA_HA': 'area'
 }
 
 def convert(output_file):
@@ -42,7 +41,7 @@ def convert(output_file):
     config = {
         "fiboa_version": fiboa_version,
     }
-    columns = actual_columns.values()
+    columns = list(actual_columns.values())
     create_parquet(gdf, columns, collection, output_file, config)
 
     log("Finished", "success")

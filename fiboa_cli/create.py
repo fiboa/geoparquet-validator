@@ -37,5 +37,9 @@ def create(config):
         keys = feature["properties"].keys()
         columns.update(keys)
 
+    columns = list(columns)
+    columns.sort()
+
+    # Create the Parquet file
     create_parquet(features, columns, collection, output_file, config)
     log(f"Wrote to {output_file}", "success")

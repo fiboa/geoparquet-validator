@@ -27,6 +27,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - ...
 
+## [v0.2.1] - 2024-04-02
+
+### Fixed
+
+- Fixed the field boundary generation for de-nrw, which was pointing at the wrong dataset.
 
 ## [v0.2.0] - 2024-04-02
 
@@ -89,7 +94,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release
 
-[Unreleased]: <https://github.com/radiantearth/stac-spec/compare/v0.2.0...main>
+[Unreleased]: <https://github.com/radiantearth/stac-spec/compare/v0.2.1...main>
+[v0.2.1]: <https://github.com/radiantearth/stac-spec/compare/v0.2.0...v0.2.1>
 [v0.2.0]: <https://github.com/radiantearth/stac-spec/compare/v0.1.1...v0.2.0>
 [v0.1.1]: <https://github.com/radiantearth/stac-spec/compare/v0.1.0...v0.1.1>
 [v0.1.0]: <https://github.com/radiantearth/stac-spec/compare/v0.0.9...v0.1.0>
