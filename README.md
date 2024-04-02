@@ -7,6 +7,9 @@ CLI tools such as validation and file format conversion for fiboa.
 You need **Python 3.9+** installed. 
 Run `pip install fiboa-cli` to install the validator.
 
+To install additional dependencies for specific [converters](#converter-for-existing-datasets),
+you can for example run: `pip install fiboa-cli[xyz]` with xyz being the converter name.
+
 ## Validation
 
 To validate a fiboa GeoParquet or GeoJSON file, you can for example run:
