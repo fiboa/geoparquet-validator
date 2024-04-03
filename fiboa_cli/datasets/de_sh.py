@@ -1,4 +1,4 @@
-from .utils.de_utils import convert as convert_
+from ..convert_utils import convert as convert_
 
 URI = "https://service.gdi-sh.de/SH_OpenGBD/feeds/Atom_SH_Feldblockfinder_OpenGBD/data/Feldbloecke_2024_GPKG.zip"
 ID = "de_sh"

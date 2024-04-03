@@ -1,6 +1,8 @@
-from ...version import fiboa_version
-from ...util import log, download_file
-from ...create import create_parquet
+from .version import fiboa_version
+from .util import log, download_file, get_fs
+from .create import create_parquet
+
+from fsspec.implementations.local import LocalFileSystem
 
 import geopandas as gpd
 import pandas as pd
@@ -18,11 +20,14 @@ def convert(
     """
     Converts a German field boundary datasets to fiboa.
     """
-    log("Loading file from: " + url, "info")
+    if not isinstance(get_fs(url), LocalFileSystem):
+        log("Loading file from: " + url)
     path = download_file(url, cache_file)
-    log("Local file is at: " + path, "info")
+
+    log("Local file is at: " + path)
     gdf = gpd.read_file(path, **kwargs)
-    log("Read into GeoDataFrame:", "info")
+
+    log("Loaded into GeoDataFrame:")
     print(gdf.head())
 
     actual_columns = {}
@@ -45,10 +50,10 @@ def convert(
     drop_columns = list(set(gdf.columns) - set(actual_columns.values()))
     gdf.drop(columns = drop_columns, inplace = True)
 
-    log("Converted GeoDataFrame to:", "info")
+    log("Changed GeoDataFrame to:")
     print(gdf.head())
 
-    log("Creating GeoParquet file: " + output_file, "info")
+    log("Creating GeoParquet file: " + output_file)
     collection = create_collection(gdf, id, title, description, bbox, extensions, attribution, license)
     config = {
         "fiboa_version": fiboa_version,
@@ -62,6 +67,9 @@ def create_collection(gdf, id, title, description, bbox, extensions = [], attrib
     """
     Creates a collection for the German field boundary datasets.
     """
+    if "determination_datetime" not in gdf.columns:
+        raise ValueError("determination_datetime column not available")
+
     dates = pd.to_datetime(gdf['determination_datetime'])
     min_time = dates.min().isoformat() + "Z"
     max_time = dates.max().isoformat() + "Z"
@@ -105,6 +113,8 @@ def create_collection(gdf, id, title, description, bbox, extensions = [], attrib
             "type": "text/html",
             "rel": "license"
         })
+    elif license == "CC-BY-4.0":
+        collection["license"] = license
     else:
         log(f"License information missing", "warning")
 

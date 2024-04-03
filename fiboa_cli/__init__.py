@@ -206,7 +206,7 @@ def convert(dataset, out, cache):
     """
     Converts existing field boundary datasets to fiboa.
     """
-    log(f"fiboa CLI {__version__} - Convert {dataset}\n", "success")
+    log(f"fiboa CLI {__version__} - Convert '{dataset}'\n", "success")
     try:
         convert_(dataset, out, cache)
     except Exception as e:

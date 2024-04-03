@@ -1,4 +1,4 @@
-from .utils.de_utils import convert as convert_
+from ..convert_utils import convert as convert_
 
 URI = "https://www.opengeodata.nrw.de/produkte/umwelt_klima/bodennutzung/landwirtschaft/LFK-AKTI_EPSG25832_Shape.zip"
 ID = "de_nrw"

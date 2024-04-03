@@ -1,4 +1,4 @@
-from .utils.de_utils import convert as convert_
+from ..convert_utils import convert as convert_
 
 # This file consists of three shapefiles (DFBK_FB, DFBK_LE, DFBK_NBF)
 # We only want DFBK_FB and for me it loads only this file, but I'm not sure whether that's always the case

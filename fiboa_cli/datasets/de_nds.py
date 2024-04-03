@@ -1,4 +1,4 @@
-from .utils.de_utils import convert as convert_
+from ..convert_utils import convert as convert_
 
 URI = "https://sla.niedersachsen.de/mapbender_sla/download/FB_NDS.zip"
 ID = "de_nds"
