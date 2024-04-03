@@ -5,11 +5,11 @@ ID = "de_nds"
 TITLE = "Field boundaries for Lower Saxony, Germany"
 DESCRIPTION = """A field block (German: "Feldblock") is a contiguous agricultural area surrounded by permanent boundaries, which is cultivated by one or more farmers with one or more crops, is fully or partially set aside or is fully or partially taken out of production."""
 ATTRIBUTION = "© ML/SLA Niedersachsen (2024), dl-de/by-2-0 (www.govdata.de/dl-de/by-2-0), Daten bearbeitet"
+# From http://osmtipps.lefty1963.de/2008/10/bundeslnder.html
 BBOX = [6.6545841239,51.2954150799,11.59769814,53.8941514415]
-EXTENSIONS = []
 COLUMNS = {
     'geometry': 'geometry',
-    'FLIK': ['id', 'flik'], # make flik id a dedicated column to align with NRW
+    'FLIK': ['id', 'flik'], # make flik id a dedicated column to align with NRW etc.
     'STAND': 'determination_datetime',
     'ANT_JAHR': 'ant_jahr',
     'BNK': 'bnk',
@@ -42,6 +42,6 @@ MISSING_SCHEMAS = {
 
 def convert(output_file, cache_file = None):
     """
-    Converts the DE NRW field boundary datasets to fiboa.
+    Converts the Lower Saxony (Germany) field boundary datasets to fiboa.
     """
-    convert_(output_file, cache_file, URI, COLUMNS, ID, TITLE, DESCRIPTION, BBOX, EXTENSIONS, MISSING_SCHEMAS, ATTRIBUTION)
+    convert_(output_file, cache_file, URI, COLUMNS, ID, TITLE, DESCRIPTION, BBOX, missing_schemas=MISSING_SCHEMAS, attribution=ATTRIBUTION)

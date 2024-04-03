@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- ...
+- Converter for Schleswig Holstein, Germany (`de_sh`)
+- Converter for Lower Saxony, Germany (`de_nds`)
 
 ### Changed
 
@@ -25,7 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- ...
+- Several minor improvements for the conversion process
 
 ## [v0.2.1] - 2024-04-02
 
@@ -38,7 +39,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Converter framework (`fiboa convert`)
-- Converter for NRW, Germany (`de_nrw`)
+- Converter for North Rhine-Westphalia, Germany (`de_nrw`)
 
 ### Fixed
 
