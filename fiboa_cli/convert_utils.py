@@ -4,16 +4,24 @@ from .create import create_parquet
 
 from fsspec.implementations.local import LocalFileSystem
 
+import os
+import json
 import geopandas as gpd
 import pandas as pd
+
+STAC_TABLE_EXTENSION = "https://stac-extensions.github.io/table/v1.2.0/schema.json"
 
 def convert(
         output_file, cache_file,
         url, columns,
         id, title, description, bbox,
+        provider_name = None,
+        provider_url = None,
+        source_coop_url = None,
         extensions = [],
         missing_schemas = {},
         attribution = None,
+        store_collection = False,
         license = "dl-de/by-2-0",
         compression = "brotli",
         **kwargs):
@@ -53,19 +61,46 @@ def convert(
     log("Changed GeoDataFrame to:")
     print(gdf.head())
 
+    collection = create_collection(
+        gdf,
+        id, title, description, bbox,
+        provider_name = provider_name,
+        provider_url = provider_url,
+        source_coop_url = source_coop_url,
+        extensions = extensions,
+        attribution = attribution,
+        license = license
+    )
+
     log("Creating GeoParquet file: " + output_file)
-    collection = create_collection(gdf, id, title, description, bbox, extensions, attribution, license)
     config = {
         "fiboa_version": fiboa_version,
     }
     columns = list(actual_columns.values())
-    create_parquet(gdf, columns, collection, output_file, config, missing_schemas, compression)
+    pq_fields = create_parquet(gdf, columns, collection, output_file, config, missing_schemas, compression)
+
+    if store_collection:
+        external_collection = add_asset_to_collection(collection, output_file, rows = len(gdf), columns = pq_fields)
+        collection_file = os.path.join(os.path.dirname(output_file), "collection.json")
+        log("Creating Collection file: " + collection_file)
+        with open(collection_file, "w") as f:
+            json.dump(external_collection, f, indent=2)
 
     log("Finished", "success")
 
-def create_collection(gdf, id, title, description, bbox, extensions = [], attribution = None, license = "dl-de/by-2-0"):
+
+def create_collection(
+        gdf,
+        id, title, description, bbox,
+        provider_name = None,
+        provider_url = None,
+        source_coop_url = None,
+        extensions = [],
+        attribution = None,
+        license = "dl-de/by-2-0"
+    ):
     """
-    Creates a collection for the German field boundary datasets.
+    Creates a collection for the field boundary datasets.
     """
     if "determination_datetime" not in gdf.columns:
         raise ValueError("determination_datetime column not available")
@@ -83,6 +118,7 @@ def create_collection(gdf, id, title, description, bbox, extensions = [], attrib
         "title": title,
         "description": description,
         "license": "proprietary",
+        "providers": [],
         "extent": {
             "spatial": {
                 "bbox": [bbox]
@@ -94,9 +130,32 @@ def create_collection(gdf, id, title, description, bbox, extensions = [], attrib
         "links": []
     }
 
+    # Add providers
+    if provider_name is not None:
+        collection["providers"].append({
+            "name": provider_name,
+            "roles": ["producer", "licensor"],
+            "url": provider_url
+        })
+
+    collection["providers"].append({
+        "name": "fiboa CLI",
+        "roles": ["processor"],
+        "url": "https://pypi.org/project/fiboa-cli"
+    })
+
+    if source_coop_url is not None:
+        collection["providers"].append({
+            "name": "Source Cooperative",
+            "roles": ["host"],
+            "url": source_coop_url
+        })
+
+    # Update attribution
     if attribution is not None:
         collection["attribution"] = attribution
 
+    # Update license
     if isinstance(license, dict):
         collection["links"].append(license)
     elif license == "dl-de/by-2-0":
@@ -119,3 +178,37 @@ def create_collection(gdf, id, title, description, bbox, extensions = [], attrib
         log(f"License information missing", "warning")
 
     return collection
+
+
+def add_asset_to_collection(collection, output_file, rows = None, columns = None):
+    c = collection.copy()
+    if "assets" not in c or not isinstance(c["assets"], dict):
+        c["assets"] = {}
+    if "stac_extensions" not in c or not isinstance(c["stac_extensions"], list):
+        c["stac_extensions"] = []
+
+    c["stac_extensions"].append(STAC_TABLE_EXTENSION)
+
+    table_columns = []
+    for column in columns:
+        table_columns.append({
+            "name": column.name,
+            "type": str(column.type)
+        })
+
+    asset = {
+        "href": os.path.basename(output_file),
+        "title": "Field Boundaries",
+        "type": "application/vnd.apache.parquet",
+        "roles": [
+            "data"
+        ],
+        "table:columns": table_columns,
+        "table:primary_geometry": "geometry"
+    }
+    if rows is not None:
+        asset["table:row_count"] = rows
+
+    c["assets"]["data"] = asset
+
+    return c

@@ -202,13 +202,26 @@ def jsonschema(schema, out, fiboa_version, id):
     help='For network requests: Local cache file to store the downloaded file to avoid multiple downloads.',
     default=None
 )
-def convert(dataset, out, cache):
+@click.option(
+    '--source-coop', '-h',
+    type=click.STRING,
+    help='(Future) URL to the source cooperative repository, will be added to the Collection metadata.',
+    default=None
+)
+@click.option(
+    '--collection',
+    is_flag=True,
+    type=click.BOOL,
+    help='Export a Collection JSON alongside the data file.',
+    default=False
+)
+def convert(dataset, out, cache, source_coop, collection):
     """
     Converts existing field boundary datasets to fiboa.
     """
     log(f"fiboa CLI {__version__} - Convert '{dataset}'\n", "success")
     try:
-        convert_(dataset, out, cache)
+        convert_(dataset, out, cache, source_coop, collection)
     except Exception as e:
         log(e, "error")
         sys.exit(1)

@@ -73,6 +73,8 @@ def create_parquet(data, columns, collection, output_file, config, missing_schem
         compression = compression
     )
 
+    return pq_fields
+
 
 def features_to_dataframe(features, columns):
     # Create a list of shapes

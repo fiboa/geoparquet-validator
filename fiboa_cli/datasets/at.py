@@ -17,8 +17,9 @@ DESCRIPTION = """**Field boundaries for Austria - INVEKOS Referenzen Österreich
 The layer includes all reference parcels ("Referenzparzellen") defined by the paying agency Agrarmarkt Austria and recorded landscape elements (landscape element layers) within the meaning of Art. 5 of Regulation (EU) No. 640/2014 and Regulation of the competent federal ministry with horizontal rules for the area of the Common Agricultural Policy (Horizontal CAP Regulation) StF: Federal Law Gazette II No. 100/2015.
 
 Reference parcel: is the physical block that can be clearly delimited from the outside (e.g. forest, roads, water bodies) and is formed by contiguous agricultural areas that are recognizable in nature."""
+PROVIDER_NAME = "Agrarmarkt Austria"
+PROVIDER_URL = "https://geometadatensuche.inspire.gv.at/metadatensuche/inspire/api/records/9db8a0c3-e92a-4df4-9d55-8210e326a7ed"
 LICENSE = "CC-BY-4.0"
-# From http://osmtipps.lefty1963.de/2008/10/bundeslnder.html
 BBOX = [9.527906274165764, 46.41230158735734, 17.15786908837973, 49.021160570100974]
 COLUMNS = {
     'geometry': 'geometry',
@@ -47,7 +48,7 @@ MISSING_SCHEMAS = {
     }
 }
 
-def convert(output_file, cache_file = None):
+def convert(output_file, cache_file = None, source_coop_url = None, collection = False):
     """
     Converts the Berlin/Brandenburg (Germany) field boundary datasets to fiboa.
     """
@@ -63,4 +64,13 @@ def convert(output_file, cache_file = None):
 
         new_path = os.path.join(tmp_dir, FILENAME)
 
-        convert_(output_file, cache_file, new_path, COLUMNS, ID, TITLE, DESCRIPTION, BBOX, extensions = EXTENSIONS, missing_schemas=MISSING_SCHEMAS)
+        convert_(
+            output_file, cache_file, new_path,
+            COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
+            extensions = EXTENSIONS,
+            missing_schemas=MISSING_SCHEMAS,
+            source_coop_url=source_coop_url,
+            provider_name=PROVIDER_NAME,
+            provider_url=PROVIDER_URL,
+            store_collection=collection
+        )
