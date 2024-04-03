@@ -11,6 +11,7 @@ def create_parquet(data, columns, collection, output_file, config, missing_schem
     # Load the data schema
     fiboa_schema = load_fiboa_schema(config)
     properties = {}
+    properties.update(missing_schemas)
     properties.update(fiboa_schema["properties"])
 
     # Load all extension schemas
@@ -39,11 +40,8 @@ def create_parquet(data, columns, collection, output_file, config, missing_schem
     # Define the fields for the schema
     pq_fields = []
     for name in columns:
-        if name in properties or name in missing_schemas:
-            if name in properties:
-                prop_schema = properties[name]
-            else:
-                prop_schema = missing_schemas[name]
+        if name in properties:
+            prop_schema = properties[name]
             pa_type = create_type(prop_schema)
             nullable = not prop_schema.get("required", False)
             field = pa.field(name, pa_type, nullable = nullable)

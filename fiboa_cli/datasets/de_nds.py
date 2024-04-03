@@ -35,7 +35,7 @@ MISSING_SCHEMAS = {
     # todo: remove once we have spec v0.1.1
     'perimeter': {
         'type': 'float',
-        'minimum': 0,
+        'exclusiveMinimum': 0,
         'required': True
     }
 }

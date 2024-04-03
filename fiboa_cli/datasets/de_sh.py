@@ -4,6 +4,7 @@ URI = "https://service.gdi-sh.de/SH_OpenGBD/feeds/Atom_SH_Feldblockfinder_OpenGB
 ID = "de_sh"
 TITLE = "Field boundaries for Schleswig-Holstein (SH), Germany"
 DESCRIPTION = """A field block (German: "Feldblock") is a contiguous agricultural area surrounded by permanent boundaries, which is cultivated by one or more farmers with one or more crops, is fully or partially set aside or is fully or partially taken out of production."""
+LICENSE = "dl-de/zero-2-0"
 # From http://osmtipps.lefty1963.de/2008/10/bundeslnder.html
 BBOX = [7.8685145620,53.3590675115,11.3132037822,55.0573747014]
 COLUMNS = {
@@ -21,6 +22,12 @@ MISSING_SCHEMAS = {
     },
     'hbn': {
         'type': 'string'
+    },
+    # todo: remove once we have spec v0.1.1
+    'perimeter': {
+        'type': 'float',
+        'exclusiveMinimum': 0,
+        'required': True
     }
 }
 
@@ -28,4 +35,4 @@ def convert(output_file, cache_file = None):
     """
     Converts the Schleswig-Holstein (Germany) field boundary datasets to fiboa.
     """
-    convert_(output_file, cache_file, URI, COLUMNS, ID, TITLE, DESCRIPTION, BBOX, missing_schemas=MISSING_SCHEMAS)
+    convert_(output_file, cache_file, URI, COLUMNS, ID, TITLE, DESCRIPTION, BBOX, missing_schemas=MISSING_SCHEMAS, license=LICENSE)

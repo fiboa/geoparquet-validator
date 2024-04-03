@@ -13,14 +13,15 @@ def convert(
         missing_schemas = {},
         attribution = None,
         license = "dl-de/by-2-0",
-        compression = "brotli"):
+        compression = "brotli",
+        **kwargs):
     """
     Converts a German field boundary datasets to fiboa.
     """
     log("Loading file from: " + url, "info")
     path = download_file(url, cache_file)
     log("Local file is at: " + path, "info")
-    gdf = gpd.read_file(path)
+    gdf = gpd.read_file(path, **kwargs)
     log("Read into GeoDataFrame:", "info")
     print(gdf.head())
 
@@ -97,5 +98,14 @@ def create_collection(gdf, id, title, description, bbox, extensions = [], attrib
             "type": "text/html",
             "rel": "license"
         })
+    elif license == "dl-de/zero-2-0":
+        collection["links"].append({
+            "href": "https://www.govdata.de/dl-de/zero-2-0",
+            "title": "Data licence Germany - Zero - Version 2.0",
+            "type": "text/html",
+            "rel": "license"
+        })
+    else:
+        log(f"License information missing", "warning")
 
     return collection
