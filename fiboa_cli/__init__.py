@@ -196,13 +196,19 @@ def jsonschema(schema, out, fiboa_version, id):
     help='File to write the GeoParquet file to.',
     required=True
 )
-def convert(dataset, out):
+@click.option(
+    '--cache', '-c',
+    type=click.Path(exists=False),
+    help='For network requests: Local cache file to store the downloaded file to avoid multiple downloads.',
+    default=None
+)
+def convert(dataset, out, cache):
     """
     Converts existing field boundary datasets to fiboa.
     """
     log(f"fiboa CLI {__version__} - Convert {dataset}\n", "success")
     try:
-        convert_(dataset, out)
+        convert_(dataset, out, cache)
     except Exception as e:
         log(e, "error")
         sys.exit(1)

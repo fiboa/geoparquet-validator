@@ -7,7 +7,7 @@ from .geopandas import to_parquet
 from geopandas import GeoDataFrame
 from shapely.geometry import shape
 
-def create_parquet(data, columns, collection, output_file, config):
+def create_parquet(data, columns, collection, output_file, config, missing_schemas = {}, compression = "brotli"):
     # Load the data schema
     fiboa_schema = load_fiboa_schema(config)
     properties = {}
@@ -39,8 +39,11 @@ def create_parquet(data, columns, collection, output_file, config):
     # Define the fields for the schema
     pq_fields = []
     for name in columns:
-        if name in properties:
-            prop_schema = properties[name]
+        if name in properties or name in missing_schemas:
+            if name in properties:
+                prop_schema = properties[name]
+            else:
+                prop_schema = missing_schemas[name]
             pa_type = create_type(prop_schema)
             nullable = not prop_schema.get("required", False)
             field = pa.field(name, pa_type, nullable = nullable)
@@ -68,7 +71,8 @@ def create_parquet(data, columns, collection, output_file, config):
         output_file,
         schema = pq_schema,
         index = False,
-        coerce_timestamps = "ms"
+        coerce_timestamps = "ms",
+        compression = compression
     )
 
 

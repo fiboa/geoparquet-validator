@@ -1,6 +1,6 @@
 import importlib
 
-def convert(dataset, output_file):
+def convert(dataset, output_file, cache_file = None):
     if dataset == "template":
         raise Exception(f"Converter for dataset 'template' not available")
     try:
@@ -9,4 +9,4 @@ def convert(dataset, output_file):
     except ImportError as e:
         raise Exception(f"Converter for '{dataset}' not available or faulty: {e}")
 
-    converter.convert(output_file)
+    converter.convert(output_file, cache_file)

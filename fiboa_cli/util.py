@@ -22,28 +22,39 @@ def log(text: str, status="info"):
     click.echo(click.style(text, fg=LOG_STATUS_COLOR[status]))
 
 
-def download_file(uri):
+def stream_file(fs, src_uri, dst_file, chunk_size = 10 * 1024 * 1024):
+    with fs.open(src_uri, mode='rb') as f:
+        while True:
+            chunk = f.read(chunk_size)
+            if not chunk:
+                break
+            dst_file.write(chunk)
+
+
+def download_file(uri, cache_file = None):
     """Download files from various sources"""
     if uri not in big_file_cache:
-        fs = get_fs(uri)
-        if isinstance(fs, LocalFileSystem):
+        source_fs = get_fs(uri)
+        if isinstance(source_fs, LocalFileSystem):
             big_file_cache[uri] = uri
         else:
-            chunk_size = 10 * 1024 * 1024
-            _, extension = os.path.splitext(uri)
-            with NamedTemporaryFile(delete=False, suffix=extension) as tmp_file:
-                with fs.open(uri, mode='rb') as f:
-                    while True:
-                        chunk = f.read(chunk_size)
-                        if not chunk:
-                            break
-                        tmp_file.write(chunk)
+            if cache_file is not None:
+                cache_fs = get_fs(cache_file)
+                if not cache_fs.exists(cache_file):
+                    with cache_fs.open(cache_file, mode='wb') as file:
+                        stream_file(source_fs, uri, file)
 
-            big_file_cache[uri] = tmp_file.name
+                path = cache_file
+            else:
+                _, extension = os.path.splitext(uri)
+                with NamedTemporaryFile(delete=False, suffix=extension) as tmp_file:
+                    stream_file(source_fs, uri, tmp_file)
 
-    path = big_file_cache[uri]
+                path = tmp_file.name
 
-    return path
+            big_file_cache[uri] = path
+
+    return big_file_cache[uri]
 
 
 def load_file(uri):
