@@ -12,7 +12,7 @@ STAC_COLLECTION_SCHEMA = "http://schemas.stacspec.org/v1.0.0/collection-spec/jso
 
 def log(text: str, status="info"):
     # Indent logs
-    log_("  - " + text, status)
+    log_("  - " + str(text), status)
 
 
 def validate(file, config):
@@ -107,7 +107,7 @@ def validate_geojson(file, config):
         return False
 
     if not isinstance(data, dict):
-        log("Must be a JSON object")
+        log("Must be a JSON object", "error")
         return False
 
     if data["type"] == "Feature":

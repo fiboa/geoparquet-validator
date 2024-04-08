@@ -6,7 +6,8 @@ from .create import create as create_
 from .describe import describe as describe_
 from .jsonschema import jsonschema as jsonschema_
 from .validate import validate as validate_
-from .version import __version__, fiboa_version
+from .validate_schema import validate_schema as validate_schema_
+from .version import __version__, fiboa_version as fiboa_version_
 from .util import log, check_ext_schema_for_cli, valid_file_for_cli, valid_file_for_cli_with_ext, valid_files_folders_for_cli
 
 @click.group()
@@ -99,6 +100,32 @@ def validate(files, schema, ext_schema, fiboa_version, collection, data):
             log(f"\n  => UNKNOWN: {e}\n", "error")
             sys.exit(2)
 
+
+## VALIDATE SCHEMA
+@click.command()
+@click.argument('files', nargs=-1, callback=lambda ctx, param, value: valid_files_folders_for_cli(value, ["yaml", "yml"]))
+@click.option(
+    '--metaschema', '-m',
+    callback=valid_file_for_cli,
+    help=f'A fiboa schema metaschema to validate against.',
+    default=None
+)
+def validate_schema(files, metaschema):
+    """
+    Validates a fiboa schema file.
+    """
+    log(f"fiboa CLI {__version__} - Schema Validator\n", "success")
+    config = {
+        "metaschema": metaschema
+    }
+    for file in files:
+        log(f"Validating {file}", "info")
+        result = validate_schema_(file, config)
+        if result:
+            sys.exit(0)
+        else:
+            sys.exit(1)
+
 ## CREATE
 @click.command()
 @click.argument('files', nargs=-1, callback=lambda ctx, param, value: valid_files_folders_for_cli(value, ["json", "geojson"]))
@@ -161,8 +188,8 @@ def create(files, out, collection, schema, ext_schema):
 @click.option(
     '--fiboa-version', '-f',
     type=click.STRING,
-    help=f'The fiboa version to validate against. Defaults to {fiboa_version}.',
-    default=fiboa_version
+    help=f'The fiboa version to validate against. Defaults to {fiboa_version_}.',
+    default=fiboa_version_
 )
 @click.option(
     '--id',
@@ -229,6 +256,7 @@ def convert(dataset, out, cache, source_coop, collection):
 
 cli.add_command(describe)
 cli.add_command(validate)
+cli.add_command(validate_schema)
 cli.add_command(create)
 cli.add_command(jsonschema)
 cli.add_command(convert)

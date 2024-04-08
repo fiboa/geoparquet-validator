@@ -52,6 +52,14 @@ To create a JSON Schema for a fiboa Schema YAML file, you can for example run:
 
 Check `fiboa jsonschema --help` for more details.
 
+## Validate a fiboa Schema
+
+To validate a fiboa Schema YAML file, you can for example run:
+
+- `fiboa validate-schema schema/schema.yaml`
+
+Check `fiboa validate-schema --help` for more details.
+
 ## Converter for existing datasets
 
 To convert an existing dataset to fiboa using the pre-defined converters:

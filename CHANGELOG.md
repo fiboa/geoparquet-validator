@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- Command to validate the fiboa schemas (`fiboa validate-schema`)
 - Converter for Schleswig Holstein, Germany (`de_sh`)
 - Converter for Lower Saxony, Germany (`de_nds`)
 
