@@ -87,8 +87,8 @@ def validate_geojson(file, config):
     for ext in extensions:
         try:
             uri = ext
-            if ext in config["ext_schema"]:
-                uri = config["ext_schema"][ext]
+            if ext in config["extension_schemas"]:
+                uri = config["extension_schemas"][ext]
             ext_schema = load_file(uri)
             json_schema = create_jsonschema(ext_schema, datatypes)
             extensions[ext] = lambda obj: validate_json_schema(obj, json_schema)
