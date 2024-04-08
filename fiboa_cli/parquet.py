@@ -1,18 +1,17 @@
 import json
 import pyarrow as pa
 
-from .const import PA_TYPE_MAP, GP_TYPE_MAP, GP_TO_PA_TYPE_MAP
-from .util import log, load_fiboa_schema, load_file
-from .geopandas import to_parquet
 from geopandas import GeoDataFrame
 from shapely.geometry import shape
+
+from .const import PA_TYPE_MAP, GP_TYPE_MAP, GP_TO_PA_TYPE_MAP
+from .util import log, load_fiboa_schema, load_file, merge_schemas
+from .geopandas import to_parquet
 
 def create_parquet(data, columns, collection, output_file, config, missing_schemas = {}, compression = "brotli"):
     # Load the data schema
     fiboa_schema = load_fiboa_schema(config)
-    properties = {}
-    properties.update(missing_schemas)
-    properties.update(fiboa_schema["properties"])
+    schemas = merge_schemas(missing_schemas, fiboa_schema)
 
     # Load all extension schemas
     extensions = {}
@@ -26,7 +25,7 @@ def create_parquet(data, columns, collection, output_file, config, missing_schem
                 else:
                     path = ext
                 extensions[ext] = load_file(path)
-                properties.update(extensions[ext]["properties"])
+                schemas = merge_schemas(schemas, extensions[ext])
             except Exception as e:
                 log(f"Extension schema for {ext} can't be loaded: {e}", "warning")
 
@@ -35,15 +34,16 @@ def create_parquet(data, columns, collection, output_file, config, missing_schem
         data = features_to_dataframe(data, columns)
 
     # Update the GeoDataFrame with the correct types etc.
-    data = update_dataframe(data, columns, properties)
+    data = update_dataframe(data, columns, schemas)
 
     # Define the fields for the schema
     pq_fields = []
     for name in columns:
+        properties = schemas.get("properties", {})
         if name in properties:
             prop_schema = properties[name]
             pa_type = create_type(prop_schema)
-            nullable = not prop_schema.get("required", False)
+            nullable = name not in schemas.get("required", [])
             field = pa.field(name, pa_type, nullable = nullable)
         else:
             pd_type = str(data[name].dtype) # pandas data type
@@ -97,9 +97,9 @@ def features_to_dataframe(features, columns):
 def update_dataframe(data, columns, schema):
     # Convert the data to the correct types
     for column in columns:
-        if column not in schema:
+        if column not in schema["properties"]:
             continue
-        dtype = schema[column].get("type", None)
+        dtype = schema["properties"][column].get("type", None)
         if dtype == "geometry":
             continue
 

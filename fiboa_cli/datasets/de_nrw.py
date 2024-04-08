@@ -20,15 +20,17 @@ COLUMNS = {
     'AREA_HA': 'area'
 }
 MISSING_SCHEMAS = {
-    'flik': {
-        'type': 'string',
-        'required': True
-    },
-    'nutz_code': {
-        'type': 'string'
-    },
-    'nutz_txt': {
-        'type': 'string'
+    'required': ['flik'],
+    'properties': {
+        'flik': {
+            'type': 'string'
+        },
+        'nutz_code': {
+            'type': 'string'
+        },
+        'nutz_txt': {
+            'type': 'string'
+        }
     }
 }
 

@@ -5,12 +5,8 @@ from .jsonschema_template import jsonschema_template
 def jsonschema(config):
     core_schema = load_fiboa_schema(config)
     datatypes = load_datatypes(config['fiboa_version'])
-    schema = create_jsonschema(core_schema, datatypes, config.get('id'))
-    if config['out']:
-        with open(config['out'], 'w') as f:
-            json.dump(schema, f, indent=2)
-    else:
-        print(schema)
+    return create_jsonschema(core_schema, datatypes, config.get('id'))
+
 
 def create_jsonschema(core_schema, datatypes, id=None):
     geojson_root_properties = ['id', 'geometry', 'bbox', 'properties']
@@ -26,11 +22,12 @@ def create_jsonschema(core_schema, datatypes, id=None):
         }
     }
 
-    for key, prop_schema in core_schema['properties'].items():
-        result = convert_schema(prop_schema, datatypes)
+    for key, prop_schema in core_schema.get('properties', {}).items():
+        required = key in core_schema.get('required',[])
+        result = convert_schema(prop_schema, datatypes, required)
 
         place = 'root' if key in geojson_root_properties else 'properties'
-        if result['required']:
+        if required:
             geojson[place]['required'].append(key)
         geojson[place]['properties'][key] = result['schema']
 
@@ -57,7 +54,7 @@ def create_jsonschema(core_schema, datatypes, id=None):
 
     return schema
 
-def convert_schema(prop_schema, datatypes):
+def convert_schema(prop_schema, datatypes, required = False):
     if not isinstance(prop_schema, dict) or 'type' not in prop_schema:
         return prop_schema
     elif prop_schema['type'] not in datatypes:
@@ -65,7 +62,6 @@ def convert_schema(prop_schema, datatypes):
 
     datatype_schema = datatypes[prop_schema['type']].copy()
 
-    required = prop_schema.get('required')
     if required:
         if '$ref' in datatype_schema:
             datatype_schema = {
@@ -120,9 +116,10 @@ def convert_schema(prop_schema, datatypes):
             if not isinstance(datatype_schema.get('required'), list):
                 datatype_schema['required'] = []
             for prop_name, prop_value in value.items():
-                result = convert_schema(prop_value, datatypes)
+                required = key in value.get('required', [])
+                result = convert_schema(prop_value, datatypes, required)
                 datatype_schema['properties'][prop_name] = {**datatype_schema['properties'].get(prop_name, {}), **result['schema']}
-                if result['required']:
+                if required:
                     datatype_schema['required'].append(prop_name)
         elif key not in ['type', 'required']:
             datatype_schema[key] = value

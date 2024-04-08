@@ -5,7 +5,7 @@ import geopandas as gpd
 from jsonschema.validators import Draft7Validator
 from .const import PA_TYPE_CHECK
 from .jsonschema import create_jsonschema
-from .util import log as log_, load_datatypes, load_file, load_fiboa_schema, load_parquet_data, load_parquet_schema
+from .util import log as log_, load_datatypes, load_file, load_fiboa_schema, load_parquet_data, load_parquet_schema, merge_schemas
 from .validate_data import validate_column
 
 STAC_COLLECTION_SCHEMA = "http://schemas.stacspec.org/v1.0.0/collection-spec/json-schema/collection.json"
@@ -190,18 +190,18 @@ def validate_parquet(file, config):
             valid = False
 
     # Compile all properties from the schemas
-    properties = fiboa_schema["properties"]
+    schemas = fiboa_schema
     for ext in extensions.values():
-        properties.update(ext["properties"])
+        schemas = merge_schemas(schemas, ext)
 
     # Check that all required fields are present
-    for key, schema in properties.items():
-        required = schema.get("required", False)
-        if required and key not in parquet_schema.names:
+    for key in schemas.get("required", []):
+        if key not in parquet_schema.names:
             log(f"{key}: Required field is missing", "error")
             valid = False
 
     # Validate whether the Parquet schema complies with the property schemas
+    properties = schemas.get("properties", {})
     for key in parquet_schema.names:
         # Ignore fields without a schema
         if key not in properties:
@@ -219,7 +219,7 @@ def validate_parquet(file, config):
         pq_type = pq_field.type
 
         # Does the field (dis)allow null?
-        nullable = not prop_schema.get("required", False)
+        nullable = key not in schemas.get("required", [])
         if nullable != pq_field.nullable:
             log(f"{key}: Nullability differs, is {pq_field.nullable} but must be {nullable}", "error")
             valid = False

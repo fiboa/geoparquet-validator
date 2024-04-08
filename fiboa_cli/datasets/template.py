@@ -27,9 +27,11 @@ COLUMNS = {
 # Schemas for the fields that are not defined in fiboa
 # Keys must be the values from the COLUMNS dict, not the keys
 MISSING_SCHEMAS = {
-    'new': {
-        'type': 'string',
-        'required': True # i.e. non-nullable
+    'required': ['new'], # i.e. non-nullable properties
+    'properties': {
+        'new': {
+            'type': 'string'
+        }
     }
 }
 

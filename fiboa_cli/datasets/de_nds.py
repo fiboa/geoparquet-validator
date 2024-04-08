@@ -21,24 +21,25 @@ COLUMNS = {
     # Don't include SHAPE_Area
 }
 MISSING_SCHEMAS = {
-    'flik': {
-        'type': 'string',
-        'required': True
-    },
-    'ant_jahr': {
-        'type': 'int16'
-    },
-    'bnk': {
-        'type': 'string'
-    },
-    'bnk_txt': {
-        'type': 'string'
-    },
-    # todo: remove once we have spec v0.1.1
-    'perimeter': {
-        'type': 'float',
-        'exclusiveMinimum': 0,
-        'required': True
+    'required': ['flik', 'perimeter'],
+    'properties': {
+        'flik': {
+            'type': 'string'
+        },
+        'ant_jahr': {
+            'type': 'int16'
+        },
+        'bnk': {
+            'type': 'string'
+        },
+        'bnk_txt': {
+            'type': 'string'
+        },
+        # todo: remove once we have spec v0.1.1
+        'perimeter': {
+            'type': 'float',
+            'exclusiveMinimum': 0
+        }
     }
 }
 

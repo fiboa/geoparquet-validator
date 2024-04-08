@@ -25,34 +25,35 @@ COLUMNS = {
     # Don't include SHAPE_AREA
 }
 MISSING_SCHEMAS = {
-    'flik': {
-        'type': 'string',
-        'required': True
-    },
-    'hbn': {
-        'type': 'string'
-    },
-    'fgue_jahr': {
-        'type': 'string'
-    },
-    'net_area': {
-        'type': 'float',
-        'exclusiveMinimum': 0
-    },
-    'expiry_datetime':  {
-        'type': 'date-time'
-    },
-    'kreis_nr': {
-        'type': 'uint16'
-    },
-    'tk10_blatt': {
-        'type': 'string'
-    },
-    # todo: remove once we have spec v0.1.1
-    'perimeter': {
-        'type': 'float',
-        'exclusiveMinimum': 0,
-        'required': True
+    'required': ['flik', 'perimeter'],
+    'properties': {
+        'flik': {
+            'type': 'string'
+        },
+        'hbn': {
+            'type': 'string'
+        },
+        'fgue_jahr': {
+            'type': 'string'
+        },
+        'net_area': {
+            'type': 'float',
+            'exclusiveMinimum': 0
+        },
+        'expiry_datetime':  {
+            'type': 'date-time'
+        },
+        'kreis_nr': {
+            'type': 'uint16'
+        },
+        'tk10_blatt': {
+            'type': 'string'
+        },
+        # todo: remove once we have spec v0.1.1
+        'perimeter': {
+            'type': 'float',
+            'exclusiveMinimum': 0
+        }
     }
 }
 

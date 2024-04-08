@@ -180,3 +180,20 @@ def check_ext_schema_for_cli(ctx, param, value):
             raise click.BadParameter('Extension schema must be a URL and a local file path separated by a comma character')
 
     return map
+
+def merge_schemas(*schemas):
+    """Merge multiple schemas into one"""
+    result = {
+        "required": [],
+        "properties": {}
+    }
+    for schema in schemas:
+        schema = migrate_schema(schema)
+        result["required"] += schema.get("required", [])
+        result["properties"].update(schema.get("properties", {}))
+
+    return result
+
+def migrate_schema(schema):
+    """Migrate schema to a new version"""
+    return schema.copy()

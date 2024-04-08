@@ -1,5 +1,6 @@
 import click
 import sys
+import json
 
 from .convert import convert as convert_
 from .create import create as create_
@@ -192,23 +193,27 @@ def create(files, out, collection, schema, ext_schema):
     default=fiboa_version_
 )
 @click.option(
-    '--id',
+    '--id', '-i', 'id_',
     type=click.STRING,
     help='The JSON Schema $id to use for the schema. If not provided, the $id will be omitted.',
 )
-def jsonschema(schema, out, fiboa_version, id):
+def jsonschema(schema, out, fiboa_version, id_):
     """
     Create a JSON Schema for a fiboa Schema
     """
     log(f"fiboa CLI {__version__} - Create JSON Schema\n", "success")
     config = {
         "schema": schema,
-        "out": out,
         "fiboa_version": fiboa_version,
-        "id": id,
+        "id": id_,
     }
     try:
-        jsonschema_(config)
+        schema = jsonschema_(config)
+        if out:
+            with open(out, 'w', encoding='utf-8') as f:
+                json.dump(schema, f, indent=2)
+        else:
+            print(schema)
     except Exception as e:
         log(e, "error")
         sys.exit(1)
