@@ -32,7 +32,7 @@ def validate_collection(collection, config):
     elif config.get("fiboa_version") is None:
         config["fiboa_version"] = collection["fiboa_version"]
 
-    log("fiboa extensions: " + collection["fiboa_version"])
+    log("fiboa version: " + collection["fiboa_version"])
 
     if collection["fiboa_version"] != config["fiboa_version"]:
         log(f"fiboa versions differs: Collection is {collection['fiboa_version']} and requested specification version is {config['fiboa_version']}", "warning")
