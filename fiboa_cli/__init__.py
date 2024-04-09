@@ -1,9 +1,11 @@
 import click
 import sys
 import json
+import os
 
 from .convert import convert as convert_
 from .create_geoparquet import create_geoparquet as create_geoparquet_
+from .create_geojson import create_geojson as create_geojson_
 from .describe import describe as describe_
 from .jsonschema import jsonschema as jsonschema_
 from .validate import validate as validate_
@@ -127,6 +129,7 @@ def validate_schema(files, metaschema):
         else:
             sys.exit(1)
 
+
 ## CREATE PARQUET
 @click.command()
 @click.argument('files', nargs=-1, callback=lambda ctx, param, value: valid_files_folders_for_cli(value, ["json", "geojson"]))
@@ -167,6 +170,47 @@ def create_geoparquet(files, out, collection, schema, ext_schema):
     }
     try:
         create_geoparquet_(config)
+    except Exception as e:
+        log(e, "error")
+        sys.exit(1)
+
+
+## CREATE GEOJSON
+@click.command()
+@click.argument('file', nargs=1, callback=lambda ctx, param, value: valid_file_for_cli_with_ext(value, ["parquet", "geoparquet"]))
+@click.option(
+    '--out', '-o',
+    type=click.Path(exists=False),
+    help='Folder to write the files to.',
+    required=True
+)
+@click.option(
+    '--features', '-f',
+    type=click.BOOL,
+    help='Create seperate GeoJSON Feature files.',
+    default=False
+)
+@click.option(
+    '--num', '-n',
+    type=click.IntRange(min=1),
+    help='Number of features to export. Defaults to all.',
+    default=None
+)
+@click.option(
+    '--indent', '-i',
+    type=click.IntRange(min=0, max=8),
+    help='Indentation for JSON files. Defaults to no indentation.',
+    default=None
+)
+def create_geojson(file, out, features = False, num = None, indent = None):
+    """
+    Create a fiboa GeoJSON file(s) from a fiboa GeoParquet file
+    """
+    log(f"fiboa CLI {__version__} - Create GeoJSON\n", "success")
+    try:
+        create_geojson_(file, out, features, num, indent)
+        abs_path = os.path.abspath(out)
+        log(f"Files written to {abs_path}", "success")
     except Exception as e:
         log(e, "error")
         sys.exit(1)
@@ -263,6 +307,7 @@ cli.add_command(describe)
 cli.add_command(validate)
 cli.add_command(validate_schema)
 cli.add_command(create_geoparquet)
+cli.add_command(create_geojson)
 cli.add_command(jsonschema)
 cli.add_command(convert)
 

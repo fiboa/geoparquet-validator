@@ -1,19 +1,6 @@
 import json
-from shapely import wkb
-from geopandas import GeoDataFrame
 
-from .util import log, load_parquet_data, load_parquet_schema
-
-def parse_metadata(schema, key):
-    if key in schema.metadata:
-        return json.loads(schema.metadata[key])
-    else:
-        log(f"Parquet file schema does not have a '{key}' key", "warning")
-        return None
-
-
-def wkb_to_wkt(data):
-    return wkb.loads(data)
+from .util import log, load_parquet_data, load_parquet_schema, parse_metadata
 
 
 def describe(file, display_json=False):
@@ -53,12 +40,8 @@ def describe(file, display_json=False):
     log("\n== SCHEMA ==", "success")
     log(schema.to_string(show_schema_metadata=False))
 
-    data = load_parquet_data(file)
-    rowcount = len(data)
+    geodata = load_parquet_data(file)
+    rowcount = len(geodata)
     log(f"\n== DATA (rows: {rowcount}) ==", "success")
 
-    geodata = GeoDataFrame(data)
-    for col in geo_columns:
-        geodata[col] = geodata[col].apply(wkb_to_wkt)
-        geodata.set_geometry(col, inplace=True)
     log(geodata.head(10))

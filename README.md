@@ -32,7 +32,19 @@ The validator also supports remote files.
 To create a fiboa-compliant GeoParquet for a fiboa-compliant set of GeoJSON files containing Features or FeatureCollections,
 you can for example run:
 
-- `fiboa create-geoparquet geojson/example.json -o test.parquet -c geojson/collection.json`
+- `fiboa create-geoparquet geojson/example.json -o example.parquet -c geojson/collection.json`
+
+Check `fiboa create-geoparquet --help` for more details.
+
+## Create fiboa GeoJSON from GeoParquet
+
+To create one or multiple fiboa-compliant GeoJSON file(s) for a fiboa-compliant GeoParquet file,
+you can for example run:
+
+- GeoJSON FeatureCollection:
+  `fiboa create-geojson example.parquet -o dest-folder`
+- GeoJSON Features (with indentation and max. 100 features):
+  `fiboa create-geojson example.parquet -o dest-folder -n 100 -i 2 -f TRUE`
 
 Check `fiboa create-geoparquet --help` for more details.
 

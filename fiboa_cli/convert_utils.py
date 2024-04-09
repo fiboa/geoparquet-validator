@@ -1,5 +1,5 @@
 from .version import fiboa_version
-from .util import log, download_file, get_fs
+from .util import log, download_file, get_fs, to_iso8601
 from .create_geoparquet import create_geoparquet
 
 from fsspec.implementations.local import LocalFileSystem
@@ -106,8 +106,8 @@ def create_collection(
         raise ValueError("determination_datetime column not available")
 
     dates = pd.to_datetime(gdf['determination_datetime'])
-    min_time = dates.min().isoformat() + "Z"
-    max_time = dates.max().isoformat() + "Z"
+    min_time = to_iso8601(dates.min())
+    max_time = to_iso8601(dates.max())
 
     collection = {
         "fiboa_version": fiboa_version,

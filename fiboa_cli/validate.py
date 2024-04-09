@@ -1,6 +1,5 @@
 import json
 import pyarrow.types as pat
-import geopandas as gpd
 
 from jsonschema.validators import Draft7Validator
 from .const import PA_TYPE_CHECK
@@ -181,10 +180,10 @@ def validate_parquet(file, config):
     fiboa_schema = load_fiboa_schema(config)
 
     # Load data if needed
-    df = None
+    gdf = None
     if config.get("data"):
         try:
-            df = load_parquet_data(file)
+            gdf = load_parquet_data(file)
         except Exception as e:
             log(f"Data could not be read: {e}", "error")
             valid = False
@@ -247,8 +246,8 @@ def validate_parquet(file, config):
                 valid = False
 
         # Validate data of the column
-        if df is not None:
-            issues = validate_column(df[key], prop_schema)
+        if gdf is not None:
+            issues = validate_column(gdf[key], prop_schema)
             if len(issues) > 0:
                 for issue in issues:
                     log(f"{key}: {issue}")

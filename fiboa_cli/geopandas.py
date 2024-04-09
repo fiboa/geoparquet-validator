@@ -11,6 +11,7 @@ import shapely
 from geopandas._compat import import_optional_dependency
 import geopandas
 from geopandas.io.file import _expand_user
+from geopandas.array import GeometryArray
 
 METADATA_VERSION = "1.0.0"
 SUPPORTED_VERSIONS = ["0.1.0", "0.4.0", "1.0.0-beta.1", "1.0.0"]
@@ -189,3 +190,96 @@ def to_parquet(
     path = _expand_user(path)
     table = _geopandas_to_arrow(df, schema = schema, index=index, schema_version=schema_version)
     parquet.write_table(table, path, compression=compression, **kwargs)
+
+
+def decode_metadata(metadata_str):
+    """Decode a UTF-8 encoded JSON string to dict
+
+    Parameters
+    ----------
+    metadata_str : string (UTF-8 encoded)
+
+    Returns
+    -------
+    dict
+    """
+    if metadata_str is None:
+        return None
+
+    return json.loads(metadata_str.decode("utf-8"))
+
+
+def arrow_to_geopandas(table):
+    """
+    Helper function with main, shared logic for read_parquet/read_feather.
+    """
+    df = table.to_pandas()
+
+    metadata = table.schema.metadata
+
+    if metadata is None or b"geo" not in metadata:
+        raise ValueError(
+            """Missing geo metadata in Parquet/Feather file.
+            Use pandas.read_parquet/read_feather() instead."""
+        )
+
+    try:
+        metadata = decode_metadata(metadata.get(b"geo", b""))
+    except (TypeError, json.decoder.JSONDecodeError):
+        raise ValueError("Missing or malformed geo metadata in Parquet/Feather file")
+
+    # Find all geometry columns that were read from the file.  May
+    # be a subset if 'columns' parameter is used.
+    geometry_columns = df.columns.intersection(metadata["columns"])
+
+    if not len(geometry_columns):
+        raise ValueError(
+            """No geometry columns are included in the columns read from
+            the Parquet/Feather file. To read this file without geometry columns,
+            use pandas.read_parquet/read_feather() instead."""
+        )
+
+    geometry = metadata["primary_column"]
+
+    # Missing geometry likely indicates a subset of columns was read;
+    # promote the first available geometry to the primary geometry.
+    if len(geometry_columns) and geometry not in geometry_columns:
+        geometry = geometry_columns[0]
+
+    # Convert the WKB columns that are present back to geometry.
+    for col in geometry_columns:
+        col_metadata = metadata["columns"][col]
+        if "crs" in col_metadata:
+            crs = col_metadata["crs"]
+            if isinstance(crs, dict):
+                _remove_id_from_member_of_ensembles(crs)
+        else:
+            # per the GeoParquet spec, missing CRS is to be interpreted as
+            # OGC:CRS84
+            crs = "OGC:CRS84"
+
+        df[col] = from_wkb(df[col].values, crs=crs)
+
+    return geopandas.GeoDataFrame(df, geometry=geometry)
+
+
+def from_wkb(data, crs=None, on_invalid="raise"):
+    """
+    Convert a list or array of WKB objects to a GeometryArray.
+
+    Parameters
+    ----------
+    data : array-like
+        list or array of WKB objects
+    crs : value, optional
+        Coordinate Reference System of the geometry objects. Can be anything accepted by
+        :meth:`pyproj.CRS.from_user_input() <pyproj.crs.CRS.from_user_input>`,
+        such as an authority string (eg "EPSG:4326") or a WKT string.
+    on_invalid: {"raise", "warn", "ignore"}, default "raise"
+        - raise: an exception will be raised if a WKB input geometry is invalid.
+        - warn: a warning will be raised and invalid WKB geometries will be returned as
+          None.
+        - ignore: invalid WKB geometries will be returned as None without a warning.
+
+    """
+    return GeometryArray(shapely.from_wkb(data, on_invalid=on_invalid), crs=crs)
