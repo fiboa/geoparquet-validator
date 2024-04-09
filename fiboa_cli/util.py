@@ -5,6 +5,7 @@ import json
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pandas as pd
+import re
 
 from urllib.parse import urlparse
 from geopandas import GeoDataFrame
@@ -252,4 +253,10 @@ def parse_metadata(schema, key):
 
 
 def to_iso8601(dt):
-    return dt.isoformat() + "Z"
+    iso = dt.isoformat()
+    if iso.endswith("+00:00"):
+        return iso[:-6] + "Z"
+    elif re.search(r"[+-]\d{2}:\d{2}$", iso):
+        raise ValueError("Timezone offset is not supported")
+    else:
+        return iso + "Z"
