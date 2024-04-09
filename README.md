@@ -80,3 +80,6 @@ Available converters:
 ## Development
 
 To install in development mode run `pip install -e .` in this folder.
+
+For the tests first run `pip install -r requirements-dev.txt` to install pytest.
+Then you can run `pytest` to execute the tests.

@@ -10,6 +10,7 @@ Thumbs.db
 dist/
 __pycache__/
 *.egg-info/
+/.pytest_cache/
 
 # Example files
 *.parquet
