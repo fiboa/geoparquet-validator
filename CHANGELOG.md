@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Renamed `fiboa create` to `fiboa create-geoparquet`
+- The `--collection` parameter is not needed anylonger if the collection can be
+  read directly from the GeoJSON files
+  (`fiboa` property or link with relation type `collection`)
 
 ### Deprecated
 

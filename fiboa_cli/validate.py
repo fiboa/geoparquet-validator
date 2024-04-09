@@ -4,7 +4,7 @@ import pyarrow.types as pat
 from jsonschema.validators import Draft7Validator
 from .const import PA_TYPE_CHECK
 from .jsonschema import create_jsonschema
-from .util import log as log_, load_datatypes, load_file, load_fiboa_schema, load_parquet_data, load_parquet_schema, merge_schemas
+from .util import get_collection, log as log_, load_datatypes, load_file, load_fiboa_schema, load_parquet_data, load_parquet_schema, merge_schemas
 from .validate_data import validate_column
 
 STAC_COLLECTION_SCHEMA = "http://schemas.stacspec.org/v1.0.0/collection-spec/json-schema/collection.json"
@@ -67,18 +67,20 @@ def validate_collection(collection, config):
 
 
 def validate_geojson(file, config):
-    if not config.get("collection"):
+    try:
+        data = load_file(file)
+    except Exception as error:
+        log(error, "error")
+        return False
+
+    collection = get_collection(data, config.get("collection"), file)
+    if collection is None:
         log("No collection specified", "error")
         return False
 
-    collection = load_file(config.get("collection"))
-
     valid, extensions = validate_collection(collection, config)
-
     core_schema = load_fiboa_schema(config)
-
     datatypes = load_datatypes(config["fiboa_version"])
-
     schema = create_jsonschema(core_schema, datatypes)
 
     # Load extensions
@@ -99,12 +101,6 @@ def validate_geojson(file, config):
         log(error, "error")
 
     # Validate
-    try:
-        data = load_file(file)
-    except Exception as error:
-        log(error, "error")
-        return False
-
     if not isinstance(data, dict):
         log("Must be a JSON object", "error")
         return False
@@ -209,7 +205,7 @@ def validate_parquet(file, config):
 
         prop_schema = properties[key]
         # Make sure the schema has a data type assigned
-        dtype = prop_schema.get("type", None)
+        dtype = prop_schema.get("type")
         if dtype is None:
             log(f"{key}: No type specified", "warning")
             continue
@@ -224,7 +220,7 @@ def validate_parquet(file, config):
             valid = False
 
         # Is the data type of the field correct?
-        pa_check = PA_TYPE_CHECK.get(dtype, None)
+        pa_check = PA_TYPE_CHECK.get(dtype)
         if pa_check is None:
             log(f"{key}: Validating {dtype} is not supported yet", "warning")
             continue

@@ -14,7 +14,7 @@ def validate_schema(file, config):
         log("Schema must be an object", "error")
         return False
 
-    metaschema_uri = config.get("metaschema", None)
+    metaschema_uri = config.get("metaschema")
     if "schema" in schema:
         metaschema_uri = schema.get("schema", metaschema_uri)
     if metaschema_uri is None:

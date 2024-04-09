@@ -192,6 +192,26 @@ def valid_file_for_cli_with_ext(value, extensions):
     return is_valid_file_uri(value, extensions)
 
 
+def get_collection(data, collection_path = None, basepath = None):
+    if collection_path is not None:
+        return load_file(collection_path)
+
+    geojson_type = data.get("type")
+    if geojson_type == "FeatureCollection" and "fiboa" in data:
+        return data.get("fiboa")
+
+    links = data.get("links", [])
+    for link in links:
+        media_type = link.get("type")
+        if link.get("rel") == "collection" and (media_type is None or media_type == "application/json"):
+            href = link.get("href")
+            if basepath is not None:
+                href = os.path.join(os.path.dirname(basepath), href)
+            return load_file(href)
+
+    return None
+
+
 def check_ext_schema_for_cli(ctx, param, value):
     map = {}
     for v in value:

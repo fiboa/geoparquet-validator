@@ -47,7 +47,7 @@ def create_parquet(data, columns, collection, output_file, config, missing_schem
             field = pa.field(name, pa_type, nullable = nullable)
         else:
             pd_type = str(data[name].dtype) # pandas data type
-            pa_type = GP_TO_PA_TYPE_MAP.get(pd_type, None) # pyarrow data type
+            pa_type = GP_TO_PA_TYPE_MAP.get(pd_type) # pyarrow data type
             if pa_type is not None:
                 log(f"{name}: No schema defined, converting {pd_type} to nullable {pa_type}", "warning")
                 field = pa.field(name, pa_type, nullable = True)
@@ -99,11 +99,11 @@ def update_dataframe(data, columns, schema):
     for column in columns:
         if column not in schema["properties"]:
             continue
-        dtype = schema["properties"][column].get("type", None)
+        dtype = schema["properties"][column].get("type")
         if dtype == "geometry":
             continue
 
-        gp_type = GP_TYPE_MAP.get(dtype, None)
+        gp_type = GP_TYPE_MAP.get(dtype)
         if gp_type is None:
             log(f"{column}: No type conversion available for {dtype}")
         elif callable(gp_type):
@@ -114,11 +114,11 @@ def update_dataframe(data, columns, schema):
     return data
 
 def create_type(schema):
-    dtype = schema.get("type", None)
+    dtype = schema.get("type")
     if dtype is None:
         raise Exception("No type specified")
 
-    pa_type = PA_TYPE_MAP.get(dtype, None)
+    pa_type = PA_TYPE_MAP.get(dtype)
     if pa_type is None:
         raise Exception(f"{dtype} is not supported yet")
     elif callable(pa_type):
