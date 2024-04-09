@@ -3,7 +3,7 @@ import os
 from .parquet import create_parquet
 from .util import log, load_file
 
-def create(config):
+def create_geoparquet(config):
     output_file = config.get("out")
 
     # Add a STAC collection to the fiboa property to the Parquet metadata

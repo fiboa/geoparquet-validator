@@ -3,7 +3,7 @@ import sys
 import json
 
 from .convert import convert as convert_
-from .create import create as create_
+from .create_geoparquet import create_geoparquet as create_geoparquet_
 from .describe import describe as describe_
 from .jsonschema import jsonschema as jsonschema_
 from .validate import validate as validate_
@@ -127,7 +127,7 @@ def validate_schema(files, metaschema):
         else:
             sys.exit(1)
 
-## CREATE
+## CREATE PARQUET
 @click.command()
 @click.argument('files', nargs=-1, callback=lambda ctx, param, value: valid_files_folders_for_cli(value, ["json", "geojson"]))
 @click.option(
@@ -153,9 +153,9 @@ def validate_schema(files, metaschema):
     callback=check_ext_schema_for_cli,
     help='Maps a remote fiboa extension schema url to a local file. First the URL, then the local file path. Separated with a comma character. Example: https://example.com/schema.json,/path/to/schema.json',
 )
-def create(files, out, collection, schema, ext_schema):
+def create_geoparquet(files, out, collection, schema, ext_schema):
     """
-    Create a fiboa file from GeoJSON file(s).
+    Create a fiboa GeoParquet file from GeoJSON file(s).
     """
     log(f"fiboa CLI {__version__} - Create GeoParquet\n", "success")
     config = {
@@ -166,7 +166,7 @@ def create(files, out, collection, schema, ext_schema):
         "extension_schemas": ext_schema,
     }
     try:
-        create_(config)
+        create_geoparquet_(config)
     except Exception as e:
         log(e, "error")
         sys.exit(1)
@@ -262,7 +262,7 @@ def convert(dataset, out, cache, source_coop, collection):
 cli.add_command(describe)
 cli.add_command(validate)
 cli.add_command(validate_schema)
-cli.add_command(create)
+cli.add_command(create_geoparquet)
 cli.add_command(jsonschema)
 cli.add_command(convert)
 

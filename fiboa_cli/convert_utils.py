@@ -1,6 +1,6 @@
 from .version import fiboa_version
 from .util import log, download_file, get_fs
-from .create import create_parquet
+from .create_geoparquet import create_geoparquet
 
 from fsspec.implementations.local import LocalFileSystem
 
@@ -77,7 +77,7 @@ def convert(
         "fiboa_version": fiboa_version,
     }
     columns = list(actual_columns.values())
-    pq_fields = create_parquet(gdf, columns, collection, output_file, config, missing_schemas, compression)
+    pq_fields = create_geoparquet(gdf, columns, collection, output_file, config, missing_schemas, compression)
 
     if store_collection:
         external_collection = add_asset_to_collection(collection, output_file, rows = len(gdf), columns = pq_fields)
