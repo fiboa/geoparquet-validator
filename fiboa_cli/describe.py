@@ -37,9 +37,12 @@ def describe(file, display_json=False):
     if collection:
         log(f"fiboa version: {collection['fiboa_version']}")
         if "fiboa_extensions" in collection and isinstance(collection["fiboa_extensions"], list):
-            log("fiboa extensions:")
-            for ext in collection["fiboa_extensions"]:
-                log(f"  - {ext}")
+            if len(collection["fiboa_extensions"]) == 0:
+                log("fiboa extensions: none")
+            else:
+                log("fiboa extensions:")
+                for ext in collection["fiboa_extensions"]:
+                    log(f"  - {ext}")
 
         if "license" in collection:
             log(f"license: {collection['license']}")
