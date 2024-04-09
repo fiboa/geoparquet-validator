@@ -194,13 +194,15 @@ def valid_file_for_cli_with_ext(value, extensions):
 
 
 def get_collection(data, collection_path = None, basepath = None):
+    # If the user provided a collection, enforce using it
     if collection_path is not None:
         return load_file(collection_path)
 
-    geojson_type = data.get("type")
-    if geojson_type == "FeatureCollection" and "fiboa" in data:
+    # Look if the data contains a fiboa property
+    if "fiboa" in data:
         return data.get("fiboa")
 
+    # Look for a collection link in the data and load the collection from there
     links = data.get("links", [])
     for link in links:
         media_type = link.get("type")
@@ -210,6 +212,7 @@ def get_collection(data, collection_path = None, basepath = None):
                 href = os.path.join(os.path.dirname(basepath), href)
             return load_file(href)
 
+    # No collection found
     return None
 
 

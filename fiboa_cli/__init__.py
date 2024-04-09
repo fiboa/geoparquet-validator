@@ -143,7 +143,7 @@ def validate_schema(files, metaschema):
     '--collection', '-c',
     callback=valid_file_for_cli,
     help='Points to the STAC collection that defines the fiboa version and extensions.',
-    required=True
+    default=None
 )
 @click.option(
     '--schema', '-s',
