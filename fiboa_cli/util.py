@@ -8,7 +8,6 @@ import pandas as pd
 import re
 
 from urllib.parse import urlparse
-from geopandas import GeoDataFrame
 from fsspec import AbstractFileSystem
 from fsspec.implementations.http import HTTPFileSystem
 from fsspec.implementations.local import LocalFileSystem

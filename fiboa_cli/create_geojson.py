@@ -2,8 +2,6 @@ import json
 import os
 import pandas as pd
 
-from geopandas import GeoDataFrame
-
 from .util import load_parquet_data, load_parquet_schema, parse_metadata, to_iso8601
 
 

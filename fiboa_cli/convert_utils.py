@@ -1,3 +1,4 @@
+from .const import STAC_TABLE_EXTENSION
 from .version import fiboa_version
 from .util import log, download_file, get_fs, to_iso8601
 from .create_geoparquet import create_geoparquet
@@ -8,8 +9,6 @@ import os
 import json
 import geopandas as gpd
 import pandas as pd
-
-STAC_TABLE_EXTENSION = "https://stac-extensions.github.io/table/v1.2.0/schema.json"
 
 def convert(
         output_file, cache_file,

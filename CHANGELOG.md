@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- ...
+- Support for enums
 
 ### Changed
 
@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- `fiboa create-geoparquet`: Handle column conversion more gracaefully
+- `fiboa create-geoparquet`: Handle column conversion more gracefully
 - `fiboa validate`: Don't fail collection test if something unexpected happened
 - `fiboa create-geojson`: Option `-f` doesn't need a value any longer
 

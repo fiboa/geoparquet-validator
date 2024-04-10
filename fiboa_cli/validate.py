@@ -2,7 +2,8 @@ import json
 import pyarrow.types as pat
 
 from jsonschema.validators import Draft7Validator
-from .const import PA_TYPE_CHECK, STAC_COLLECTION_SCHEMA
+from .const import STAC_COLLECTION_SCHEMA
+from .types import PA_TYPE_CHECK
 from .jsonschema import create_jsonschema
 from .util import get_collection, log as log_, load_datatypes, load_file, load_fiboa_schema, load_parquet_data, load_parquet_schema, merge_schemas
 from .validate_data import validate_column

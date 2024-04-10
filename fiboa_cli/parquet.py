@@ -4,7 +4,7 @@ import pyarrow as pa
 from geopandas import GeoDataFrame
 from shapely.geometry import shape
 
-from .const import PA_TYPE_MAP, GP_TYPE_MAP, GP_TO_PA_TYPE_MAP
+from .types import get_geopandas_dtype, get_pyarrow_type_for_geopandas, get_pyarrow_field
 from .util import log, load_fiboa_schema, load_file, merge_schemas
 from .geopandas import to_parquet
 
@@ -39,23 +39,31 @@ def create_parquet(data, columns, collection, output_file, config, missing_schem
     # Define the fields for the schema
     pq_fields = []
     for name in columns:
+        required_props = schemas.get("required", [])
         properties = schemas.get("properties", {})
+        required = name in required_props
         if name in properties:
             prop_schema = properties[name]
-            pa_type = create_type(prop_schema)
-            nullable = name not in schemas.get("required", [])
-            field = pa.field(name, pa_type, nullable = nullable)
+            try:
+                field = get_pyarrow_field(name, schema = prop_schema, required = required)
+            except Exception as e:
+                log(f"{name}: Skipped - {e}", "warning")
         else:
             pd_type = str(data[name].dtype) # pandas data type
-            pa_type = GP_TO_PA_TYPE_MAP.get(pd_type) # pyarrow data type
-            if pa_type is not None:
-                log(f"{name}: No schema defined, converting {pd_type} to nullable {pa_type}", "warning")
-                field = pa.field(name, pa_type, nullable = True)
-            else:
-                log(f"{name}: No schema defined and converter doesn't support {pd_type}, skipping field", "warning")
+            try:
+                pa_type = get_pyarrow_type_for_geopandas(pd_type, required) # pyarrow data type
+                if pa_type is not None:
+                    log(f"{name}: No schema defined, converting {pd_type} to nullable {pa_type}", "warning")
+                    field = get_pyarrow_field(name, pa_type = pa_type)
+            except Exception as e:
+                log(f"{name}: Skipped - {e}", "warning")
                 continue
 
-        pq_fields.append(field)
+        if field is None:
+            log(f"{name}: Skipped - invalid data type", "warning")
+            continue
+        else:
+            pq_fields.append(field)
 
     # Define the schema for the Parquet file
     pq_schema = pa.schema(pq_fields)
@@ -96,40 +104,26 @@ def features_to_dataframe(features, columns):
 
 def update_dataframe(data, columns, schema):
     # Convert the data to the correct types
+    properties = schema.get("properties", {})
+    required_props = schema.get("required", [])
     for column in columns:
-        if column not in schema["properties"]:
+        if column not in properties:
             continue
-        dtype = schema["properties"][column].get("type")
+        schema = properties[column]
+        dtype = schema.get("type")
         if dtype == "geometry":
             continue
 
-        gp_type = GP_TYPE_MAP.get(dtype)
+        required = column in required_props
+        gp_type = get_geopandas_dtype(dtype, required, schema)
         try:
             if gp_type is None:
                 log(f"{column}: No type conversion available for {dtype}")
             elif callable(gp_type):
                 data[column] = gp_type(data[column])
             else:
-                data[column] = data[column].astype(gp_type)
+                data[column] = data[column].astype(gp_type, copy = False)
         except Exception as e:
             log(f"{column}: Can't convert to {dtype}: {e}", "warning")
 
     return data
-
-def create_type(schema):
-    dtype = schema.get("type")
-    if dtype is None:
-        raise Exception("No type specified")
-
-    pa_type = PA_TYPE_MAP.get(dtype)
-    if pa_type is None:
-        raise Exception(f"{dtype} is not supported yet")
-    elif callable(pa_type):
-        if dtype == "array":
-            pa_subtype = create_type(schema["items"])
-            pa_type = pa_type(pa_subtype)
-        elif dtype == "object":
-            log(f"Creation of object-typed properties not supported yet", "warning")
-            pass # todo
-
-    return pa_type

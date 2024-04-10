@@ -3,7 +3,7 @@ import pandas as pd
 from urllib.parse import urlparse
 
 def validate_column(data, rules):
-    for index, value in data.items():
+    for _, value in data.items():
         if pd.isna(value):
             # Skip validation for NaN values or implement special handling if required
             continue
