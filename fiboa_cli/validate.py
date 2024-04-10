@@ -264,9 +264,8 @@ def validate_colletion_schema(obj):
                 log(f"Collection: {error.path}: {error.message}", "error")
 
             return len(errors) == 0
-        except:
-            log("Failed to validate STAC Collection", "warning")
-            return False
+        except Exception as e:
+            log(f"Failed to validate STAC Collection due to an internal error: {e}", "warning")
 
     return True
 
