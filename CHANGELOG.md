@@ -9,8 +9,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- ...
+
+### Changed
+
+- ...
+
+### Deprecated
+
+- ...
+
+### Removed
+
+- ...
+
+### Fixed
+
+- ...
+
+## [v0.3.0] - 2024-04-10
+
+### Added
+
 - Command to validate the fiboa schemas (`fiboa validate-schema`)
 - Command to create GeoJSON from GeoParquet (`fiboa create-geojson`)
+- Converter for Austria (`at`)
+- Converter for Berlin/Brandenburg, Germany (`de_bb`)
 - Converter for Schleswig Holstein, Germany (`de_sh`)
 - Converter for Lower Saxony, Germany (`de_nds`)
 
@@ -20,14 +44,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The `--collection` parameter is not needed anylonger if the collection can be
   read directly from the GeoJSON files
   (`fiboa` property or link with relation type `collection`)
-
-### Deprecated
-
-- ...
-
-### Removed
-
-- ...
 
 ### Fixed
 
@@ -100,7 +116,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release
 
-[Unreleased]: <https://github.com/radiantearth/stac-spec/compare/v0.2.1...main>
+[Unreleased]: <https://github.com/radiantearth/stac-spec/compare/v0.3.0...main>
+[v0.3.0]: <https://github.com/radiantearth/stac-spec/compare/v0.2.1...v0.3.0>
 [v0.2.1]: <https://github.com/radiantearth/stac-spec/compare/v0.2.0...v0.2.1>
 [v0.2.0]: <https://github.com/radiantearth/stac-spec/compare/v0.1.1...v0.2.0>
 [v0.1.1]: <https://github.com/radiantearth/stac-spec/compare/v0.1.0...v0.1.1>

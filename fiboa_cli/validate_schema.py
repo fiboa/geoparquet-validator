@@ -1,8 +1,6 @@
 from jsonschema.validators import Draft202012Validator
 from .util import log as log_, load_file
 
-STAC_COLLECTION_SCHEMA = "http://schemas.stacspec.org/v1.0.0/collection-spec/json-schema/collection.json"
-
 def log(text: str, status="info"):
     # Indent logs
     log_("  - " + str(text), status)
@@ -15,8 +13,8 @@ def validate_schema(file, config):
         return False
 
     metaschema_uri = config.get("metaschema")
-    if "schema" in schema:
-        metaschema_uri = schema.get("schema", metaschema_uri)
+    if "$schema" in schema:
+        metaschema_uri = schema.get("$schema", metaschema_uri)
     if metaschema_uri is None:
         log("No metaschema provided", "error")
         return False

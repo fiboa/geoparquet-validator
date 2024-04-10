@@ -2,12 +2,10 @@ import json
 import pyarrow.types as pat
 
 from jsonschema.validators import Draft7Validator
-from .const import PA_TYPE_CHECK
+from .const import PA_TYPE_CHECK, STAC_COLLECTION_SCHEMA
 from .jsonschema import create_jsonschema
 from .util import get_collection, log as log_, load_datatypes, load_file, load_fiboa_schema, load_parquet_data, load_parquet_schema, merge_schemas
 from .validate_data import validate_column
-
-STAC_COLLECTION_SCHEMA = "http://schemas.stacspec.org/v1.0.0/collection-spec/json-schema/collection.json"
 
 def log(text: str, status="info"):
     # Indent logs
@@ -258,12 +256,19 @@ def validate_parquet(file, config):
 
 # todo: use stac_validator instead of our own validation routine
 def validate_colletion_schema(obj):
-    schema = load_file(STAC_COLLECTION_SCHEMA)
-    errors = validate_json_schema(obj, schema)
-    for error in errors:
-        log(f"Collection: {error.path}: {error.message}", "error")
+    if "stac_version" in obj:
+        try:
+            schema = load_file(STAC_COLLECTION_SCHEMA)
+            errors = validate_json_schema(obj, schema)
+            for error in errors:
+                log(f"Collection: {error.path}: {error.message}", "error")
 
-    return len(errors) == 0
+            return len(errors) == 0
+        except:
+            log("Failed to validate STAC Collection", "warning")
+            return False
+
+    return True
 
 
 def validate_json_schema(obj, schema):

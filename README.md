@@ -10,6 +10,11 @@ Run `pip install fiboa-cli` to install the validator.
 To install additional dependencies for specific [converters](#converter-for-existing-datasets),
 you can for example run: `pip install fiboa-cli[xyz]` with xyz being the converter name.
 
+## fiboa versions
+
+- fiboa CLI >= 0.3.0 works with fiboa version > 0.2.0
+- fiboa CLI < 0.3.0 works with fiboa version = 0.1.0
+
 ## Validation
 
 To validate a fiboa GeoParquet or GeoJSON file, you can for example run:
@@ -79,7 +84,11 @@ To convert an existing dataset to fiboa using the pre-defined converters:
 - `fiboa convert de_nrw`
 
 Available converters:
-- `de_nrw` (Germany, NRW from Shapefile)
+- `at` (Austria)
+- `de_bb` (Berlin/Brandenburh, Germany)
+- `de_nds` (Lowe Saxony, Germany)
+- `de_nrw` (North Rhine-Westphalia, Germany)
+- `de_sh` (Schleswig-Holstein, Germany)
 
 ### Implement a converter
 

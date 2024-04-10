@@ -106,3 +106,5 @@ LOG_STATUS_COLOR = {
 }
 
 SUPPORTED_PROTOCOLS = ["http", "https", "s3", "gs"]
+
+STAC_COLLECTION_SCHEMA = "http://schemas.stacspec.org/v1.0.0/collection-spec/json-schema/collection.json"
