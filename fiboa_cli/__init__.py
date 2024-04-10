@@ -186,6 +186,7 @@ def create_geoparquet(files, out, collection, schema, ext_schema):
 )
 @click.option(
     '--features', '-f',
+    is_flag=True,
     type=click.BOOL,
     help='Create seperate GeoJSON Feature files.',
     default=False
