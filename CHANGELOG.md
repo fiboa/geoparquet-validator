@@ -25,7 +25,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- ...
+- `fiboa create-geoparquet`: Handle column conversion more gracaefully
+- `fiboa validate`: Don't fail collection test if something unexpected happened
 
 ## [v0.3.0] - 2024-04-10
 

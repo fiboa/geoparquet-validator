@@ -104,12 +104,15 @@ def update_dataframe(data, columns, schema):
             continue
 
         gp_type = GP_TYPE_MAP.get(dtype)
-        if gp_type is None:
-            log(f"{column}: No type conversion available for {dtype}")
-        elif callable(gp_type):
-            data[column] = gp_type(data[column])
-        else:
-            data[column] = data[column].astype(gp_type)
+        try:
+            if gp_type is None:
+                log(f"{column}: No type conversion available for {dtype}")
+            elif callable(gp_type):
+                data[column] = gp_type(data[column])
+            else:
+                data[column] = data[column].astype(gp_type)
+        except Exception as e:
+            log(f"{column}: Can't convert to {dtype}: {e}", "warning")
 
     return data
 

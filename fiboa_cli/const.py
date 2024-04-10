@@ -3,6 +3,7 @@ import pyarrow.types as pat
 import pandas as pd
 
 # fiboa datatypes to geopandas datatypes
+# todo: check whether it's better to use nullable Ints (e.g. Int64 instead of int64)
 GP_TYPE_MAP = {
     "boolean": "bool",
     "int8": "int8", # todo add enum support - start
