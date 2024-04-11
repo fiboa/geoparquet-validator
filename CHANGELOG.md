@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- ...
+
+### Changed
+
+- ...
+
+### Deprecated
+
+- ...
+
+### Removed
+
+- ...
+
+### Fixed
+
+- ...
+
+## [v0.3.1] - 2024-04-11
+
+### Added
+
 - Support for enums and GeoParquet structs
 - `fiboa convert`: Allow data of the GeoDataFrame or individual columns to be changed via custom functions
 
