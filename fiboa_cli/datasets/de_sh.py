@@ -18,18 +18,13 @@ COLUMNS = {
     'SHAPE_LEN': "perimeter"
 }
 MISSING_SCHEMAS = {
-    'required': ['flik', 'perimeter'],
+    'required': ['flik'],
     'properties': {
         'flik': {
             'type': 'string'
         },
         'hbn': {
             'type': 'string'
-        },
-        # todo: remove once we have spec v0.1.1
-        'perimeter': {
-            'type': 'float',
-            'exclusiveMinimum': 0
         }
     }
 }

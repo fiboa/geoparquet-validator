@@ -25,7 +25,7 @@ COLUMNS = {
     # Don't include SHAPE_AREA
 }
 MISSING_SCHEMAS = {
-    'required': ['flik', 'perimeter'],
+    'required': ['flik'],
     'properties': {
         'flik': {
             'type': 'string'
@@ -48,11 +48,6 @@ MISSING_SCHEMAS = {
         },
         'tk10_blatt': {
             'type': 'string'
-        },
-        # todo: remove once we have spec v0.1.1
-        'perimeter': {
-            'type': 'float',
-            'exclusiveMinimum': 0
         }
     }
 }
