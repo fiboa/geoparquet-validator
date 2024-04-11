@@ -9,25 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Support for enums
-
-### Changed
-
-- ...
-
-### Deprecated
-
-- ...
-
-### Removed
-
-- ...
+- Support for enums and GeoParquet structs
+- `fiboa convert`: Allow data of the GeoDataFrame or individual columns to be changed via custom functions
 
 ### Fixed
 
 - `fiboa create-geoparquet`: Handle column conversion more gracefully
 - `fiboa validate`: Don't fail collection test if something unexpected happened
 - `fiboa create-geojson`: Option `-f` doesn't need a value any longer
+- `fiboa convert`: Fixed invalid method call
 
 ## [v0.3.0] - 2024-04-10
 
@@ -118,7 +108,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release
 
-[Unreleased]: <https://github.com/fiboa/cli/compare/v0.3.0...main>
+[Unreleased]: <https://github.com/fiboa/cli/compare/v0.3.1...main>
+[v0.3.1]: <https://github.com/fiboa/cli/compare/v0.3.0...v0.3.1>
 [v0.3.0]: <https://github.com/fiboa/cli/compare/v0.2.1...v0.3.0>
 [v0.2.1]: <https://github.com/fiboa/cli/compare/v0.2.0...v0.2.1>
 [v0.2.0]: <https://github.com/fiboa/cli/compare/v0.1.1...v0.2.0>

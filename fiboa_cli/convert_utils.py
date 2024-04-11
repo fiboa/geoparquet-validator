@@ -1,7 +1,7 @@
 from .const import STAC_TABLE_EXTENSION
 from .version import fiboa_version
 from .util import log, download_file, get_fs, to_iso8601
-from .create_geoparquet import create_geoparquet
+from .parquet import create_parquet
 
 from fsspec.implementations.local import LocalFileSystem
 
@@ -19,6 +19,8 @@ def convert(
         source_coop_url = None,
         extensions = [],
         missing_schemas = {},
+        column_migrations = {},
+        migration = None,
         attribution = None,
         store_collection = False,
         license = "dl-de/by-2-0",
@@ -37,6 +39,27 @@ def convert(
     log("Loaded into GeoDataFrame:")
     print(gdf.head())
 
+    # 1. Run global migration
+    has_migration = callable(migration)
+    if has_migration:
+        log("Applying global migrations")
+        gdf = migration(gdf)
+
+    # 2. Run column migrations
+    has_col_migrations = len(column_migrations) > 0
+    if has_col_migrations:
+        log("Applying column migrations")
+        for key, fn in column_migrations.items():
+            if key in gdf.columns:
+                gdf[key] = fn(gdf[key])
+            else:
+                log(f"Column '{key}' not found in dataset, skipping migration", "warning")
+
+    if has_migration or has_col_migrations:
+        log("GeoDataFrame after migrations:")
+        print(gdf.head())
+
+    # 3. Duplicate columns if needed
     actual_columns = {}
     for old_key, new_key in columns.items():
         # If new keys are a list, duplicate the column
@@ -44,16 +67,17 @@ def convert(
             for key in new_key:
                 gdf[key] = gdf.loc[:, old_key]
                 actual_columns[key] = key
-        # If new key is a string, rename the column
+        # If new key is a string, plan to rename the column
         elif old_key in gdf.columns:
             actual_columns[old_key] = new_key
         # If old key is not found, remove from the schema and warn
         else:
             log(f"Column '{old_key}' not found in dataset, removing from schema", "warning")
 
-    # Rename columns
+    # 4. Rename columns
     gdf.rename(columns = actual_columns, inplace = True)
-    # Remove all columns that are not listed
+
+    # 5. Remove all columns that are not listed
     drop_columns = list(set(gdf.columns) - set(actual_columns.values()))
     gdf.drop(columns = drop_columns, inplace = True)
 
@@ -76,7 +100,7 @@ def convert(
         "fiboa_version": fiboa_version,
     }
     columns = list(actual_columns.values())
-    pq_fields = create_geoparquet(gdf, columns, collection, output_file, config, missing_schemas, compression)
+    pq_fields = create_parquet(gdf, columns, collection, output_file, config, missing_schemas, compression)
 
     if store_collection:
         external_collection = add_asset_to_collection(collection, output_file, rows = len(gdf), columns = pq_fields)
