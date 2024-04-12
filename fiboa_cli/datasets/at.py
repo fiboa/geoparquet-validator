@@ -34,17 +34,19 @@ COLUMNS = {
 }
 EXTENSIONS = ["https://fiboa.github.io/inspire-extension/v0.2.0/schema.yaml"]
 MISSING_SCHEMAS = {
-    'ref_art': {
-        'type': 'string'
-    },
-    'ref_art_bezeichnung': {
-        'type': 'string'
-    },
-     'referenz_kennung': {
-        'type': 'uint64'
-    },
-    'fart_id': {
-        'type': 'uint32'
+    'properties': {
+        'ref_art': {
+            'type': 'string'
+        },
+        'ref_art_bezeichnung': {
+            'type': 'string'
+        },
+        'referenz_kennung': {
+            'type': 'uint64'
+        },
+        'fart_id': {
+            'type': 'uint32'
+        }
     }
 }
 

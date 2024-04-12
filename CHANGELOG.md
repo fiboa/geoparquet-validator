@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Provide more details in data validation messages
 - Fix issue with `get_pyarrow_type_for_geopandas`
+- Fix missing schemas issue for AT converter
 
 ## [v0.3.2] - 2024-04-12
 
