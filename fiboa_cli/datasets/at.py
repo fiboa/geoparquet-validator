@@ -50,7 +50,7 @@ MISSING_SCHEMAS = {
 
 def convert(output_file, cache_file = None, source_coop_url = None, collection = False):
     """
-    Converts the Berlin/Brandenburg (Germany) field boundary datasets to fiboa.
+    Converts the Austrian field boundary datasets to fiboa.
     """
 
     # There's a bug in the file that let's the unzipping fail in the normal flow
