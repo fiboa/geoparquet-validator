@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- Update converters for Germany to use the flik extension
+- ...
 
 ### Deprecated
 
@@ -22,6 +22,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 
 - ...
+
+### Fixed
+
+- ...
+
+## [v0.3.3] - 2024-04-12
+
+### Changed
+
+- Update converters for Germany to use the flik extension
 
 ### Fixed
 
@@ -138,7 +148,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release
 
-[Unreleased]: <https://github.com/fiboa/cli/compare/v0.3.2...main>
+[Unreleased]: <https://github.com/fiboa/cli/compare/v0.3.3...main>
+[v0.3.3]: <https://github.com/fiboa/cli/compare/v0.3.2...v0.3.3>
 [v0.3.2]: <https://github.com/fiboa/cli/compare/v0.3.1...v0.3.2>
 [v0.3.1]: <https://github.com/fiboa/cli/compare/v0.3.0...v0.3.1>
 [v0.3.0]: <https://github.com/fiboa/cli/compare/v0.2.1...v0.3.0>
