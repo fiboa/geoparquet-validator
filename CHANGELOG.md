@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- ...
+- Fix missing license issue for AT converter
 
 ## [v0.3.3] - 2024-04-12
 

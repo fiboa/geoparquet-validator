@@ -69,6 +69,7 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
         convert_(
             output_file, cache_file, new_path,
             COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
+            license=LICENSE,
             extensions = EXTENSIONS,
             missing_schemas=MISSING_SCHEMAS,
             source_coop_url=source_coop_url,
