@@ -9,6 +9,9 @@ PROVIDER_URL = "https://sh-mis.gdi-sh.de/catalog/#/datasets/iso/21f67269-780f-4f
 LICENSE = "dl-de/zero-2-0"
 # From http://osmtipps.lefty1963.de/2008/10/bundeslnder.html
 BBOX = [7.8685145620,53.3590675115,11.3132037822,55.0573747014]
+EXTENSIONS = [
+    "https://fiboa.github.io/flik-extension/v0.1.0/schema.yaml"
+]
 COLUMNS = {
     'geometry': 'geometry',
     'fachguelti': 'determination_datetime',
@@ -18,11 +21,7 @@ COLUMNS = {
     'SHAPE_LEN': "perimeter"
 }
 MISSING_SCHEMAS = {
-    'required': ['flik'],
     'properties': {
-        'flik': {
-            'type': 'string'
-        },
         'hbn': {
             'type': 'string'
         }
@@ -36,6 +35,7 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
     convert_(
         output_file, cache_file,
         URI, COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
+        extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
         license=LICENSE,
         source_coop_url=source_coop_url,

@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- `fiboa rename-extension` to quickly replace template placeholders in new extensions
+- ...
 
 ### Changed
 
-- ...
+- Update converters for Germany to use the flik extension
 
 ### Deprecated
 

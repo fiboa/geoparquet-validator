@@ -9,6 +9,9 @@ PROVIDER_URL = "https://sla.niedersachsen.de/landentwicklung/LEA/"
 ATTRIBUTION = "© ML/SLA Niedersachsen (2024), dl-de/by-2-0 (www.govdata.de/dl-de/by-2-0), Daten bearbeitet"
 # From http://osmtipps.lefty1963.de/2008/10/bundeslnder.html
 BBOX = [6.6545841239,51.2954150799,11.59769814,53.8941514415]
+EXTENSIONS = [
+    "https://fiboa.github.io/flik-extension/v0.1.0/schema.yaml"
+]
 COLUMNS = {
     'geometry': 'geometry',
     'FLIK': ['id', 'flik'], # make flik id a dedicated column to align with NRW etc.
@@ -21,11 +24,7 @@ COLUMNS = {
     # Don't include SHAPE_Area
 }
 MISSING_SCHEMAS = {
-    'required': ['flik'],
     'properties': {
-        'flik': {
-            'type': 'string'
-        },
         'ant_jahr': {
             'type': 'int16'
         },
@@ -45,6 +44,7 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
     convert_(
         output_file, cache_file,
         URI, COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
+        extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
         attribution=ATTRIBUTION,
         source_coop_url=source_coop_url,

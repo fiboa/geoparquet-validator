@@ -8,7 +8,10 @@ PROVIDER_NAME = "Land Nordrhein-Westfalen / Open.NRW"
 PROVIDER_URL = "https://www.opengeodata.nrw.de/produkte/umwelt_klima/bodennutzung/landwirtschaft/"
 # From http://osmtipps.lefty1963.de/2008/10/bundeslnder.html
 BBOX = [5.8659988131,50.3226989435,9.4476584861,52.5310351488]
-EXTENSIONS = ["https://fiboa.github.io/inspire-extension/v0.2.0/schema.yaml"]
+EXTENSIONS = [
+    "https://fiboa.github.io/inspire-extension/v0.2.0/schema.yaml",
+    "https://fiboa.github.io/flik-extension/v0.1.0/schema.yaml"
+]
 COLUMNS = {
     'geometry': 'geometry',
     'ID': 'id',
@@ -20,11 +23,7 @@ COLUMNS = {
     'AREA_HA': 'area'
 }
 MISSING_SCHEMAS = {
-    'required': ['flik'],
     'properties': {
-        'flik': {
-            'type': 'string'
-        },
         'nutz_code': {
             'type': 'string'
         },

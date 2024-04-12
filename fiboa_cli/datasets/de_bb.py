@@ -10,6 +10,9 @@ PROVIDER_NAME = "Land Brandenburg"
 PROVIDER_URL = "https://geobroker.geobasis-bb.de/gbss.php?MODE=GetProductInformation&PRODUCTID=9e95f21f-4ecf-4682-9a44-e5f7609f6fa0"
 # From http://osmtipps.lefty1963.de/2008/10/bundeslnder.html
 BBOX = [11.2681664447,51.3606627053,14.7647105012,53.5579500214]
+EXTENSIONS = [
+    "https://fiboa.github.io/flik-extension/v0.1.0/schema.yaml"
+]
 COLUMNS = {
     'geometry': 'geometry',
     'FB_ID': ['flik', 'id'], # make flik id a dedicated column to align with NRW etc.
@@ -25,11 +28,7 @@ COLUMNS = {
     # Don't include SHAPE_AREA
 }
 MISSING_SCHEMAS = {
-    'required': ['flik'],
     'properties': {
-        'flik': {
-            'type': 'string'
-        },
         'hbn': {
             'type': 'string'
         },
@@ -59,6 +58,7 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
     convert_(
         output_file, cache_file,
         URI, COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
+        extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
         source_coop_url=source_coop_url,
         provider_name=PROVIDER_NAME,
