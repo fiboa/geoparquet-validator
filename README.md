@@ -77,6 +77,23 @@ To validate a fiboa Schema YAML file, you can for example run:
 
 Check `fiboa validate-schema --help` for more details.
 
+## Update an extension template with new names
+
+Once you've created and git cloned a new extension, you can use the CLI
+to update all template placeholders with proper names.
+
+For example, if your extension is meant to have
+- the title "Timestamps Extension", 
+- the prefix `ts` (e.g. field `ts:created` or `ts:updated`),
+- is hosted at `https://github.io/fiboa/timestamps-extension`
+  (organization: `fiboa`, repository `timestamps-extension`),
+- and you run fiboa in the folder of the extension.
+
+Then the following command could be used:
+- `fiboa rename-extension . -t Timestamps -p ts -s timestamps-extension -o fiboa`
+
+Check `fiboa rename-extension --help` for more details.
+
 ## Converter for existing datasets
 
 To convert an existing dataset to fiboa using the pre-defined converters:

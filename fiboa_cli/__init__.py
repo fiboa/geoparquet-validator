@@ -8,10 +8,11 @@ from .create_geoparquet import create_geoparquet as create_geoparquet_
 from .create_geojson import create_geojson as create_geojson_
 from .describe import describe as describe_
 from .jsonschema import jsonschema as jsonschema_
+from .rename_extension import rename_extension as rename_extension_
 from .validate import validate as validate_
 from .validate_schema import validate_schema as validate_schema_
 from .version import __version__, fiboa_version as fiboa_version_
-from .util import log, check_ext_schema_for_cli, valid_file_for_cli, valid_file_for_cli_with_ext, valid_files_folders_for_cli
+from .util import log, check_ext_schema_for_cli, valid_file_for_cli, valid_file_for_cli_with_ext, valid_files_folders_for_cli, valid_folder_for_cli
 
 @click.group()
 @click.version_option(version=__version__)
@@ -304,6 +305,45 @@ def convert(dataset, out, cache, source_coop, collection):
         sys.exit(1)
 
 
+## RENAME EXTENSION
+@click.command()
+@click.argument('folder', nargs=1, callback=valid_folder_for_cli)
+@click.option(
+    '--title', '-t',
+    type=click.STRING,
+    help='Title of the extension, e.g. `Timestamps`',
+    required=True
+)
+@click.option(
+    '--slug', '-s',
+    type=click.STRING,
+    help='Slug of the repository, e.g. for `https://github.com/fiboa/timestamps-extension` it would be `timestamps-extension`',
+    required=True
+)
+@click.option(
+    '--org', '-o',
+    type=click.STRING,
+    help='Slug of the GitHub Organization. Defaults to `fiboa`',
+    default="fiboa"
+)
+@click.option(
+    '--prefix', '-p',
+    type=click.STRING,
+    help='Prefix for the field, e.g. `time` if the fields should be `time:created` or `time:updated`. An empty string removed the prefix, not providing a prefix leaves it as is.',
+    default=None
+)
+def rename_extension(folder, title, slug, org = "fiboa", prefix = None):
+    """
+    Updates placeholders in an extension folder to the new name.
+    """
+    log(f"fiboa CLI {__version__} - Rename placeholders in extensions\n", "success")
+    try:
+        rename_extension_(folder, title, slug, gh_org=org, prefix=prefix)
+    except Exception as e:
+        log(e, "error")
+        sys.exit(1)
+
+
 cli.add_command(describe)
 cli.add_command(validate)
 cli.add_command(validate_schema)
@@ -311,6 +351,7 @@ cli.add_command(create_geoparquet)
 cli.add_command(create_geojson)
 cli.add_command(jsonschema)
 cli.add_command(convert)
+cli.add_command(rename_extension)
 
 if __name__ == '__main__':
     cli()

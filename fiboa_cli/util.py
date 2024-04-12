@@ -192,6 +192,14 @@ def valid_file_for_cli_with_ext(value, extensions):
     return is_valid_file_uri(value, extensions)
 
 
+def valid_folder_for_cli(ctx, param, value):
+    """Determine if the input is a folder."""
+    if os.path.exists(value) and os.path.isdir(value):
+        return value
+    else:
+        raise click.BadParameter('Input must be an existing local folder')
+
+
 def get_collection(data, collection_path = None, basepath = None):
     # If the user provided a collection, enforce using it
     if collection_path is not None:
