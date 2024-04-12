@@ -51,7 +51,7 @@ def create_parquet(data, columns, collection, output_file, config, missing_schem
         else:
             pd_type = str(data[name].dtype) # pandas data type
             try:
-                pa_type = get_pyarrow_type_for_geopandas(pd_type, required) # pyarrow data type
+                pa_type = get_pyarrow_type_for_geopandas(pd_type) # pyarrow data type
                 if pa_type is not None:
                     log(f"{name}: No schema defined, converting {pd_type} to nullable {pa_type}", "warning")
                     field = get_pyarrow_field(name, pa_type = pa_type)
