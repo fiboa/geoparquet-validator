@@ -1,5 +1,5 @@
 import json
-from .util import load_datatypes, load_fiboa_schema
+from .util import log, load_datatypes, load_fiboa_schema
 from .jsonschema_template import jsonschema_template
 
 def jsonschema(config):
@@ -93,7 +93,7 @@ def convert_schema(prop_schema, datatypes, required = False):
         elif (isinstance(datatype_schema.get('anyOf'), list)):
             datatype_schema.get('anyOf', []).append({"type": "null"})
         else:
-            print(f"Making schema {json.dumps(datatype_schema)} optional is not supported by this generator")
+            log(f"Making schema {json.dumps(datatype_schema)} optional is not supported by this generator")
 
     # Avoid conflicting statements
     if 'exclusiveMaximum' in prop_schema:
