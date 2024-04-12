@@ -28,36 +28,38 @@ def validate_column(data, rules):
 def validate_string(value, rules):
     issues = []
     if 'minLength' in rules and len(value) < rules['minLength']:
-        issues.append(f"String is shorter than the minimum length of {rules['minLength']}.")
+        issues.append(f"String '{value}' is shorter than the minimum length of {rules['minLength']}.")
     if 'maxLength' in rules and len(value) > rules['maxLength']:
-        issues.append(f"String is longer than the maximum length of {rules['maxLength']}.")
+        issues.append(f"String '{value}' is longer than the maximum length of {rules['maxLength']}.")
     if 'pattern' in rules and not re.match(rules['pattern'], value):
-        issues.append(f"String does not match the required pattern: {rules['pattern']}.")
+        issues.append(f"String '{value}' does not match the required pattern: {rules['pattern']}.")
     if 'enum' in rules and value not in rules['enum']:
-        issues.append(f"String is not one of the permitted values in the enumeration.")
+        allowed = ", ".join(rules['enum'])
+        issues.append(f"String '{value}' is not one of the allowed values in the enumeration: {allowed}")
     if 'format' in rules:
         # todo: pre-compile regexes
         if rules['format'] == 'email' and not re.match(r"[^@]+@[^@]+\.[^@]+", value):
-            issues.append("String is not a valid email.")
+            issues.append(f"String '{value}' is not a valid email address.")
         if rules['format'] == 'uri' and not urlparse(value).scheme:
-            issues.append("String is not a valid URI.")
+            issues.append(f"String '{value}' is not a valid URI.")
         if rules['format'] == 'uuid' and not re.match(r"^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\Z", value):
-            issues.append("String is not a valid UUID.")
+            issues.append(f"String '{value}' is not a valid UUID.")
     return issues
 
 # Numerical validation
 def validate_numerical(value, rules):
     issues = []
     if 'minimum' in rules and value < rules['minimum']:
-        issues.append(f"Value is less than the minimum allowed value of {rules['minimum']}.")
+        issues.append(f"Value {value} is less than the minimum allowed value of {rules['minimum']}.")
     if 'maximum' in rules and value > rules['maximum']:
-        issues.append(f"Value is greater than the maximum allowed value of {rules['maximum']}.")
+        issues.append(f"Value {value} is greater than the maximum allowed value of {rules['maximum']}.")
     if 'exclusiveMinimum' in rules and value <= rules['exclusiveMinimum']:
-        issues.append(f"Value is less than or equal to the exclusive minimum value of {rules['exclusiveMinimum']}.")
+        issues.append(f"Value {value} is less than or equal to the exclusive minimum value of {rules['exclusiveMinimum']}.")
     if 'exclusiveMaximum' in rules and value >= rules['exclusiveMaximum']:
-        issues.append(f"Value is greater than or equal to the exclusive maximum value of {rules['exclusiveMaximum']}.")
+        issues.append(f"Value {value} is greater than or equal to the exclusive maximum value of {rules['exclusiveMaximum']}.")
     if 'enum' in rules and value not in rules['enum']:
-        issues.append("Value is not one of the permitted values in the enumeration.")
+        allowed = ", ".join(map(str, rules['enum']))
+        issues.append(f"String '{value}' is not one of the allowed values in the enumeration: {allowed}")
     return issues
 
 # Array validation
