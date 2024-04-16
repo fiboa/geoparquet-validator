@@ -1,10 +1,10 @@
 # fiboa CLI
 
-CLI tools such as validation and file format conversion for fiboa.
+In order to make working with fiboa easier we have developed command-line interface (CLI) tools such as validation and file format conversion. To get started with the fiboa CLI please follow the instructions below:
 
 ## Installation
 
-You need **Python 3.9+** installed. 
+You will need **Python 3.9+** installed. 
 Run `pip install fiboa-cli` to install the validator.
 
 To install additional dependencies for specific [converters](#converter-for-existing-datasets),
