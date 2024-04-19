@@ -1,6 +1,6 @@
 import json
 
-from .util import log, load_parquet_data, load_parquet_schema, parse_metadata
+from .util import log, load_parquet_data, load_parquet_schema, parse_metadata, log_extensions
 
 
 def describe(file, display_json=False):
@@ -24,12 +24,7 @@ def describe(file, display_json=False):
     if collection:
         log(f"fiboa version: {collection['fiboa_version']}")
         if "fiboa_extensions" in collection and isinstance(collection["fiboa_extensions"], list):
-            if len(collection["fiboa_extensions"]) == 0:
-                log("fiboa extensions: none")
-            else:
-                log("fiboa extensions:")
-                for ext in collection["fiboa_extensions"]:
-                    log(f"  - {ext}")
+            log_extensions(collection, log)
 
         if "license" in collection:
             log(f"license: {collection['license']}")

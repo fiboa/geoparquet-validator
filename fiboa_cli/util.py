@@ -16,7 +16,7 @@ from pyarrow.fs import FSSpecHandler, PyFileSystem
 from tempfile import NamedTemporaryFile
 from typing import Union
 
-from .const import LOG_STATUS_COLOR, SUPPORTED_PROTOCOLS
+from .const import LOG_STATUS_COLOR, SUPPORTED_PROTOCOLS, STAC_COLLECTION_SCHEMA, GEOPARQUET_SCHEMA
 from .geopandas import decode_metadata, arrow_to_geopandas
 
 small_file_cache = {}
@@ -270,3 +270,26 @@ def to_iso8601(dt):
         raise ValueError("Timezone offset is not supported")
     else:
         return iso + "Z"
+
+
+def load_collection_schema(obj):
+    if "stac_version" in obj:
+        return load_file(STAC_COLLECTION_SCHEMA.format(version = obj["stac_version"]))
+    else:
+        return None
+
+
+def load_geoparquet_schema(obj):
+    if "version" in obj:
+        return load_file(GEOPARQUET_SCHEMA.format(version = obj["version"]))
+    else:
+        return None
+
+
+def log_extensions(collection, logger):
+    if len(collection["fiboa_extensions"]) == 0:
+        logger("fiboa extensions: none")
+    else:
+        logger("fiboa extensions:")
+        for ext in collection["fiboa_extensions"]:
+            logger(f"  - {ext}")

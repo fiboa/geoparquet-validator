@@ -2,15 +2,15 @@ import json
 import pyarrow.types as pat
 
 from jsonschema.validators import Draft7Validator
-from .const import STAC_COLLECTION_SCHEMA
 from .types import PA_TYPE_CHECK
 from .jsonschema import create_jsonschema
-from .util import get_collection, log as log_, load_datatypes, load_file, load_fiboa_schema, load_parquet_data, load_parquet_schema, merge_schemas
+from .util import get_collection, log as log_, log_extensions, load_datatypes, load_file, load_fiboa_schema, load_parquet_data, load_parquet_schema, merge_schemas, parse_metadata, load_collection_schema, load_geoparquet_schema
 from .validate_data import validate_column
 
-def log(text: str, status="info"):
+def log(text: str, status="info", bullet = True):
     # Indent logs
-    log_("  - " + str(text), status)
+    prefix = "  - " if bullet else "    "
+    log_(prefix + str(text), status)
 
 
 def validate(file, config):
@@ -59,8 +59,7 @@ def validate_collection(collection, config):
                     log(f"Extension {ext} can't be loaded: {e}", "error")
                     valid = False
 
-    extension_info = ", ".join(collection["fiboa_extensions"]) or "none"
-    log("fiboa extensions: " + extension_info)
+    log_extensions(collection, lambda x: log(x, "info", False))
 
     return valid, extensions
 
@@ -147,14 +146,16 @@ def validate_geojson(file, config):
 
 def validate_parquet(file, config):
     parquet_schema = load_parquet_schema(file)
+    valid = True
 
     # Validate geo metadata in Parquet header
     if b"geo" not in parquet_schema.metadata:
         log("Parquet file schema does not have 'geo' key", "error")
         return False
     else:
-        # ToDo: We are not checking whether this is a valid GeoParquet file
-        log("The validator doesn't check whether this file contains valid GeoParquet metadata.", "info")
+        geo = parse_metadata(parquet_schema, b"geo")
+        if not validate_geoparquet_schema(geo):
+            valid = False
 
     # Validate fiboa metadata in Parquet header
     collection = {}
@@ -166,10 +167,12 @@ def validate_parquet(file, config):
         else:
             collection = load_file(config.get("collection"))
     else:
-        collection = json.loads(parquet_schema.metadata[b"fiboa"])
+        collection = parse_metadata(parquet_schema, b"fiboa")
 
     # Validate Collection
-    valid, extensions = validate_collection(collection, config)
+    valid_collection, extensions = validate_collection(collection, config)
+    if not valid_collection:
+        valid = False
 
     # load the actual fiboa schema
     fiboa_schema = load_fiboa_schema(config)
@@ -259,7 +262,7 @@ def validate_parquet(file, config):
 def validate_colletion_schema(obj):
     if "stac_version" in obj:
         try:
-            schema = load_file(STAC_COLLECTION_SCHEMA)
+            schema = load_collection_schema(obj)
             errors = validate_json_schema(obj, schema)
             for error in errors:
                 log(f"Collection: {error.path}: {error.message}", "error")
@@ -270,6 +273,21 @@ def validate_colletion_schema(obj):
 
     return True
 
+
+# todo: use a geoparquet validator instead of our own validation routine
+def validate_geoparquet_schema(obj):
+    if "version" in obj:
+        try:
+            schema = load_geoparquet_schema(obj)
+            errors = validate_json_schema(obj, schema)
+            for error in errors:
+                log(f"GeoParquet metadata: {error.path}: {error.message}", "error")
+
+            return len(errors) == 0
+        except Exception as e:
+            log(f"Failed to validate GeoParquet metadata due to an internal error: {e}", "error")
+
+    return False
 
 def validate_json_schema(obj, schema):
     if isinstance(obj, (bytearray, bytes, str)):

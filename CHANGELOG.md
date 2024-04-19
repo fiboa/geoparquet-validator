@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- ...
+- Validate GeoParquet metadata
 
 ### Changed
 
-- ...
+- Load schemas for GeoParquet and STAC based on given version numbers
 
 ### Deprecated
 
