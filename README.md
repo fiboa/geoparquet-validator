@@ -1,22 +1,51 @@
 # fiboa CLI
 
-In order to make working with fiboa easier we have developed command-line interface (CLI) tools such as validation and file format conversion.
-You can find instuctions how to get started below.
+A command-line interface (CLI) for working with fiboa.
 
-## Installation
+- [Getting Started](#getting-started)
+- [Documentation / Commands](#commands)
+- [Development](#development)
+
+## Getting Started
+
+In order to make working with fiboa easier we have developed command-line interface (CLI) tools such as 
+inspection, validation and file format conversions.
+
+### Installation
 
 You will need to have **Python 3.9** or any later version installed. 
-Run `pip install fiboa-cli` to install the validator.
 
-To install additional dependencies for specific [converters](#converter-for-existing-datasets),
+Run `pip install fiboa-cli` in the CLI to install the validator.
+
+**Optional:** To install additional dependencies for specific [converters](#converter-for-existing-datasets),
 you can for example run: `pip install fiboa-cli[xyz]` with xyz being the converter name.
 
-## fiboa versions
-
+**Note on versions:**
 - fiboa CLI >= 0.3.0 works with fiboa version > 0.2.0
 - fiboa CLI < 0.3.0 works with fiboa version = 0.1.0
 
-## Validation
+### Execute a command
+
+After the installation you should be able to run the following command: `fiboa`
+
+You should see usage instructions and [available commands](#commands) for the CLI.
+
+fiboa CLI supports various commands to work with the files:
+
+- [Inspect fiboa GeoParquet files](#inspect-fiboa-geoparquet-file)
+- [Validation fiboa GeoParquet and GeoJSON files](#validation)
+- [Convert existing non-fiboa datasets to a fiboa GeoParquet file](#converter-for-existing-datasets)
+- File Format Conversion:
+  - [Create a fiboa GeoParquet file from GeoJSON files](#create-fiboa-geoparquet-from-geojson)
+  - [Create fiboa GeoJSON files from a GeoParquet file](#create-fiboa-geojson-from-geoparquet)
+- Extension and Spec development:
+  - [Update an extension template with new names](#update-an-extension-template-with-new-names)
+  - [Validate a fiboa Schema](#validate-a-fiboa-schema)
+  - [Create JSON Schema from fiboa Schema](#create-json-schema-from-fiboa-schema)
+
+## Commands
+
+### Validation
 
 To validate a fiboa GeoParquet or GeoJSON file, you can for example run:
 
@@ -33,7 +62,7 @@ The validator also supports remote files.
 - `gs://`: `gcsfs` needs to be installed (run `pip install .[gcs]`).
   By default, `gcsfs` will attempt to use your default gcloud credentials or, attempt to get credentials from the google metadata service, or fall back to anonymous access.
 
-## Create fiboa GeoParquet from GeoJSON
+### Create fiboa GeoParquet from GeoJSON
 
 To create a fiboa-compliant GeoParquet for a fiboa-compliant set of GeoJSON files containing Features or FeatureCollections,
 you can for example run:
@@ -42,7 +71,7 @@ you can for example run:
 
 Check `fiboa create-geoparquet --help` for more details.
 
-## Create fiboa GeoJSON from GeoParquet
+### Create fiboa GeoJSON from GeoParquet
 
 To create one or multiple fiboa-compliant GeoJSON file(s) for a fiboa-compliant GeoParquet file,
 you can for example run:
@@ -54,7 +83,7 @@ you can for example run:
 
 Check `fiboa create-geoparquet --help` for more details.
 
-## Inspect fiboa GeoParquet file
+### Inspect fiboa GeoParquet file
 
 To look into a fiboa GeoParquet file to get a rough understanding of the content, the following can be executed:
 
@@ -62,7 +91,7 @@ To look into a fiboa GeoParquet file to get a rough understanding of the content
 
 Check `fiboa describe --help` for more details.
 
-## Create JSON Schema from fiboa Schema
+### Create JSON Schema from fiboa Schema
 
 To create a JSON Schema for a fiboa Schema YAML file, you can for example run:
 
@@ -70,7 +99,7 @@ To create a JSON Schema for a fiboa Schema YAML file, you can for example run:
 
 Check `fiboa jsonschema --help` for more details.
 
-## Validate a fiboa Schema
+### Validate a fiboa Schema
 
 To validate a fiboa Schema YAML file, you can for example run:
 
@@ -78,7 +107,7 @@ To validate a fiboa Schema YAML file, you can for example run:
 
 Check `fiboa validate-schema --help` for more details.
 
-## Update an extension template with new names
+### Update an extension template with new names
 
 Once you've created and git cloned a new extension, you can use the CLI
 to update all template placeholders with proper names.
@@ -95,7 +124,7 @@ Then the following command could be used:
 
 Check `fiboa rename-extension --help` for more details.
 
-## Converter for existing datasets
+### Converter for existing datasets
 
 To convert an existing dataset to fiboa using the pre-defined converters:
 
@@ -108,13 +137,7 @@ Available converters:
 - `de_nrw` (North Rhine-Westphalia, Germany)
 - `de_sh` (Schleswig-Holstein, Germany)
 
-### Implement a converter
-
-1. Create a new file in `fiboa_cli/datasets` based on the `template.py`
-2. Implement the `convert()` function
-3. Add missing dependencies into a separate dependency group in `setup.py`
-4. Add the converter to the list above
-5. Create a PR to submit your converter for review
+See [Implement a converter](#implement-a-converter) for details about how to 
 
 ## Development
 
@@ -122,3 +145,16 @@ To install in development mode run `pip install -e .` in this folder.
 
 For the tests first run `pip install -r requirements-dev.txt` to install pytest.
 Then you can run `pytest` to execute the tests.
+
+### Implement a converter
+
+The following high-level description gives an idea how to implement a converter in fiboa CLI:
+
+1. Create a new file in `fiboa_cli/datasets` based on the `template.py`
+2. Implement the `convert()` function
+3. Add missing dependencies into a separate dependency group in `setup.py`
+4. Add the converter to the list above
+5. Create a PR to submit your converter for review
+
+An in-depth guide how to create a cloud-native fiboa dataset using fiboa CLI is available at:
+<https://github.com/fiboa/data/blob/main/HOWTO.md>
