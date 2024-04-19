@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Validate GeoParquet metadata
+- ...
 
 ### Changed
 
-- Load schemas for GeoParquet and STAC based on given version numbers
+- ...
 
 ### Deprecated
 
@@ -22,6 +22,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 
 - ...
+
+### Fixed
+
+- ...
+
+## [v0.3.4] - 2024-04-19
+
+### Added
+
+- Validate GeoParquet metadata
+
+### Changed
+
+- Load schemas for GeoParquet and STAC based on given version numbers
 
 ### Fixed
 
@@ -148,7 +162,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release
 
-[Unreleased]: <https://github.com/fiboa/cli/compare/v0.3.3...main>
+[Unreleased]: <https://github.com/fiboa/cli/compare/v0.3.4...main>
+[v0.3.4]: <https://github.com/fiboa/cli/compare/v0.3.3...v0.3.4>
 [v0.3.3]: <https://github.com/fiboa/cli/compare/v0.3.2...v0.3.3>
 [v0.3.2]: <https://github.com/fiboa/cli/compare/v0.3.1...v0.3.2>
 [v0.3.1]: <https://github.com/fiboa/cli/compare/v0.3.0...v0.3.1>

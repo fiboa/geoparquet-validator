@@ -1,2 +1,2 @@
-__version__ = "0.3.3"
+__version__ = "0.3.4"
 fiboa_version = "0.2.0"
