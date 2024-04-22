@@ -27,6 +27,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - ...
 
+## [v0.3.5] - 2024-04-22
+
+### Added
+
+- Converters: Allow to filter rows with pandas Series operations easily
+
 ## [v0.3.4] - 2024-04-19
 
 ### Added

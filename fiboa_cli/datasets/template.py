@@ -50,6 +50,13 @@ COLUMN_MIGRATIONS = {
     'area_m': lambda column: column * 0.0001
 }
 
+# Filter columns to only include the ones that are relevant for the collection,
+# e.g. only rows that contain the word "agriculture" but not "forest" in the column "land_cover_type".
+# Lamda function accepts a Pandas Series and returns a Series or a Tuple with a Series and True to inverse the mask.
+COLUMN_FILTERS = {
+    "land_cover_type": lambda col: (col.isin(["agrictulture"]), True)
+}
+
 # Custom function to migrate the GeoDataFrame if the other options are not sufficient
 # This should be the last resort!
 # Function signature:
@@ -76,14 +83,16 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
     For reference, this is the order in which the conversion steps are applied:
     0. Read GeoDataFrame from file
     1. Run global migration (if provided through MIGRATION)
-    2. Run column migrations (if provided through COLUMN_MIGRATIONS)
-    3. Duplicate columns (if an array is provided as the value in COLUMNS)
-    4. Rename columns (as provided in COLUMNS)
-    5. Remove columns (if column is not present as value in COLUMNS)
-    6. Create the collection
-    7. Change data types of the columns based on the provided schemas
+    2. Run filters to remove rows that shall not be in the final data
+       (if provided through COLUMN_FILTERS)
+    3. Run column migrations (if provided through COLUMN_MIGRATIONS)
+    4. Duplicate columns (if an array is provided as the value in COLUMNS)
+    5. Rename columns (as provided in COLUMNS)
+    6. Remove columns (if column is not present as value in COLUMNS)
+    7. Create the collection
+    8. Change data types of the columns based on the provided schemas
     (fiboa spec, extensions, and MISSING_SCHEMAS)
-    8. Write the data to the Parquet file
+    9. Write the data to the Parquet file
 
     Parameters:
     output_file (str): Path where the Parquet file shall be stored.
@@ -108,6 +117,7 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
         extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
         column_migrations=COLUMN_MIGRATIONS,
+        column_filters=COLUMN_FILTERS,
         migration=MIGRATION,
         attribution=ATTRIBUTION,
         store_collection=collection,

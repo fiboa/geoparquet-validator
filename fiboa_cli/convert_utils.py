@@ -6,6 +6,7 @@ from .parquet import create_parquet
 from fsspec.implementations.local import LocalFileSystem
 
 import os
+import re
 import json
 import geopandas as gpd
 import pandas as pd
@@ -19,6 +20,7 @@ def convert(
         source_coop_url = None,
         extensions = [],
         missing_schemas = {},
+        column_filters = {},
         column_migrations = {},
         migration = None,
         attribution = None,
@@ -44,8 +46,34 @@ def convert(
     if has_migration:
         log("Applying global migrations")
         gdf = migration(gdf)
+        if not isinstance(gdf, gpd.GeoDataFrame):
+            raise ValueError("Migration function must return a GeoDataFrame")
 
-    # 2. Run column migrations
+    # 2. Run filters to remove rows that shall not be in the final data
+    has_col_filters = len(column_filters) > 0
+    if has_col_filters:
+        log("Applying filters")
+        for key, fn in column_filters.items():
+            if key in gdf.columns:
+                result = fn(gdf[key])
+                # If the result is a tuple, the second value is a flag to potentially invert the mask
+                if isinstance(result, tuple):
+                    if (result[1]):
+                        # Invert mask
+                        mask = ~result[0]
+                    else:
+                        # Use mask as is
+                        mask = result[0]
+                else:
+                    # Just got a mask, proceed
+                    mask = result
+
+                # Filter columns based on the mask
+                gdf = gdf[mask]
+            else:
+                log(f"Column '{key}' not found in dataset, skipping filter", "warning")
+
+    # 3. Run column migrations
     has_col_migrations = len(column_migrations) > 0
     if has_col_migrations:
         log("Applying column migrations")
@@ -55,11 +83,11 @@ def convert(
             else:
                 log(f"Column '{key}' not found in dataset, skipping migration", "warning")
 
-    if has_migration or has_col_migrations:
-        log("GeoDataFrame after migrations:")
+    if has_migration or has_col_migrations or has_col_filters:
+        log("GeoDataFrame after migrations and filters:")
         print(gdf.head())
 
-    # 3. Duplicate columns if needed
+    # 4. Duplicate columns if needed
     actual_columns = {}
     for old_key, new_key in columns.items():
         # If new keys are a list, duplicate the column
@@ -74,10 +102,10 @@ def convert(
         else:
             log(f"Column '{old_key}' not found in dataset, removing from schema", "warning")
 
-    # 4. Rename columns
+    # 5. Rename columns
     gdf.rename(columns = actual_columns, inplace = True)
 
-    # 5. Remove all columns that are not listed
+    # 6. Remove all columns that are not listed
     drop_columns = list(set(gdf.columns) - set(actual_columns.values()))
     gdf.drop(columns = drop_columns, inplace = True)
 
@@ -181,22 +209,25 @@ def create_collection(
     # Update license
     if isinstance(license, dict):
         collection["links"].append(license)
-    elif license == "dl-de/by-2-0":
-        collection["links"].append({
-            "href": "https://www.govdata.de/dl-de/by-2-0",
-            "title": "Data licence Germany - attribution - Version 2.0",
-            "type": "text/html",
-            "rel": "license"
-        })
-    elif license == "dl-de/zero-2-0":
-        collection["links"].append({
-            "href": "https://www.govdata.de/dl-de/zero-2-0",
-            "title": "Data licence Germany - Zero - Version 2.0",
-            "type": "text/html",
-            "rel": "license"
-        })
-    elif license == "CC-BY-4.0":
-        collection["license"] = license
+    elif isinstance(license, str):
+        if license.lower() == "dl-de/by-2-0":
+            collection["links"].append({
+                "href": "https://www.govdata.de/dl-de/by-2-0",
+                "title": "Data licence Germany - attribution - Version 2.0",
+                "type": "text/html",
+                "rel": "license"
+            })
+        elif license.lower() == "dl-de/zero-2-0":
+            collection["links"].append({
+                "href": "https://www.govdata.de/dl-de/zero-2-0",
+                "title": "Data licence Germany - Zero - Version 2.0",
+                "type": "text/html",
+                "rel": "license"
+            })
+        elif re.match(r"^[\w-]+$", license):
+            collection["license"] = license
+        else:
+            log(f"Invalid license identifier: {license}", "warning")
     else:
         log(f"License information missing", "warning")
 
