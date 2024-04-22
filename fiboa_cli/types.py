@@ -1,6 +1,7 @@
 import pyarrow as pa
 import pyarrow.types as pat
 import pandas as pd
+import numpy as np
 
 def is_enum(schema):
     return isinstance(schema.get("enum"), list)
@@ -75,13 +76,13 @@ def get_geopandas_dtype(type, required = False, schema = {}):
         else:
             return "string"
     elif type == "array":
-        raise Exception("Arrays are not supported yet") # todo
+        return lambda series: series.apply(lambda x: np.array(x))
     elif type == "object":
         return "object"
     elif type == "date":
         return "datetime64[D]"
     elif type == "date-time":
-        return lambda x: pd.to_datetime(x) # todo: check np.nan/None handling
+        return lambda series: pd.to_datetime(series)
     elif type == "geometry":
         return None, # not a column, don't convert geometry
     elif type == "bounding-box":

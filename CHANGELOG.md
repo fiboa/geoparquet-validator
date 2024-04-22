@@ -33,6 +33,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Converters: Allow to filter rows with pandas Series operations easily
 
+### Fixed
+
+- Support converting to array data type
+
 ## [v0.3.4] - 2024-04-19
 
 ### Added
