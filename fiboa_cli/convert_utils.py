@@ -25,7 +25,7 @@ def convert(
         migration = None,
         attribution = None,
         store_collection = False,
-        license = "dl-de/by-2-0",
+        license = None,
         compression = "brotli",
         **kwargs):
     """
@@ -148,7 +148,7 @@ def create_collection(
         source_coop_url = None,
         extensions = [],
         attribution = None,
-        license = "dl-de/by-2-0"
+        license = None
     ):
     """
     Creates a collection for the field boundary datasets.

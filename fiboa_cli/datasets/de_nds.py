@@ -7,6 +7,7 @@ DESCRIPTION = """A field block (German: "Feldblock") is a contiguous agricultura
 PROVIDER_NAME = "ML/SLA Niedersachsen"
 PROVIDER_URL = "https://sla.niedersachsen.de/landentwicklung/LEA/"
 ATTRIBUTION = "© ML/SLA Niedersachsen (2024), dl-de/by-2-0 (www.govdata.de/dl-de/by-2-0), Daten bearbeitet"
+LICENSE = "dl-de/by-2-0"
 # From http://osmtipps.lefty1963.de/2008/10/bundeslnder.html
 BBOX = [6.6545841239,51.2954150799,11.59769814,53.8941514415]
 EXTENSIONS = [
@@ -44,6 +45,7 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
     convert_(
         output_file, cache_file,
         URI, COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
+        license=LICENSE,
         extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
         attribution=ATTRIBUTION,

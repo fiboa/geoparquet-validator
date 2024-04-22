@@ -28,7 +28,7 @@ PROVIDER_URL = "https://abc.example"
 ATTRIBUTION = "© 2024 ABC Corp."
 
 # License of the data, either
-# 1. a SPDX license identifier, or
+# 1. a SPDX license identifier (including "dl-de/by-2-0" / "dl-de/zero-2-0"), or
 LICENSE = "CC-BY-4.0"
 # 2. a STAC Link Object with relation type "license"
 # LICENSE = {'title': 'CC-BY-4.0', 'href': 'https://creativecommons.org/licenses/by/4.0/', 'type': 'text/html', 'rel': 'license'}

@@ -6,6 +6,7 @@ URI = "https://data.geobasis-bb.de/geofachdaten/Landwirtschaft/dfbk.zip"
 ID = "de_bb"
 TITLE = "Field boundaries for Berlin / Brandenburg, Germany"
 DESCRIPTION = """A field block (German: "Feldblock") is a contiguous agricultural area surrounded by permanent boundaries, which is cultivated by one or more farmers with one or more crops, is fully or partially set aside or is fully or partially taken out of production."""
+LICENSE = "dl-de/by-2-0"
 PROVIDER_NAME = "Land Brandenburg"
 PROVIDER_URL = "https://geobroker.geobasis-bb.de/gbss.php?MODE=GetProductInformation&PRODUCTID=9e95f21f-4ecf-4682-9a44-e5f7609f6fa0"
 # From http://osmtipps.lefty1963.de/2008/10/bundeslnder.html
@@ -22,7 +23,7 @@ COLUMNS = {
     'GUELTVON_F': 'determination_datetime',
     'GUELTBIS_F': 'expiry_datetime',
     'KREIS_NR': 'kreis_nr',
-    'TK10_BLATT': "tk10_blatt",
+    'TK10_BLATT': "tk10",
     'HBN_KAT': 'hbn',
     'SHAPE_LEN': 'perimeter',
     # Don't include SHAPE_AREA
@@ -58,6 +59,7 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
     convert_(
         output_file, cache_file,
         URI, COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
+        license=LICENSE,
         extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
         source_coop_url=source_coop_url,
