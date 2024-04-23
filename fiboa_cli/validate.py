@@ -202,7 +202,7 @@ def validate_parquet(file, config):
     for key in parquet_schema.names:
         # Ignore fields without a schema
         if key not in properties:
-            log(f"{key}: No schema defined")
+            log(f"{key}: No schema defined", "warning")
             continue
 
         prop_schema = properties[key]

@@ -35,7 +35,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- `fiboa describe`: Don't 
+- `fiboa describe`: Show all columns / don't hide data with `...`
+- `fiboa validate`: Warn more clearly if no schema is defined for a column
 
 ## [v0.3.5] - 2024-04-22
 
