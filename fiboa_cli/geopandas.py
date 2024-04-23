@@ -209,7 +209,7 @@ def decode_metadata(metadata_str):
     return json.loads(metadata_str.decode("utf-8"))
 
 
-def arrow_to_geopandas(table):
+def arrow_to_geopandas(table, allow_non_geo=False):
     """
     Helper function with main, shared logic for read_parquet/read_feather.
     """
@@ -233,11 +233,14 @@ def arrow_to_geopandas(table):
     geometry_columns = df.columns.intersection(metadata["columns"])
 
     if not len(geometry_columns):
-        raise ValueError(
-            """No geometry columns are included in the columns read from
-            the Parquet/Feather file. To read this file without geometry columns,
-            use pandas.read_parquet/read_feather() instead."""
-        )
+        if allow_non_geo:
+            return df
+        else:
+            raise ValueError(
+                """No geometry columns are included in the columns read from
+                the Parquet/Feather file. To read this file without geometry columns,
+                use pandas.read_parquet/read_feather() instead."""
+            )
 
     geometry = metadata["primary_column"]
 

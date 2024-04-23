@@ -27,6 +27,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - ...
 
+## [v0.3.6] - 2024-04-23
+
+### Added
+
+- `fiboa describe`: New parameters `--column` and `--num`
+
+### Fixed
+
+- `fiboa describe`: Don't 
+
 ## [v0.3.5] - 2024-04-22
 
 ### Added

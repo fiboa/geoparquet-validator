@@ -33,13 +33,30 @@ def cli():
     help='Print the JSON metadata.',
     default=False
 )
-def describe(file, json):
+@click.option(
+    '--num', '-n',
+    type=click.IntRange(min=0),
+    help='Number of rows to show. Defaults to 10.',
+    default=10
+)
+@click.option(
+    '--column', '-c',
+    type=click.STRING,
+    multiple=True,
+    help='Column names to show in the excerpt. Can be used multiple times. Shows all by default.',
+    default=[]
+)
+def describe(file, json, num = 10, column = []):
     """
     Inspects the content of a fiboa GeoParquet file.
     """
     log(f"fiboa CLI {__version__} - Describe {file}\n", "success")
     try:
-        describe_(file, json)
+        if len(column) == 0:
+            columns = None
+        else:
+            columns = list(column)
+        describe_(file, json, num, columns)
     except Exception as e:
         log(e, "error")
         sys.exit(1)

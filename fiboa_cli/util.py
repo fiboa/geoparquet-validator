@@ -94,18 +94,25 @@ def load_parquet_schema(uri: Union[str, NativeFile]) -> pq.ParquetSchema:
     return pq.read_schema(uri)
 
 
-def load_parquet_data(uri: str, nrows = None) -> pd.DataFrame:
+def load_parquet_metadata(uri: Union[str, NativeFile]) -> pq.FileMetaData:
+    """Load metadata from Parquet file"""
+    if isinstance(uri, str):
+        uri = get_pyarrow_file(uri)
+    return pq.read_metadata(uri)
+
+
+def load_parquet_data(uri: str, nrows = None, columns = None) -> pd.DataFrame:
     """Load data from Parquet file"""
     f = get_pyarrow_file(uri)
 
     if nrows is None:
-        table = pq.read_table(f)
+        table = pq.read_table(f, columns = columns)
     else:
         pf = pq.ParquetFile(f)
-        rows = next(pf.iter_batches(batch_size = nrows))
+        rows = next(pf.iter_batches(batch_size = nrows, columns = columns))
         table = pa.Table.from_batches([rows])
 
-    return arrow_to_geopandas(table)
+    return arrow_to_geopandas(table, allow_non_geo = True)
 
 
 def load_fiboa_schema(config):
