@@ -74,7 +74,7 @@ def describe(file, json, num = 10, column = []):
 @click.option(
     '--ext-schema', '-e',
     multiple=True,
-    callback=check_ext_schema_for_cli,
+    callback=lambda ctx, param, value: check_ext_schema_for_cli(value, allow_none = False),
     help='Maps a remote fiboa extension schema url to a local file. First the URL, then the local file path. Separated with a comma character. Example: https://example.com/schema.yaml,/path/to/schema.yaml',
 )
 @click.option(
@@ -86,7 +86,7 @@ def describe(file, json, num = 10, column = []):
 @click.option(
     '--collection', '-c',
     type=click.Path(exists=True),
-    help='Points to the STAC collection that defines the fiboa version and extensions.',
+    help='Points to the Collection that defines the fiboa version and extensions.',
     default=None
 )
 @click.option(
@@ -160,7 +160,7 @@ def validate_schema(files, metaschema):
 @click.option(
     '--collection', '-c',
     callback=valid_file_for_cli,
-    help='Points to the STAC collection that defines the fiboa version and extensions.',
+    help='Points to the Collection that defines the fiboa version and extensions. Only applies if not provided in the GeoJSON file (embedded or as link).',
     default=None
 )
 @click.option(
@@ -171,12 +171,24 @@ def validate_schema(files, metaschema):
 @click.option(
     '--ext-schema', '-e',
     multiple=True,
-    callback=check_ext_schema_for_cli,
-    help='Maps a remote fiboa extension schema url to a local file. First the URL, then the local file path. Separated with a comma character. Example: https://example.com/schema.json,/path/to/schema.json',
+    callback=lambda ctx, param, value: check_ext_schema_for_cli(value, allow_none = True),
+    help='Applicable fiboa extensions as URLs. Can map a remote fiboa extension schema url to a local file by adding a local file path, separated by a comma. Example: https://example.com/schema.json,/path/to/schema.json',
 )
-def create_geoparquet(files, out, collection, schema, ext_schema):
+@click.option(
+    '--fiboa-version', '-f',
+    type=click.STRING,
+    help=f'The applicable fiboa version if no collection is provided. Defaults to {fiboa_version_}.',
+    default=fiboa_version_
+)
+def create_geoparquet(files, out, collection, schema, ext_schema, fiboa_version):
     """
     Create a fiboa GeoParquet file from GeoJSON file(s).
+
+    The collection metadata has the following priority order:
+    1. Read from the last GeoJSON file/feature (embedded 'fiboa' property)
+    1. Read from the last GeoJSON file/feature (link with relation type 'collection')
+    2. Read from the collection parameter
+    3. Use fiboa_version and extension_schemas parameters
     """
     log(f"fiboa CLI {__version__} - Create GeoParquet\n", "success")
     config = {
@@ -185,12 +197,14 @@ def create_geoparquet(files, out, collection, schema, ext_schema):
         "schema": schema,
         "collection": collection,
         "extension_schemas": ext_schema,
+        "fiboa_version": fiboa_version
     }
-    try:
-        create_geoparquet_(config)
-    except Exception as e:
-        log(e, "error")
-        sys.exit(1)
+    create_geoparquet_(config)
+    # try:
+    #     create_geoparquet_(config)
+    # except Exception as e:
+    #     log(e, "error")
+    #     sys.exit(1)
 
 
 ## CREATE GEOJSON

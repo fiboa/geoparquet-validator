@@ -19,7 +19,7 @@ def create_parquet(data, columns, collection, output_file, config, missing_schem
         ext_map = config.get("extension_schemas", [])
         for ext in collection["fiboa_extensions"]:
             try:
-                if ext in ext_map:
+                if ext in ext_map and ext_map[ext] is not None:
                     path = ext_map[ext]
                     log(f"Redirecting {ext} to {path}", "info")
                 else:

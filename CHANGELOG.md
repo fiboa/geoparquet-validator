@@ -33,6 +33,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - `fiboa describe`: New parameters `--column` and `--num`
 
+### Changed
+
+- `fiboa create-geoparquet`: Allow collection creation based on parameters and define clear priority of collection inputs
+
 ### Fixed
 
 - `fiboa describe`: Show all columns / don't hide data with `...`

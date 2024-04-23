@@ -230,14 +230,15 @@ def get_collection(data, collection_path = None, basepath = None):
     return None
 
 
-def check_ext_schema_for_cli(ctx, param, value):
+def check_ext_schema_for_cli(value, allow_none = False):
     map = {}
     for v in value:
         try:
-            remote, local = v.split(",")
-            map[remote] = local
-        except ValueError:
-            raise click.BadParameter('Extension schema must be a URL and a local file path separated by a comma character')
+            part = v.split(",", 2)
+            map[part[0]] = None if len(part) < 2 and allow_none else part[1]
+        except IndexError:
+            optionally = "optionally " if allow_none else ""
+            raise click.BadParameter(f"Extension schema must be a URL and {optionally}a local file path separated by a comma character")
 
     return map
 

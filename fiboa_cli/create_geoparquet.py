@@ -24,15 +24,25 @@ def create_geoparquet(config):
         raise Exception("No valid features provided as input files")
 
     # Add a STAC collection to the fiboa property to the Parquet metadata
-    # todo: for features this loads the collection of the last feature only if not provided specifically
+    # Note: for features this loads the collection of the last feature only
+    # if not provided specifically via collection parameter
     collection = get_collection(geojson, config.get("collection"), file)
+
+    if collection is None:
+        # No collection found, create a default collection based on parameters
+        version = config.get("fiboa_version")
+        collection = {
+            "fiboa_version": version,
+            "fiboa_extensions": list(config.get("extension_schemas", {}).keys()),
+        }
+
+    # add a default id based on the output filename
     if "id" not in collection or not collection["id"]:
         collection["id"] = os.path.basename(output_file)
-    if "fiboa_version" not in collection:
-        raise Exception("No fiboa_version found in collection metadata")
-    else:
+
+    # Make the fiboa_version consistent with the collection
+    if "fiboa_version" in collection:
         config["fiboa_version"] = collection["fiboa_version"]
-    # todo: fill with more/better metadata
 
     # Get a list of the properties/columns (without duplicates)
     columns = set(["id", "geometry"])
