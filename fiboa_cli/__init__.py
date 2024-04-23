@@ -75,7 +75,7 @@ def describe(file, json, num = 10, column = []):
     '--ext-schema', '-e',
     multiple=True,
     callback=check_ext_schema_for_cli,
-    help='Maps a remote fiboa extension schema url to a local file. First the URL, then the local file path. Separated with a comma character. Example: https://example.com/schema.json,/path/to/schema.json',
+    help='Maps a remote fiboa extension schema url to a local file. First the URL, then the local file path. Separated with a comma character. Example: https://example.com/schema.yaml,/path/to/schema.yaml',
 )
 @click.option(
     '--fiboa-version', '-f',
