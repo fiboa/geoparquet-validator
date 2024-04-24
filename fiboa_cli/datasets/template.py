@@ -2,7 +2,7 @@
 #
 # Copy this file and rename it to something sensible.
 # The name of the file will be the name of the converter in the cli.
-# If you name it 'de_abc' you'll be able to run `fiboa convert de-abc` in the cli.
+# If you name it 'de_abc' you'll be able to run `fiboa convert de_abc` in the cli.
 
 from ..convert_utils import convert as convert_
 
