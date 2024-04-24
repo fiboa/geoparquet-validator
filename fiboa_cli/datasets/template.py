@@ -33,13 +33,13 @@ LICENSE = "CC-BY-4.0"
 # 2. a STAC Link Object with relation type "license"
 # LICENSE = {'title': 'CC-BY-4.0', 'href': 'https://creativecommons.org/licenses/by/4.0/', 'type': 'text/html', 'rel': 'license'}
 
-# A list of implemented extension identifiers
-EXTENSIONS = []
-
 # Map original column names to fiboa property names
 COLUMNS = {
     'area_m': 'area'
 }
+
+# A list of implemented extension identifiers
+EXTENSIONS = []
 
 # Functions to migrate data in columns to match the fiboa specification.
 # Example: You have a column area_m in square meters and want to convert
