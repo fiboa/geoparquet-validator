@@ -26,9 +26,6 @@ def describe(file, display_json=False, num=10, columns=None):
         if "fiboa_extensions" in collection and isinstance(collection["fiboa_extensions"], list):
             log_extensions(collection, log)
 
-        if "stac_version" in collection and not display_json:
-            log(f"STAC metadata included, add --json to show it", "warning")
-
         if (display_json):
             log(json.dumps(collection, indent=2))
         elif "stac_version" in collection:
