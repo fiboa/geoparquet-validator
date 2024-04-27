@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- ...
+- Fixed GeoJSON to GeoParquet conversion of the `date` data type
 
 ## [v0.3.7] - 2024-04-25
 

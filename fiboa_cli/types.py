@@ -79,9 +79,7 @@ def get_geopandas_dtype(type, required = False, schema = {}):
         return lambda series: series.apply(lambda x: np.array(x))
     elif type == "object":
         return "object"
-    elif type == "date":
-        return "datetime64[D]"
-    elif type == "date-time":
+    elif type == "date" or type == "date-time":
         return lambda series: pd.to_datetime(series)
     elif type == "geometry":
         return None, # not a column, don't convert geometry
@@ -156,6 +154,7 @@ def get_pyarrow_type_for_geopandas(dtype):
     elif dtype == "datetime64":
         return pa.timestamp("ms", tz="UTC")
     else:
+        print(dtype)
         return None
 
 
