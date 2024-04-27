@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Converter for Thuringia, Germany (`de_th`)
+- ...
 
 ### Changed
 
@@ -22,6 +22,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 
 - ...
+
+### Fixed
+
+- ...
+
+## [v0.3.8] - 2024-04-27
+
+### Added
+
+- Converter for Thuringia, Germany (`de_th`)
 
 ### Fixed
 
@@ -193,7 +203,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release
 
-[Unreleased]: <https://github.com/fiboa/cli/compare/v0.3.7...main>
+[Unreleased]: <https://github.com/fiboa/cli/compare/v0.3.8...main>
+[v0.3.8]: <https://github.com/fiboa/cli/compare/v0.3.7...v0.3.8>
 [v0.3.7]: <https://github.com/fiboa/cli/compare/v0.3.6...v0.3.7>
 [v0.3.6]: <https://github.com/fiboa/cli/compare/v0.3.5...v0.3.6>
 [v0.3.5]: <https://github.com/fiboa/cli/compare/v0.3.4...v0.3.5>
