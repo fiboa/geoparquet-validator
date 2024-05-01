@@ -25,6 +25,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- ...
+
+## [v0.3.9] - 2024-05-01
+
+### Fixed
+
 - JSON Schema and GeoJSON validation also errors when the data doesn't comply to the given formats
 
 ## [v0.3.8] - 2024-04-27
@@ -203,7 +209,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release
 
-[Unreleased]: <https://github.com/fiboa/cli/compare/v0.3.8...main>
+[Unreleased]: <https://github.com/fiboa/cli/compare/v0.3.9...main>
+[v0.3.9]: <https://github.com/fiboa/cli/compare/v0.3.8...v0.3.9>
 [v0.3.8]: <https://github.com/fiboa/cli/compare/v0.3.7...v0.3.8>
 [v0.3.7]: <https://github.com/fiboa/cli/compare/v0.3.6...v0.3.7>
 [v0.3.6]: <https://github.com/fiboa/cli/compare/v0.3.5...v0.3.6>
