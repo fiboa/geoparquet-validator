@@ -21,7 +21,7 @@ setup(
     author="Matthias Mohr",
     url="https://github.com/fiboa/cli",
     install_requires=[
-        "jsonschema>=4.20",
+        "jsonschema[format]>=4.20",
         "pyyaml>=6.0",
         "pyarrow>=14.0",
         "fsspec>=2024.0",

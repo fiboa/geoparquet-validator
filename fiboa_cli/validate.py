@@ -1,7 +1,7 @@
 import json
 import pyarrow.types as pat
 
-from jsonschema.validators import Draft7Validator
+from jsonschema.validators import Draft202012Validator
 from .types import PA_TYPE_CHECK
 from .jsonschema import create_jsonschema
 from .util import get_collection, log as log_, log_extensions, load_datatypes, load_file, load_fiboa_schema, load_parquet_data, load_parquet_schema, merge_schemas, parse_metadata, load_collection_schema, load_geoparquet_schema
@@ -293,6 +293,6 @@ def validate_json_schema(obj, schema):
     if isinstance(obj, (bytearray, bytes, str)):
         obj = json.loads(obj)
 
-    validator = Draft7Validator(schema)
+    validator = Draft202012Validator(schema, format_checker=Draft202012Validator.FORMAT_CHECKER)
     errors = sorted(validator.iter_errors(obj), key=lambda e: e.path)
     return errors

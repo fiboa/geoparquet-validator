@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- ...
+- JSON Schema and GeoJSON validation also errors when the data doesn't comply to the given formats
 
 ## [v0.3.8] - 2024-04-27
 

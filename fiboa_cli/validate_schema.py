@@ -33,6 +33,6 @@ def validate_schema(file, config):
         return True
 
 def validate_json_schema(obj, schema):
-    validator = Draft202012Validator(schema)
+    validator = Draft202012Validator(schema, format_checker=Draft202012Validator.FORMAT_CHECKER)
     errors = sorted(validator.iter_errors(obj), key=lambda e: e.path)
     return errors
