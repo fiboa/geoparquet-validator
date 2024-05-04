@@ -26,7 +26,7 @@ def convert(
         attribution = None,
         store_collection = False,
         license = None,
-        compression = "brotli",
+        compression = "zstd",
         **kwargs):
     """
     Converts a German field boundary datasets to fiboa.
