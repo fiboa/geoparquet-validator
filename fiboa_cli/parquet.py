@@ -8,7 +8,7 @@ from .types import get_geopandas_dtype, get_pyarrow_type_for_geopandas, get_pyar
 from .util import log, load_fiboa_schema, load_file, merge_schemas
 from .geopandas import to_parquet
 
-def create_parquet(data, columns, collection, output_file, config, missing_schemas = {}, compression = "brotli"):
+def create_parquet(data, columns, collection, output_file, config, missing_schemas = {}, compression = "zstd"):
     # Load the data schema
     fiboa_schema = load_fiboa_schema(config)
     schemas = merge_schemas(missing_schemas, fiboa_schema)
