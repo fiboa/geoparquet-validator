@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Added step that allows to set constant values (`ADD_COLUMNS`)
   - Support for reading GeoParquet files
   - Help lists all available converters
+- `fiboa converters`: More detailed list of available converters/datasets
 
 ### Changed
 

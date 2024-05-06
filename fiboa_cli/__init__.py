@@ -1,9 +1,10 @@
 import click
-import sys
 import json
+import pandas as pd
 import os
+import sys
 
-from .convert import convert as convert_, list_all_converter_ids
+from .convert import convert as convert_, list_all_converter_ids, list_all_converters
 from .create_geoparquet import create_geoparquet as create_geoparquet_
 from .create_geojson import create_geojson as create_geojson_
 from .describe import describe as describe_
@@ -335,6 +336,24 @@ def convert(dataset, out, cache, source_coop, collection):
         sys.exit(1)
 
 
+## CONVERTERS
+@click.command()
+def converters():
+    """
+    Lists all available converters.
+    """
+    log(f"fiboa CLI {__version__} - List of Converters\n", "success")
+
+    keys = ["TITLE", "LICENSE", "PROVIDER_NAME", "URI"]
+    converters = list_all_converters(keys)
+    df = pd.DataFrame.from_dict(converters, orient='index', columns=keys)
+
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+
+    log(df)
+
+
 ## RENAME EXTENSION
 @click.command()
 @click.argument('folder', nargs=1, callback=valid_folder_for_cli)
@@ -381,6 +400,7 @@ cli.add_command(create_geoparquet)
 cli.add_command(create_geojson)
 cli.add_command(jsonschema)
 cli.add_command(convert)
+cli.add_command(converters)
 cli.add_command(rename_extension)
 
 if __name__ == '__main__':

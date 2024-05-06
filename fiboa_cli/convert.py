@@ -17,6 +17,19 @@ def list_all_converter_ids():
     ignore = ["__init__.py", "template.py"]
     return [f[:-3] for f in files if f.endswith(".py") and f not in ignore]
 
+def list_all_converters(keys):
+    converters = {}
+    for id in list_all_converter_ids():
+        obj = {}
+        try:
+            converter = read_converter(id)
+            for key in keys:
+                obj[key] = getattr(converter, key)
+            converters[id] = obj
+        except ImportError:
+            pass
+    return converters
+
 def read_converter(id):
     module_name = f".datasets.{id}"
     return importlib.import_module(module_name, package="fiboa_cli")
