@@ -32,16 +32,21 @@ You should see usage instructions and [available commands](#commands) for the CL
 
 fiboa CLI supports various commands to work with the files:
 
-- [Inspect fiboa GeoParquet files](#inspect-fiboa-geoparquet-file)
-- [Validation fiboa GeoParquet and GeoJSON files](#validation)
-- [Convert existing non-fiboa datasets to a fiboa GeoParquet file](#converter-for-existing-datasets)
-- File Format Conversion:
-  - [Create a fiboa GeoParquet file from GeoJSON files](#create-fiboa-geoparquet-from-geojson)
-  - [Create fiboa GeoJSON files from a GeoParquet file](#create-fiboa-geojson-from-geoparquet)
-- Extension and Spec development:
-  - [Update an extension template with new names](#update-an-extension-template-with-new-names)
-  - [Validate a fiboa Schema](#validate-a-fiboa-schema)
-  - [Create JSON Schema from fiboa Schema](#create-json-schema-from-fiboa-schema)
+- [fiboa CLI](#fiboa-cli)
+  - [Getting Started](#getting-started)
+    - [Installation](#installation)
+    - [Execute a command](#execute-a-command)
+  - [Commands](#commands)
+    - [Validation](#validation)
+    - [Create fiboa GeoParquet from GeoJSON](#create-fiboa-geoparquet-from-geojson)
+    - [Create fiboa GeoJSON from GeoParquet](#create-fiboa-geojson-from-geoparquet)
+    - [Inspect fiboa GeoParquet file](#inspect-fiboa-geoparquet-file)
+    - [Create JSON Schema from fiboa Schema](#create-json-schema-from-fiboa-schema)
+    - [Validate a fiboa Schema](#validate-a-fiboa-schema)
+    - [Update an extension template with new names](#update-an-extension-template-with-new-names)
+    - [Converter for existing datasets](#converter-for-existing-datasets)
+  - [Development](#development)
+    - [Implement a converter](#implement-a-converter)
 
 ## Commands
 
@@ -126,16 +131,14 @@ Check `fiboa rename-extension --help` for more details.
 
 ### Converter for existing datasets
 
-To convert an existing dataset to fiboa using the pre-defined converters:
+The CLI ships various converters for existing datasets.
+
+To get a list of available converters/datasets with title, license, etc. run:
+- `fiboa converters`
+
+Use any of the IDs from the list to convert an existing dataset to fiboa:
 
 - `fiboa convert de_nrw`
-
-Available converters:
-- `at` (Austria)
-- `de_bb` (Berlin/Brandenburh, Germany)
-- `de_nds` (Lowe Saxony, Germany)
-- `de_nrw` (North Rhine-Westphalia, Germany)
-- `de_sh` (Schleswig-Holstein, Germany)
 
 See [Implement a converter](#implement-a-converter) for details about how to 
 
