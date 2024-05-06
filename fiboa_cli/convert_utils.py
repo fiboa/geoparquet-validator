@@ -36,8 +36,11 @@ def convert(
         log("Loading file from: " + url)
     path = download_file(url, cache_file)
 
-    log("Local file is at: " + path)
-    gdf = gpd.read_file(path, **kwargs)
+    # If file is a parquet file then read with read_parquet
+    if path.endswith(".parquet") or path.endswith(".geoparquet"):
+        gdf = gpd.read_parquet(path, **kwargs)
+    else:
+        gdf = gpd.read_file(path, **kwargs)
 
     log("Loaded into GeoDataFrame:")
     print(gdf.head())

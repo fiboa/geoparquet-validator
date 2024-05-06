@@ -108,7 +108,7 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
                       Can be used to avoid repetitive downloads from the original data source.
     source_coop_url (str): URL to the (future) Source Cooperative repository. Default: None
     collection (bool): Additionally, store the collection separate from Parquet file. Default: False
-    kwargs: Additional keyword arguments for GeoPandas read_file() function.
+    kwargs: Additional keyword arguments for GeoPanda's read_file() or read_parquet() function.
     """
     convert_(
         output_file,
