@@ -122,31 +122,6 @@ MISSING_SCHEMAS = {
 
 # Conversion function, usually no changes required
 def convert(output_file, cache_file = None, source_coop_url = None, collection = False):
-    """
-    Converts the field boundary datasets to fiboa.
-
-    For reference, this is the order in which the conversion steps are applied:
-    0. Read GeoDataFrame from file
-    1. Run global migration (if provided through MIGRATION)
-    2. Run filters to remove rows that shall not be in the final data
-       (if provided through COLUMN_FILTERS)
-    3. Run column migrations (if provided through COLUMN_MIGRATIONS)
-    4. Duplicate columns (if an array is provided as the value in COLUMNS)
-    5. Rename columns (as provided in COLUMNS)
-    6. Remove columns (if column is not present as value in COLUMNS)
-    7. Create the collection
-    8. Change data types of the columns based on the provided schemas
-    (fiboa spec, extensions, and MISSING_SCHEMAS)
-    9. Write the data to the Parquet file
-
-    Parameters:
-    output_file (str): Path where the Parquet file shall be stored.
-    cache_file (str): Path to a cached file of the data. Default: None.
-                      Can be used to avoid repetitive downloads from the original data source.
-    source_coop_url (str): URL to the (future) Source Cooperative repository. Default: None
-    collection (bool): Additionally, store the collection separate from Parquet file. Default: False
-    kwargs: Additional keyword arguments for GeoPandas read_file() function.
-    """
     convert_(
         output_file,
         cache_file,
