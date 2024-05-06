@@ -83,7 +83,7 @@ MISSING_SCHEMAS = {
 
 
 # Conversion function, usually no changes required
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False):
+def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
     """
     Converts the field boundary datasets to fiboa.
 
@@ -130,5 +130,6 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
         migration=MIGRATION,
         attribution=ATTRIBUTION,
         store_collection=collection,
-        license=LICENSE
+        license=LICENSE,
+        compression=compression,
     )

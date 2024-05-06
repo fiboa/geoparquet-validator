@@ -121,7 +121,7 @@ MISSING_SCHEMAS = {
 
 
 # Conversion function, usually no changes required
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False):
+def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
     convert_(
         output_file,
         cache_file,
@@ -141,5 +141,6 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
         column_filters=COLUMN_FILTERS,
         attribution=ATTRIBUTION,
         store_collection=collection,
-        license=LICENSE
+        license=LICENSE,
+        compression=compression,
     )

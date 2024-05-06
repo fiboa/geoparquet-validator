@@ -17,7 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- `fiboa convert`: `determination_datetime` is not required any longer
+- `fiboa convert`:
+  - `determination_datetime` is not required any longer
+  - Default compression changed from `brotli` to `zstd`
 
 ### Deprecated
 

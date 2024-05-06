@@ -2,7 +2,7 @@ import importlib
 import os
 from . import datasets
 
-def convert(dataset, output_file, cache_file = None, source_coop_url = None, collection = False):
+def convert(dataset, output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
     if dataset == "template":
         raise Exception(f"Converter for dataset 'template' not available")
     try:
@@ -10,7 +10,7 @@ def convert(dataset, output_file, cache_file = None, source_coop_url = None, col
     except ImportError as e:
         raise Exception(f"Converter for '{dataset}' not available or faulty: {e}")
 
-    converter.convert(output_file, cache_file = cache_file, source_coop_url = source_coop_url, collection = collection)
+    converter.convert(output_file, cache_file = cache_file, source_coop_url = source_coop_url, collection = collection, compression = compression)
 
 def list_all_converter_ids():
     files = os.listdir(datasets.__path__[0])

@@ -8,7 +8,7 @@ from .types import get_geopandas_dtype, get_pyarrow_type_for_geopandas, get_pyar
 from .util import log, load_fiboa_schema, load_file, merge_schemas
 from .geopandas import to_parquet
 
-def create_parquet(data, columns, collection, output_file, config, missing_schemas = {}, compression = "brotli"):
+def create_parquet(data, columns, collection, output_file, config, missing_schemas = {}, compression = None):
     # Load the data schema
     fiboa_schema = load_fiboa_schema(config)
     schemas = merge_schemas(missing_schemas, fiboa_schema)
@@ -68,6 +68,10 @@ def create_parquet(data, columns, collection, output_file, config, missing_schem
     # Define the schema for the Parquet file
     pq_schema = pa.schema(pq_fields)
     pq_schema = pq_schema.with_metadata({"fiboa": json.dumps(collection).encode("utf-8")})
+
+    # See also https://github.com/fiboa/cli/pull/30
+    if compression is None:
+        compression = "zstd"
 
     # Write the data to the Parquet file
     # Proprietary function exported from geopandas to solve
