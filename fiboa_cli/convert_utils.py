@@ -187,7 +187,9 @@ def create_collection(
         min_time = to_iso8601(dates.min())
         max_time = to_iso8601(dates.max())
 
-        collection["extent"]["temporal"]["interval"] = [[min_time, max_time]]
+        collection["extent"]["temporal"] = {
+            "interval": [[min_time, max_time]]
+        }
         # Without temporal extent it's not valid STAC
         collection["stac_version"] = "1.0.0"
 
