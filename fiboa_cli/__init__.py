@@ -199,12 +199,11 @@ def create_geoparquet(files, out, collection, schema, ext_schema, fiboa_version)
         "extension_schemas": ext_schema,
         "fiboa_version": fiboa_version
     }
-    create_geoparquet_(config)
-    # try:
-    #     create_geoparquet_(config)
-    # except Exception as e:
-    #     log(e, "error")
-    #     sys.exit(1)
+    try:
+        create_geoparquet_(config)
+    except Exception as e:
+        log(e, "error")
+        sys.exit(1)
 
 
 ## CREATE GEOJSON
