@@ -3,7 +3,7 @@ import sys
 import json
 import os
 
-from .convert import convert as convert_
+from .convert import convert as convert_, list_all_converter_ids
 from .create_geoparquet import create_geoparquet as create_geoparquet_
 from .create_geojson import create_geojson as create_geojson_
 from .describe import describe as describe_
@@ -297,7 +297,7 @@ def jsonschema(schema, out, fiboa_version, id_):
 
 ## CONVERT
 @click.command()
-@click.argument('dataset', nargs=1)
+@click.argument('dataset', nargs=1, type=click.Choice(list_all_converter_ids()))
 @click.option(
     '--out', '-o',
     type=click.Path(exists=False),
