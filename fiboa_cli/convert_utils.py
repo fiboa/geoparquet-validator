@@ -20,13 +20,14 @@ def convert(
         source_coop_url = None,
         extensions = [],
         missing_schemas = {},
+        column_additions = {},
         column_filters = {},
         column_migrations = {},
         migration = None,
         attribution = None,
         store_collection = False,
         license = None,
-        compression = "brotli",
+        compression = None,
         **kwargs):
     """
     Converts a German field boundary datasets to fiboa.
@@ -35,8 +36,11 @@ def convert(
         log("Loading file from: " + url)
     path = download_file(url, cache_file)
 
-    log("Local file is at: " + path)
-    gdf = gpd.read_file(path, **kwargs)
+    # If file is a parquet file then read with read_parquet
+    if path.endswith(".parquet") or path.endswith(".geoparquet"):
+        gdf = gpd.read_parquet(path, **kwargs)
+    else:
+        gdf = gpd.read_file(path, **kwargs)
 
     log("Loaded into GeoDataFrame:")
     print(gdf.head())
@@ -73,7 +77,15 @@ def convert(
             else:
                 log(f"Column '{key}' not found in dataset, skipping filter", "warning")
 
-    # 3. Run column migrations
+    # 3. Add constant columns
+    has_col_additions = len(column_additions) > 0
+    if has_col_additions:
+        log("Adding columns")
+        for key, value in column_additions.items():
+            gdf[key] = value
+            columns.append(key)
+
+    # 4. Run column migrations
     has_col_migrations = len(column_migrations) > 0
     if has_col_migrations:
         log("Applying column migrations")
@@ -83,11 +95,11 @@ def convert(
             else:
                 log(f"Column '{key}' not found in dataset, skipping migration", "warning")
 
-    if has_migration or has_col_migrations or has_col_filters:
+    if has_migration or has_col_migrations or has_col_filters or has_col_additions:
         log("GeoDataFrame after migrations and filters:")
         print(gdf.head())
 
-    # 4. Duplicate columns if needed
+    # 5. Duplicate columns if needed
     actual_columns = {}
     for old_key, new_key in columns.items():
         # If new keys are a list, duplicate the column
@@ -102,10 +114,10 @@ def convert(
         else:
             log(f"Column '{old_key}' not found in dataset, removing from schema", "warning")
 
-    # 5. Rename columns
+    # 6. Rename columns
     gdf.rename(columns = actual_columns, inplace = True)
 
-    # 6. Remove all columns that are not listed
+    # 7. Remove all columns that are not listed
     drop_columns = list(set(gdf.columns) - set(actual_columns.values()))
     gdf.drop(columns = drop_columns, inplace = True)
 
@@ -153,17 +165,9 @@ def create_collection(
     """
     Creates a collection for the field boundary datasets.
     """
-    if "determination_datetime" not in gdf.columns:
-        raise ValueError("determination_datetime column not available")
-
-    dates = pd.to_datetime(gdf['determination_datetime'])
-    min_time = to_iso8601(dates.min())
-    max_time = to_iso8601(dates.max())
-
     collection = {
         "fiboa_version": fiboa_version,
         "fiboa_extensions": extensions,
-        "stac_version": "1.0.0",
         "type": "Collection",
         "id": id,
         "title": title,
@@ -173,13 +177,21 @@ def create_collection(
         "extent": {
             "spatial": {
                 "bbox": [bbox]
-            },
-            "temporal": {
-                "interval": [[min_time, max_time]]
             }
         },
         "links": []
     }
+
+    if "determination_datetime" in gdf.columns:
+        dates = pd.to_datetime(gdf['determination_datetime'])
+        min_time = to_iso8601(dates.min())
+        max_time = to_iso8601(dates.max())
+
+        collection["extent"]["temporal"] = {
+            "interval": [[min_time, max_time]]
+        }
+        # Without temporal extent it's not valid STAC
+        collection["stac_version"] = "1.0.0"
 
     # Add providers
     if provider_name is not None:

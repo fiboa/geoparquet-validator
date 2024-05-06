@@ -1,9 +1,10 @@
 import click
-import sys
 import json
+import pandas as pd
 import os
+import sys
 
-from .convert import convert as convert_
+from .convert import convert as convert_, list_all_converter_ids, list_all_converters
 from .create_geoparquet import create_geoparquet as create_geoparquet_
 from .create_geojson import create_geojson as create_geojson_
 from .describe import describe as describe_
@@ -199,12 +200,11 @@ def create_geoparquet(files, out, collection, schema, ext_schema, fiboa_version)
         "extension_schemas": ext_schema,
         "fiboa_version": fiboa_version
     }
-    create_geoparquet_(config)
-    # try:
-    #     create_geoparquet_(config)
-    # except Exception as e:
-    #     log(e, "error")
-    #     sys.exit(1)
+    try:
+        create_geoparquet_(config)
+    except Exception as e:
+        log(e, "error")
+        sys.exit(1)
 
 
 ## CREATE GEOJSON
@@ -298,7 +298,7 @@ def jsonschema(schema, out, fiboa_version, id_):
 
 ## CONVERT
 @click.command()
-@click.argument('dataset', nargs=1)
+@click.argument('dataset', nargs=1, type=click.Choice(list_all_converter_ids()))
 @click.option(
     '--out', '-o',
     type=click.Path(exists=False),
@@ -308,7 +308,7 @@ def jsonschema(schema, out, fiboa_version, id_):
 @click.option(
     '--cache', '-c',
     type=click.Path(exists=False),
-    help='For network requests: Local cache file to store the downloaded file to avoid multiple downloads.',
+    help='By default the CLI downloads the source data on every execution. Specify a local file path to avoid downloading the file again. If the file exists, reads from the path, otherwise stores the file there.',
     default=None
 )
 @click.option(
@@ -324,16 +324,40 @@ def jsonschema(schema, out, fiboa_version, id_):
     help='Export a Collection JSON alongside the data file.',
     default=False
 )
-def convert(dataset, out, cache, source_coop, collection):
+@click.option(
+    '--compression', '-pc',
+    type=click.Choice(["brotli", "gzip", "lz4", "snappy", "zstd", "none"]),
+    help='Compression method for the Parquet file. Defaults to zstd.',
+    default="zstd"
+)
+def convert(dataset, out, cache, source_coop, collection, compression):
     """
     Converts existing field boundary datasets to fiboa.
     """
     log(f"fiboa CLI {__version__} - Convert '{dataset}'\n", "success")
     try:
-        convert_(dataset, out, cache, source_coop, collection)
+        convert_(dataset, out, cache, source_coop, collection, compression)
     except Exception as e:
         log(e, "error")
         sys.exit(1)
+
+
+## CONVERTERS
+@click.command()
+def converters():
+    """
+    Lists all available converters.
+    """
+    log(f"fiboa CLI {__version__} - List of Converters\n", "success")
+
+    keys = ["TITLE", "LICENSE", "PROVIDER_NAME", "URI"]
+    converters = list_all_converters(keys)
+    df = pd.DataFrame.from_dict(converters, orient='index', columns=keys)
+
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+
+    log(df)
 
 
 ## RENAME EXTENSION
@@ -382,6 +406,7 @@ cli.add_command(create_geoparquet)
 cli.add_command(create_geojson)
 cli.add_command(jsonschema)
 cli.add_command(convert)
+cli.add_command(converters)
 cli.add_command(rename_extension)
 
 if __name__ == '__main__':
