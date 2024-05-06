@@ -83,7 +83,7 @@ def convert(
         log("Adding columns")
         for key, value in column_additions.items():
             gdf[key] = value
-            columns.append(key)
+            columns[key] = key
 
     # 4. Run column migrations
     has_col_migrations = len(column_migrations) > 0
@@ -236,7 +236,7 @@ def create_collection(
                 "type": "text/html",
                 "rel": "license"
             })
-        elif re.match(r"^[\w-]+$", license):
+        elif re.match(r"^[\w\.-]+$", license):
             collection["license"] = license
         else:
             log(f"Invalid license identifier: {license}", "warning")
