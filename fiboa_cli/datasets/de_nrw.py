@@ -34,7 +34,7 @@ MISSING_SCHEMAS = {
     }
 }
 
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False):
+def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
     """
     Converts the NRW (Germany) field boundary datasets to fiboa.
     """
@@ -47,5 +47,6 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
         source_coop_url=source_coop_url,
         provider_name=PROVIDER_NAME,
         provider_url=PROVIDER_URL,
-        store_collection=collection
+        store_collection=collection,
+        compression=compression,
     )

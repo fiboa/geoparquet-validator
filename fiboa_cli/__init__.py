@@ -324,13 +324,19 @@ def jsonschema(schema, out, fiboa_version, id_):
     help='Export a Collection JSON alongside the data file.',
     default=False
 )
-def convert(dataset, out, cache, source_coop, collection):
+@click.option(
+    '--compression', '-pc',
+    type=click.Choice(["brotli", "gzip", "lz4", "snappy", "zstd", "none"]),
+    help='Compression method for the Parquet file. Defaults to zstd.',
+    default="zstd"
+)
+def convert(dataset, out, cache, source_coop, collection, compression):
     """
     Converts existing field boundary datasets to fiboa.
     """
     log(f"fiboa CLI {__version__} - Convert '{dataset}'\n", "success")
     try:
-        convert_(dataset, out, cache, source_coop, collection)
+        convert_(dataset, out, cache, source_coop, collection, compression)
     except Exception as e:
         log(e, "error")
         sys.exit(1)
