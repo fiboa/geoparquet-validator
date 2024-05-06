@@ -19,9 +19,6 @@ from ..convert_utils import convert as convert_
 # This one should work, but it's a 6 gig file, so it'll take a while to download.
 URI = "https://data.source.coop/cholmes/eurocrops/unprojected/flatgeobuf/FR_2018_EC21.fgb"
 
-# This line I used for calling local files after downloading manually, which worked well.
-#URI = "/Users/cholmes/Downloads/FR_2018/FR_2018_EC21.shp"
-
 # Unique identifier for the collection
 ID = "fr_ec"
 # Title of the collection
@@ -38,11 +35,9 @@ The work is licensed under a [Creative Commons Attribution-ShareAlike 4.0 Intern
 The project developed a new **Hierarchical Crop and Agriculture Taxonomy (HCAT)** that harmonises all declared crops across the European Union. 
 In the data you'll find this as additional attributes:
 
-| Attribute Name | Explanation                                                 |
-| -------------- | ----------------------------------------------------------- |
-| EC_trans_n     | The original crop name translated into English              |
-| EC_hcat_n      | The machine-readable HCAT name of the crop                  |
-| EC_hcat_c      | The 10-digit HCAT code indicating the hierarchy of the crop |
+- `EC_trans_n`: The original crop name translated into English
+- `EC_hcat_n`: The machine-readable HCAT name of the crop
+- `EC_hcat_c`: The 10-digit HCAT code indicating the hierarchy of the crop
 """
 # Bounding box of the data in WGS84 coordinates
 BBOX = [-6.047022416643922, -3.916364769838749, 68.89050422648864, 51.075100624023094] 
@@ -67,7 +62,6 @@ COLUMNS = {
     'SURF_PARC': 'area', #fiboa core field
     'CODE_CULTU': 'code_culture', #fiboa custom field
     'CODE_GROUP': 'code_group', #fiboa custom field
-    'CULTURE_D2': 'determination_datetime', #fiboa core field - this is a hack to get a fixed date in the field.
     'EC_trans_n': 'EC_trans_n', #fiboa custom field
     'EC_hcat_n': 'EC_hcat_n', #fiboa custom field
     'EC_hcat_c': 'EC_hcat_c' #fiboa custom field
@@ -81,13 +75,12 @@ EXTENSIONS = []
 # to hectares as required for the area field in fiboa.
 # Function signature:
 #   func(column: pd.Series) -> pd.Series
-COLUMN_MIGRATIONS = {
-    # replace any value in CULTURE_D2 column with 2018-01-15. This is a complete
-    # hack to get a fixed date in the field. I tried to use the 'migration' but couldn't quite
-    # get it to work. Ideally there'd be a way to just add a new column with a fixed value, but
-    # the various options seemed to all require a column to be present in the original data.
-    'CULTURE_D2': lambda column: pd.Timestamp('2018-01-15')
+COLUMN_MIGRATIONS = {}
+
+ADD_COLUMNS = {
+  "determination_datetime": "2018-01-15T00:00:00Z"
 }
+
 
 # Filter columns to only include the ones that are relevant for the collection,
 # e.g. only rows that contain the word "agriculture" but not "forest" in the column "land_cover_type".
@@ -99,17 +92,12 @@ COLUMN_FILTERS = {
 # This should be the last resort!
 # Function signature:
 #   func(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame
-MIGRATION = {
-    # Set the determination datetime to a fixed value of 2018-01-15
-    # Note this didn't work, so I had to use the COLUMN_MIGRATIONS hack above.
-    #'determination_datetime': lambda gdf: gdf.assign(determination_datetime=pd.Timestamp('2018-01-15'))
-
-}
+MIGRATION = None
 
 # Schemas for the fields that are not defined in fiboa
 # Keys must be the values from the COLUMNS dict, not the keys
 MISSING_SCHEMAS = {
-'required': ['code_culture', 'code_group', 'EC_trans_n','EC_hcat_n', 'EC_hcat_c'], # i.e. non-nullable properties
+    'required': ['code_culture', 'code_group', 'EC_trans_n','EC_hcat_n', 'EC_hcat_c'], # i.e. non-nullable properties
     'properties': {
         'code_culture': {
             'type': 'string'
@@ -131,7 +119,7 @@ MISSING_SCHEMAS = {
 
 
 # Conversion function, usually no changes required
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False):
+def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
     """
     Converts the field boundary datasets to fiboa.
 
@@ -173,8 +161,10 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
         missing_schemas=MISSING_SCHEMAS,
         column_migrations=COLUMN_MIGRATIONS,
         column_filters=COLUMN_FILTERS,
+        column_additions=ADD_COLUMNS,
         migration=MIGRATION,
         attribution=ATTRIBUTION,
         store_collection=collection,
-        license=LICENSE
+        license=LICENSE,
+        compression=compression
     )
