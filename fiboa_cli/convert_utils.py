@@ -33,16 +33,17 @@ def convert(
     Converts a German field boundary datasets to fiboa.
     """
     if not isinstance(get_fs(url), LocalFileSystem):
-        log("Loading file from: " + url)
+        log("Loading file")
     path = download_file(url, cache_file)
 
+    log("Reading into GeoDataFrame")
     # If file is a parquet file then read with read_parquet
     if path.endswith(".parquet") or path.endswith(".geoparquet"):
         gdf = gpd.read_parquet(path, **kwargs)
     else:
         gdf = gpd.read_file(path, **kwargs)
 
-    log("Loaded into GeoDataFrame:")
+    log("GeoDataFrame created from source:")
     print(gdf.head())
 
     # 1. Run global migration
@@ -121,7 +122,7 @@ def convert(
     drop_columns = list(set(gdf.columns) - set(actual_columns.values()))
     gdf.drop(columns = drop_columns, inplace = True)
 
-    log("Changed GeoDataFrame to:")
+    log("GeoDataFrame fully migrated:")
     print(gdf.head())
 
     collection = create_collection(
