@@ -25,8 +25,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- ...
-- 
+- `fiboa validate-schema`: The `-m` option is applied correctly if `$schema` is present in schema
+
 ## [v0.3.10] - 2024-05-06
 
 ### Added

@@ -13,7 +13,7 @@ def validate_schema(file, config):
         return False
 
     metaschema_uri = config.get("metaschema")
-    if "$schema" in schema:
+    if metaschema_uri is None:
         metaschema_uri = schema.get("$schema", metaschema_uri)
     if metaschema_uri is None:
         log("No metaschema provided", "error")
