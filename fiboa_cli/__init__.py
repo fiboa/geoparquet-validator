@@ -3,6 +3,7 @@ import json
 import pandas as pd
 import os
 import sys
+import time
 
 from .convert import convert as convert_, list_all_converter_ids, list_all_converters
 from .create_geoparquet import create_geoparquet as create_geoparquet_
@@ -97,10 +98,19 @@ def describe(file, json, num = 10, column = []):
     help='EXPERIMENTAL: Validate the data in the GeoParquet file. Enabling this might be slow or exceed memory. Default is False.',
     default=False
 )
-def validate(files, schema, ext_schema, fiboa_version, collection, data):
+@click.option(
+    '--timer',
+    is_flag=True,
+    type=click.BOOL,
+    help='Measure the time the validation took.',
+    default=False,
+    hidden=True
+)
+def validate(files, schema, ext_schema, fiboa_version, collection, data, timer):
     """
     Validates a fiboa GeoParquet or GeoJSON file.
     """
+    start = time.perf_counter()
     log(f"fiboa CLI {__version__} - Validator\n", "success")
     config = {
         "schema": schema,
@@ -109,18 +119,30 @@ def validate(files, schema, ext_schema, fiboa_version, collection, data):
         "collection": collection,
         "data": data,
     }
+    exit = 0
     for file in files:
         log(f"Validating {file}", "info")
         try:
+            start_step = time.perf_counter()
             result = validate_(file, config)
             if result:
                 log("\n  => VALID\n", "success")
             else:
                 log("\n  => INVALID\n", "error")
-                sys.exit(1)
+                exit = 1
         except Exception as e:
             log(f"\n  => UNKNOWN: {e}\n", "error")
-            sys.exit(2)
+            exit = 2
+        finally:
+            if timer:
+                end_step = time.perf_counter()
+                log(f"Validated {file} in {end_step - start_step:0.4f} seconds")
+
+    if timer:
+        end = time.perf_counter()
+        log(f"All validated in {end - start:0.4f} seconds")
+
+    sys.exit(exit)
 
 
 ## VALIDATE SCHEMA
@@ -140,13 +162,14 @@ def validate_schema(files, metaschema):
     config = {
         "metaschema": metaschema
     }
+    exit = 0
     for file in files:
         log(f"Validating {file}", "info")
         result = validate_schema_(file, config)
-        if result:
-            sys.exit(0)
-        else:
-            sys.exit(1)
+        if not result:
+            exit = 1
+
+    sys.exit(exit)
 
 
 ## CREATE PARQUET

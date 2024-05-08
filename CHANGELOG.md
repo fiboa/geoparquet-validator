@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - `fiboa validate-schema`: The `-m` option is applied correctly if `$schema` is present in schema
+- `fiboa validate` and `fiboa validate-schema`: Don't stop validation after the first file.
 
 ## [v0.3.10] - 2024-05-06
 
