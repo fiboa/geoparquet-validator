@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- ...
+- The validator is more robust against invalid collections and doesn't abort if not needed
 
 ### Deprecated
 
