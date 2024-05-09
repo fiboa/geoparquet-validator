@@ -2,10 +2,9 @@ import re
 import pandas as pd
 
 from urllib.parse import urlparse
-from shapely.geometry.base import BaseGeometry
 from shapely.validation import explain_validity
 
-from .types import PYTHON_TYPES
+from .types import PYTHON_TYPES, is_numerical_type, is_scalar_type
 
 REGEX_EMAIL = re.compile("[^@]+@[^@]+\.[^@]+")
 REGEX_UUID = re.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\Z")
@@ -17,24 +16,24 @@ def validate_column(data, rules):
             # Skip validation for NaN values or implement special handling if required
             continue
 
-        dtype = rules.get('type')
-        python_type = PYTHON_TYPES.get(dtype)
-        if python_type is not None and not isinstance(value, python_type):
-            return [f"Value '{value}' is not of type {dtype}."]
+        dtype = rules.get("type")
+        expected_pytype = PYTHON_TYPES.get(dtype)
+        if expected_pytype is not None and not isinstance(value, expected_pytype):
+            actualy_pytype = type(value)
+            return [f"Value '{value}' is not of type {dtype}, is {actualy_pytype}"]
 
-        if isinstance(value, str):
+        if dtype == "string":
             issues = validate_string(value, rules)
-        elif isinstance(value, (int, float)):
+        elif is_numerical_type(dtype):
             issues = validate_numerical(value, rules)
-        elif isinstance(value, list):
+        elif dtype == "array":
             issues = validate_array(value, rules)
-        elif isinstance(value, BaseGeometry):
+        elif dtype == "geometry":
             issues = validate_geometry(value, rules)
-        elif isinstance(value, dict):
-            if dtype == 'bounding-box':
-                issues = validate_bbox(value, rules)
-            else:
-                issues = validate_object(value, rules)
+        elif dtype == "bounding-box":
+            issues = validate_bbox(value, rules)
+        elif dtype == "object":
+            issues = validate_object(value, rules)
         else:
             continue
 
@@ -103,24 +102,40 @@ def validate_numerical(value, rules):
         issues.append(f"Value {value} is greater than or equal to the exclusive maximum value of {rules['exclusiveMaximum']}.")
     if 'enum' in rules and value not in rules['enum']:
         allowed = ", ".join(map(str, rules['enum']))
-        issues.append(f"String '{value}' is not one of the allowed values in the enumeration: {allowed}")
+        issues.append(f"Integer '{value}' is not one of the allowed values in the enumeration: {allowed}")
     return issues
 
 # Array validation
 def validate_array(values, rules):
     issues = []
+
+    item_schema = rules.get('items', {})
+
     if 'minItems' in rules and len(values) < rules['minItems']:
         issues.append(f"Array has fewer items than the minimum of {rules['minItems']}.")
     if 'maxItems' in rules and len(values) > rules['maxItems']:
         issues.append(f"Array has more items than the maximum of {rules['maxItems']}.")
-    if 'uniqueItems' in rules and rules['uniqueItems'] and len(values) != len(set(values)):
-        issues.append("Array items are not unique.")
+
+    if 'uniqueItems' in rules and rules['uniqueItems']:
+        item_dtype = item_schema.get('type')
+        if is_scalar_type(item_dtype) and len(values) != len(set(values)):
+            issues.append("Array items are not unique.")
+        else:
+            pass # not supported for non-scalar types
+
+
     # todo: Further validation for 'items' if necessary
     return issues
 
 # Object validation
 def validate_object(value, rules):
     issues = []
+
+    if 'minProperties' in rules and len(value) < rules['minProperties']:
+        issues.append(f"Object has fewer properties than the minimum of {rules['minProperties']}.")
+    if 'maxProperties' in rules and len(value) > rules['maxProperties']:
+        issues.append(f"Object has more properties than the maximum of {rules['maxProperties']}.")
+
     props = rules.get('properties', {})
     other_props = rules.get('additionalProperties', False)
     pattern_props = rules.get('patternProperties', {})
@@ -128,4 +143,5 @@ def validate_object(value, rules):
         if key not in value:
             issues.append(f"Key '{key}' is missing from the object.")
         # todo: Further validation based on the type of property
+
     return issues

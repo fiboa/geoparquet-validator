@@ -8,12 +8,26 @@ from shapely.geometry.base import BaseGeometry
 def is_enum(schema):
     return isinstance(schema.get("enum"), list)
 
+def is_integer_type(dtype):
+    return dtype.startswith("int") or dtype.startswith("uint")
+
+def is_floating_type(dtype):
+    return dtype == "float" or dtype == "double"
+
+def is_numerical_type(dtype):
+    return is_integer_type(dtype) or is_floating_type(dtype)
+
+def is_temporal_type(dtype):
+    return dtype == "date" or dtype == "date-time"
+
+def is_scalar_type(dtype):
+    return dtype == "string" or dtype == "binary" or dtype == "boolean" or is_numerical_type(dtype) or is_temporal_type(dtype)
 
 def get_geopandas_dtype(type, required = False, schema = {}):
     """
     fiboa datatypes to geopandas datatypes
     """
-    if is_enum(schema) and (type == "string" or type.startswith("int") or type.startswith("uint")):
+    if is_enum(schema) and (type == "string" or is_integer_type(type)):
         return "category"
     elif type == "boolean":
         if required:
@@ -107,7 +121,7 @@ def get_pyarrow_type(schema):
     dtype = schema.get("type")
     if dtype == "boolean":
         return pa.bool_()
-    elif dtype.startswith("int") or dtype.startswith("uint") or dtype == "string" or dtype == "binary":
+    elif is_integer_type(dtype) or dtype == "string" or dtype == "binary":
         return getattr(pa, dtype)()
     elif dtype == "float":
         return pa.float32()
@@ -192,19 +206,19 @@ PA_TYPE_CHECK = {
 
 # checks pyarrow datatypes
 PYTHON_TYPES = {
-    "boolean": bool,
-    "int8": int,
-    "uint8": int,
-    "int16": int,
-    "uint16": int,
-    "int32": int,
-    "uint32": int,
-    "int64": int,
-    "uint64": int,
-    "float": float,
-    "double": float,
-    "binary": str,
-    "string": str,
+    "boolean": (bool, np.bool_),
+    "int8": (int, np.int8),
+    "uint8": (int, np.uint8),
+    "int16": (int, np.int16),
+    "uint16": (int, np.uint16),
+    "int32": (int, np.int32),
+    "uint32": (int, np.uint32),
+    "int64": (int, np.int64),
+    "uint64": (int, np.uint64),
+    "float": (float, np.float32),
+    "double": (float, np.float64),
+    "binary": (str, np.bytes_),
+    "string": (str, np.str_),
     "array": (list, np.ndarray),
     "object": dict,
     "date": (datetime.date, np.datetime64),

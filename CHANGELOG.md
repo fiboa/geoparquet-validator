@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `fiboa create-geojson`: Show conversion progress
 - `fiboa jsonschema` and `fiboa validate`: Support `geometryTypes` for `geometry` data type in GeoJSON
 - `fiboa validate`:
-  - Basic validation for geometries and bounding boxes in GeoParquet files
+  - Basic validation for objects, geometries and bounding boxes in GeoParquet files
 
 ### Changed
 
