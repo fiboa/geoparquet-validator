@@ -1,6 +1,11 @@
 import re
 import pandas as pd
+
 from urllib.parse import urlparse
+from shapely.geometry.base import BaseGeometry
+from shapely.validation import explain_validity
+
+from .types import PYTHON_TYPES
 
 REGEX_EMAIL = re.compile("[^@]+@[^@]+\.[^@]+")
 REGEX_UUID = re.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\Z")
@@ -12,6 +17,11 @@ def validate_column(data, rules):
             # Skip validation for NaN values or implement special handling if required
             continue
 
+        dtype = rules.get('type')
+        python_type = PYTHON_TYPES.get(dtype)
+        if python_type is not None and not isinstance(value, python_type):
+            return [f"Value '{value}' is not of type {dtype}."]
+
         if isinstance(value, str):
             issues = validate_string(value, rules)
         elif isinstance(value, (int, float)):
@@ -20,6 +30,8 @@ def validate_column(data, rules):
             issues = validate_array(value, rules)
         elif isinstance(value, dict):
             issues = validate_object(value, rules)
+        elif isinstance(value, BaseGeometry):
+            issues = validate_geometry(value, rules)
         else:
             continue
 
@@ -27,6 +39,21 @@ def validate_column(data, rules):
             return issues
 
     return []
+
+# Geometry validation
+def validate_geometry(value, rules):
+    issues = []
+
+    geom_types = rules.get("geometryTypes", [])
+    if len(geom_types) > 0 and value.geom_type not in geom_types:
+        allowed = ", ".join(geom_types)
+        issues.append(f"Geometry type '{value.geom_type}' is not one of the allowed types: {allowed}")
+
+    why = explain_validity(value)
+    if why != 'Valid Geometry':
+        issues.append(f"Geometry {value} is not valid: {why}")
+
+    return issues
 
 # String validation
 def validate_string(value, rules):

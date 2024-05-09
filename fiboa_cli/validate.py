@@ -259,6 +259,8 @@ def validate_parquet(file, config):
             if not pat.is_string(pq_field.key_type):
                 log(f"{key}: Map keys must be strings", "error")
                 valid = False
+        elif dtype == "geometry":
+            valid = validate_geometry_column(key, prop_schema, geo, valid)
 
         # Validate data of the column
         if gdf is not None:
@@ -274,6 +276,26 @@ def validate_parquet(file, config):
 
     return valid
 
+
+def validate_geometry_column(key, prop_schema, geo, valid = True):
+    columns = geo.get("columns", {})
+    if key not in columns:
+        log(f"{key}: Geometry column not found in GeoParquet metadata", "error")
+        valid = False
+
+    schema_geo_types = prop_schema.get("geometryTypes", [])
+    schema_geo_types.sort()
+    if len(schema_geo_types) > 0:
+        gp_geo_types = columns[key].get("geometry_types", [])
+        gp_geo_types.sort()
+        if len(gp_geo_types) == 0:
+            log(f"{key}: No geometry types specified in GeoParquet metadata", "warning")
+
+        if schema_geo_types != gp_geo_types:
+            log(f"{key}: GeoParquet geometry types differ, is {gp_geo_types} but must be {schema_geo_types}", "error")
+            valid = False
+
+    return valid
 
 # todo: use stac_validator instead of our own validation routine
 def validate_colletion_schema(obj):

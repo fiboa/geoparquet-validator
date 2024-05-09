@@ -2,6 +2,7 @@ import pyarrow as pa
 import pyarrow.types as pat
 import pandas as pd
 import numpy as np
+from shapely.geometry.base import BaseGeometry
 
 def is_enum(schema):
     return isinstance(schema.get("enum"), list)
@@ -115,6 +116,7 @@ def get_pyarrow_type(schema):
         pa_subtype = get_pyarrow_type(schema.get("items", {}))
         return pa.list_(pa_subtype)
     elif dtype == "object":
+        # todo: add patternProperties
         additonal_properties = schema.get("additionalProperties", False)
         if additonal_properties is True:
             raise Exception("Additional properties for objects are not supported")
@@ -154,7 +156,6 @@ def get_pyarrow_type_for_geopandas(dtype):
     elif dtype == "datetime64":
         return pa.timestamp("ms", tz="UTC")
     else:
-        print(dtype)
         return None
 
 
@@ -174,10 +175,34 @@ PA_TYPE_CHECK = {
     "binary": pat.is_binary,
     "string": pat.is_string,
     "array": pat.is_list,
-    "object": pat.is_map,
+    "object": pat.is_struct,
     "date": pat.is_date32,
     "date-time": pat.is_timestamp,
-    "geometry": pat.is_binary, # todo: check more?
+    "geometry": pat.is_binary,
+    "bounding-box": pat.is_struct
+}
+
+
+# checks pyarrow datatypes
+PYTHON_TYPES = {
+    "boolean": bool,
+    "int8": int,
+    "uint8": int,
+    "int16": int,
+    "uint16": int,
+    "int32": int,
+    "uint32": int,
+    "int64": int,
+    "uint64": int,
+    "float": float,
+    "double": float,
+    "binary": None, # todo
+    "string": str,
+    "array": (list, np.ndarray),
+    "object": dict,
+    "date": None, # todo
+    "date-time": None, # todo
+    "geometry": BaseGeometry,
     "bounding-box": None # todo
 }
 
