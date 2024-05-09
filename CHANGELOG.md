@@ -10,10 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Converter for EuroCrops France dataset
+- `fiboa create-geojson`: Show conversion progress
 
 ### Changed
 
-- The validator is more robust against invalid collections and doesn't abort if not needed
+- ...
 
 ### Deprecated
 
@@ -27,6 +28,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - `fiboa validate-schema`: The `-m` option is applied correctly if `$schema` is present in schema
 - `fiboa validate` and `fiboa validate-schema`: Don't stop validation after the first file.
+- `fiboa validate`: Is more robust against invalid collections and doesn't abort if not needed
+- `fiboa create-geojson`:
+  - Handles GeoParquet bbox correctly
+  - Converts numpy arrays
+  - Doesn't export empty collections
 
 ## [v0.3.10] - 2024-05-06
 

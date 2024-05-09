@@ -22,9 +22,9 @@ from .geopandas import decode_metadata, arrow_to_geopandas
 small_file_cache = {}
 big_file_cache = {}
 
-def log(text: str, status="info"):
+def log(text: str, status="info", nl = True):
     """Log a message with a severity level (which leads to different colors)"""
-    click.echo(click.style(text, fg=LOG_STATUS_COLOR[status]))
+    click.echo(click.style(text, fg=LOG_STATUS_COLOR[status]), nl=nl)
 
 
 def stream_file(fs, src_uri, dst_file, chunk_size = 10 * 1024 * 1024):
@@ -266,7 +266,8 @@ def parse_metadata(schema, key):
     if key in schema.metadata:
         return decode_metadata(schema.metadata[key])
     else:
-        log(f"Parquet file schema does not have a '{key}' key", "warning")
+        str_key = key.decode("utf-8")
+        log(f"Parquet file schema does not have a '{str_key}' key", "warning")
         return None
 
 

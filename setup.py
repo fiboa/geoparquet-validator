@@ -29,7 +29,8 @@ setup(
         "geopandas>=0.14",
         "requests>=2.30",
         "aiohttp>=3.9",
-        "shapely>=2.0"
+        "shapely>=2.0",
+        "numpy>=1.20.0"
     ],
     extras_require={
         # Optional dependencies for datasets converters go here
