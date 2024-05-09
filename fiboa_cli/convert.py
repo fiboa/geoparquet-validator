@@ -1,10 +1,11 @@
 import importlib
 import os
-from . import datasets
+
+IGNORED_DATASET_FILES = ["__init__.py", "template.py"]
 
 def convert(dataset, output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
-    if dataset == "template":
-        raise Exception(f"Converter for dataset 'template' not available")
+    if dataset in IGNORED_DATASET_FILES:
+        raise Exception(f"'{dataset}' is not a converter")
     try:
         converter = read_converter(dataset)
     except ImportError as e:
@@ -13,9 +14,9 @@ def convert(dataset, output_file, cache_file = None, source_coop_url = None, col
     converter.convert(output_file, cache_file = cache_file, source_coop_url = source_coop_url, collection = collection, compression = compression)
 
 def list_all_converter_ids():
+    datasets = importlib.import_module(".datasets", package="fiboa_cli")
     files = os.listdir(datasets.__path__[0])
-    ignore = ["__init__.py", "template.py"]
-    return [f[:-3] for f in files if f.endswith(".py") and f not in ignore]
+    return [f[:-3] for f in files if f.endswith(".py") and f not in IGNORED_DATASET_FILES]
 
 def list_all_converters(keys):
     converters = {}

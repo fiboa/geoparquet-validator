@@ -34,10 +34,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `fiboa validate`:
   - Is more robust against invalid collections and doesn't abort if not needed
   - Check NULL values correctly in case of arrays
+  - Throw an error if no files were provided
 - `fiboa create-geojson`:
   - Handles GeoParquet bbox correctly
   - Converts numpy arrays
   - Doesn't export empty collections
+- Fix recursive import
 
 ## [v0.3.10] - 2024-05-06
 

@@ -119,6 +119,11 @@ def validate(files, schema, ext_schema, fiboa_version, collection, data, timer):
         "collection": collection,
         "data": data,
     }
+
+    if len(files) == 0:
+        log("No files to validate", "error")
+        sys.exit(1)
+
     exit = 0
     for file in files:
         log(f"Validating {file}", "info")
