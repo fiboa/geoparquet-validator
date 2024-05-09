@@ -62,36 +62,45 @@ def convert_schema(prop_schema, datatypes, required = False):
 
     datatype_schema = datatypes[prop_schema['type']].copy()
 
+    if prop_schema['type'] == 'geometry':
+        geom_types = prop_schema.get('geometryTypes', [])
+        if isinstance(prop_schema.get('geometryTypes'), list):
+            datatype_schema = {
+                "anyOf": [
+                    {"$ref": f"https://geojson.org/schema/{type}.json"} for type in geom_types
+                ]
+            }
+            del prop_schema['geometryTypes']
+
+    anyOf = datatype_schema.get('anyOf')
+    allOf = datatype_schema.get('allOf')
+    oneOf = datatype_schema.get('oneOf')
     if required:
+        not_null_schema = { "not": { "type": "null" } }
+
+        if '$ref' in datatype_schema or isinstance(anyOf, list) or isinstance(oneOf, list):
+            datatype_schema = {
+                "allOf": [datatype_schema, not_null_schema]
+            }
+        elif (isinstance(allOf, list)):
+            allOf.append(not_null_schema)
+
+    else:
+        schema_type = datatype_schema.get('type')
+        null_schema = { "type": "null" }
+
         if '$ref' in datatype_schema:
             datatype_schema = {
-                "allOf": [
-                    datatype_schema,
-                    {
-                        "not": {
-                            "type": "null"
-                        }
-                    }
-                ]
+                "allOf": [datatype_schema, null_schema]
             }
-    else:
-        if isinstance(datatype_schema.get('type'), str):
+        elif isinstance(schema_type, str):
             datatype_schema['type'] = [datatype_schema['type'], "null"]
-        elif '$ref' in datatype_schema:
-            datatype_schema = {
-                "allOf": [
-                    datatype_schema,
-                    {
-                        "type": "null"
-                    }
-                ]
-            }
-        elif (isinstance(datatype_schema.get('type'), list)):
-            datatype_schema.get('type', []).append("null")
-        elif (isinstance(datatype_schema.get('oneOf'), list)):
-            datatype_schema.get('oneOf', []).append({"type": "null"})
-        elif (isinstance(datatype_schema.get('anyOf'), list)):
-            datatype_schema.get('anyOf', []).append({"type": "null"})
+        elif (isinstance(schema_type, list)):
+            datatype_schema["type"].append("null")
+        elif (isinstance(oneOf, list)):
+            datatype_schema["oneOf"].append(null_schema)
+        elif (isinstance(anyOf, list)):
+            datatype_schema["anyOf"].append(null_schema)
         else:
             log(f"Making schema {json.dumps(datatype_schema)} optional is not supported by this generator")
 

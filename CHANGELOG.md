@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Converter for EuroCrops France dataset
 - `fiboa create-geojson`: Show conversion progress
+- `fiboa jsonschema` and `fiboa validate`: Support `geometryTypes` for `geometry` data type in GeoJSON
 
 ### Changed
 

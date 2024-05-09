@@ -11,6 +11,9 @@ properties:
     minLength: 1
   geometry:
     type: geometry
+    geometryTypes:
+      - Polygon
+      - MultiPolygon
   bbox:
     type: bounding-box
   area:
