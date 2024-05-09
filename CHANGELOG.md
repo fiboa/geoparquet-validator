@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for EuroCrops France dataset
 - `fiboa create-geojson`: Show conversion progress
 - `fiboa jsonschema` and `fiboa validate`: Support `geometryTypes` for `geometry` data type in GeoJSON
-- `fiboa validate`: Basic validation for geometries in GeoParquet files
+- `fiboa validate`:
+  - Basic validation for geometries and bounding boxes in GeoParquet files
 
 ### Changed
 
@@ -33,7 +34,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `fiboa validate`:
   - Is more robust against invalid collections and doesn't abort if not needed
   - Check NULL values correctly in case of arrays
-  - Validate geometry column metadata
 - `fiboa create-geojson`:
   - Handles GeoParquet bbox correctly
   - Converts numpy arrays

@@ -28,10 +28,13 @@ def validate_column(data, rules):
             issues = validate_numerical(value, rules)
         elif isinstance(value, list):
             issues = validate_array(value, rules)
-        elif isinstance(value, dict):
-            issues = validate_object(value, rules)
         elif isinstance(value, BaseGeometry):
             issues = validate_geometry(value, rules)
+        elif isinstance(value, dict):
+            if dtype == 'bounding-box':
+                issues = validate_bbox(value, rules)
+            else:
+                issues = validate_object(value, rules)
         else:
             continue
 
@@ -39,6 +42,17 @@ def validate_column(data, rules):
             return issues
 
     return []
+
+# Geometry validation
+def validate_bbox(value, rules):
+    issues = []
+
+    if value["xmin"] > value["xmax"]:
+        issues.append(f"Bounding box has xmin value greater than xmax value: {value['xmin']} > {value['xmax']}")
+    elif value["ymin"] > value["ymax"]:
+        issues.append(f"Bounding box has ymin value greater than ymax value: {value['ymin']} > {value['ymax']}")
+
+    return issues
 
 # Geometry validation
 def validate_geometry(value, rules):
@@ -68,7 +82,6 @@ def validate_string(value, rules):
         allowed = ", ".join(rules['enum'])
         issues.append(f"String '{value}' is not one of the allowed values in the enumeration: {allowed}")
     if 'format' in rules:
-        # todo: pre-compile regexes
         if rules['format'] == 'email' and not REGEX_EMAIL.match(value):
             issues.append(f"String '{value}' is not a valid email address.")
         if rules['format'] == 'uri' and not urlparse(value).scheme:
@@ -108,7 +121,10 @@ def validate_array(values, rules):
 # Object validation
 def validate_object(value, rules):
     issues = []
-    for key, val in rules['properties'].items():
+    props = rules.get('properties', {})
+    other_props = rules.get('additionalProperties', False)
+    pattern_props = rules.get('patternProperties', {})
+    for key, val in props.items():
         if key not in value:
             issues.append(f"Key '{key}' is missing from the object.")
         # todo: Further validation based on the type of property

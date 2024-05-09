@@ -256,7 +256,7 @@ def validate_parquet(file, config):
                 log(f"{key}: Timestamp timezone invalid, must be UTC", "error")
                 valid = False
         elif dtype == "object":
-            if not pat.is_string(pq_field.key_type):
+            if pat.is_map(pq_type) and not pat.is_string(pq_field.key_type):
                 log(f"{key}: Map keys must be strings", "error")
                 valid = False
         elif dtype == "geometry":

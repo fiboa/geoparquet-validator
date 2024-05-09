@@ -1,3 +1,4 @@
+import datetime
 import pyarrow as pa
 import pyarrow.types as pat
 import pandas as pd
@@ -85,7 +86,7 @@ def get_geopandas_dtype(type, required = False, schema = {}):
     elif type == "geometry":
         return None, # not a column, don't convert geometry
     elif type == "bounding-box":
-        raise Exception("Bounding boxes are not supported yet") # todo
+        return "object"
     else:
         return None
 
@@ -135,7 +136,13 @@ def get_pyarrow_type(schema):
     elif dtype == "geometry":
         return pa.binary()
     elif dtype == "bounding-box":
-        raise Exception("Bounding boxes are not supported yet") # todo
+        coord_schema = {"type": "float"}
+        return pa.struct([
+            get_pyarrow_field("xmin", schema = coord_schema, required = True),
+            get_pyarrow_field("ymin", schema = coord_schema, required = True),
+            get_pyarrow_field("xmax", schema = coord_schema, required = True),
+            get_pyarrow_field("ymax", schema = coord_schema, required = True),
+        ])
     else:
         return None
 
@@ -175,7 +182,7 @@ PA_TYPE_CHECK = {
     "binary": pat.is_binary,
     "string": pat.is_string,
     "array": pat.is_list,
-    "object": pat.is_struct,
+    "object": lambda x: pat.is_struct(x) or pat.is_map(x),
     "date": pat.is_date32,
     "date-time": pat.is_timestamp,
     "geometry": pat.is_binary,
@@ -196,14 +203,14 @@ PYTHON_TYPES = {
     "uint64": int,
     "float": float,
     "double": float,
-    "binary": None, # todo
+    "binary": str,
     "string": str,
     "array": (list, np.ndarray),
     "object": dict,
-    "date": None, # todo
-    "date-time": None, # todo
+    "date": (datetime.date, np.datetime64),
+    "date-time": (datetime.datetime, np.datetime64),
     "geometry": BaseGeometry,
-    "bounding-box": None # todo
+    "bounding-box": dict
 }
 
 LOG_STATUS_COLOR = {
