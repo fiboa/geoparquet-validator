@@ -9,11 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Converter for EuroCrops France dataset
-- `fiboa create-geojson`: Show conversion progress
-- `fiboa jsonschema` and `fiboa validate`: Support `geometryTypes` for `geometry` data type in GeoJSON
-- `fiboa validate`:
-  - Basic validation for objects, geometries and bounding boxes in GeoParquet files
+- ...
 
 ### Changed
 
@@ -26,6 +22,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 
 - ...
+
+### Fixed
+
+- ...
+
+## [v0.4.0] - 2024-05-10
+
+### Added
+
+- Converter for EuroCrops France dataset
+- `fiboa create-geojson`: Show conversion progress
+- `fiboa jsonschema` and `fiboa validate`: Support `geometryTypes` for `geometry` data type in GeoJSON
+- `fiboa validate`:
+  - Basic validation for objects, geometries and bounding boxes in GeoParquet files
 
 ### Fixed
 
@@ -239,7 +249,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release
 
-[Unreleased]: <https://github.com/fiboa/cli/compare/v0.3.9...main>
+[Unreleased]: <https://github.com/fiboa/cli/compare/v0.4.0...main>
+[v0.4.0]: <https://github.com/fiboa/cli/compare/v0.3.10...v0.4.0>
+[v0.3.10]: <https://github.com/fiboa/cli/compare/v0.3.9...v0.3.10>
 [v0.3.9]: <https://github.com/fiboa/cli/compare/v0.3.8...v0.3.9>
 [v0.3.8]: <https://github.com/fiboa/cli/compare/v0.3.7...v0.3.8>
 [v0.3.7]: <https://github.com/fiboa/cli/compare/v0.3.6...v0.3.7>
