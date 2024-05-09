@@ -2,9 +2,13 @@ import re
 import pandas as pd
 from urllib.parse import urlparse
 
+REGEX_EMAIL = re.compile("[^@]+@[^@]+\.[^@]+")
+REGEX_UUID = re.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\Z")
+
 def validate_column(data, rules):
-    for _, value in data.items():
-        if pd.isna(value):
+    for value in data:
+        isna = pd.isna(value)
+        if isinstance(isna, bool) and isna:
             # Skip validation for NaN values or implement special handling if required
             continue
 
@@ -19,7 +23,7 @@ def validate_column(data, rules):
         else:
             continue
 
-        if (len(issues) > 0):
+        if len(issues) > 0:
             return issues
 
     return []
@@ -38,11 +42,11 @@ def validate_string(value, rules):
         issues.append(f"String '{value}' is not one of the allowed values in the enumeration: {allowed}")
     if 'format' in rules:
         # todo: pre-compile regexes
-        if rules['format'] == 'email' and not re.match(r"[^@]+@[^@]+\.[^@]+", value):
+        if rules['format'] == 'email' and not REGEX_EMAIL.match(value):
             issues.append(f"String '{value}' is not a valid email address.")
         if rules['format'] == 'uri' and not urlparse(value).scheme:
             issues.append(f"String '{value}' is not a valid URI.")
-        if rules['format'] == 'uuid' and not re.match(r"^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\Z", value):
+        if rules['format'] == 'uuid' and not REGEX_UUID.match(value):
             issues.append(f"String '{value}' is not a valid UUID.")
     return issues
 

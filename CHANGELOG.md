@@ -28,7 +28,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - `fiboa validate-schema`: The `-m` option is applied correctly if `$schema` is present in schema
 - `fiboa validate` and `fiboa validate-schema`: Don't stop validation after the first file.
-- `fiboa validate`: Is more robust against invalid collections and doesn't abort if not needed
+- `fiboa validate`:
+  - Is more robust against invalid collections and doesn't abort if not needed
+  - Check NULL values correctly in case of arrays
 - `fiboa create-geojson`:
   - Handles GeoParquet bbox correctly
   - Converts numpy arrays
