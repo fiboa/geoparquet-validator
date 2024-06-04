@@ -19,6 +19,9 @@ def create_geojson(file, out, split = False, num = None, indent = None):
         count = len(geodata)
         log(f"Found {count} features...")
 
+    # todo: we shouldn't use iterfeature / __geo_interface__ directly
+    # it doesn't correctly coverts some data types which are present in the fiboa schema
+    # e.g. lists of tuples into a dict
     if split:
         if collection is not None:
             collection_name = "collection.json"

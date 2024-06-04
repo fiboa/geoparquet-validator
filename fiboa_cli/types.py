@@ -131,10 +131,16 @@ def get_pyarrow_type(schema):
         pa_subtype = get_pyarrow_type(schema.get("items", {}))
         return pa.list_(pa_subtype)
     elif dtype == "object":
-        # todo: add patternProperties
+        pattern_properties = schema.get("patternProperties", {})
         additonal_properties = schema.get("additionalProperties", False)
         if additonal_properties is True:
             raise Exception("Additional properties for objects are not supported")
+        elif len(pattern_properties) > 0:
+            if len(pattern_properties) > 1:
+                raise Exception("Multiple pattern properties are not supported")
+            _, subschema = pattern_properties.popitem()
+            values = get_pyarrow_type(subschema)
+            return pa.map_(pa.string(), values)
         else:
             properties = schema.get("properties", {})
             required_props = schema.get("required", [])
