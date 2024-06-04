@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- ...
+- Basic support for `patternProperties` in GeoParquet creation
 
 ### Changed
 
@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- ...
+- Extensions were not correctly displayed in `describe` and `validate` command
 
 ## [v0.4.0] - 2024-05-10
 

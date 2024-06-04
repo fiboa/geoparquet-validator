@@ -23,18 +23,18 @@ def validate(file, config):
 def validate_collection(collection, config):
     valid = True
 
-    collection_verrsion = collection.get("fiboa_version")
+    collection_version = collection.get("fiboa_version")
     config_version = config.get("fiboa_version")
 
     # Check fiboa version
-    if not isinstance(collection_verrsion, str):
+    if not isinstance(collection_version, str):
         log("No fiboa_version string found in collection metadata", "error")
         valid = False
 
     log("fiboa version: " + config_version)
 
-    if isinstance(collection_verrsion, str) and collection_verrsion != config_version:
-        log(f"fiboa versions differs: Collection is {collection_verrsion} and requested specification version is {config_version}", "warning")
+    if isinstance(collection_version, str) and collection_version != config_version:
+        log(f"fiboa versions differs: Collection is {collection_version} and requested specification version is {config_version}", "warning")
 
     # Check STAC Collection
     if not validate_colletion_schema(collection):

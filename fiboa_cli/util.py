@@ -296,7 +296,7 @@ def load_geoparquet_schema(obj):
 
 
 def log_extensions(collection, logger):
-    extensions = collection.get("fiboa_extension", [])
+    extensions = collection.get("fiboa_extensions", [])
     if len(extensions) == 0:
         logger("fiboa extensions: none")
     else:
