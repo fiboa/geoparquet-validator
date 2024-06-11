@@ -21,11 +21,24 @@ BBOX = [2.531029700947351, 50.67422857041101, 5.932736829503416, 51.495457152181
 PROVIDER_NAME = "Agentschap Landbouw & Zeevisserij (Government)"
 PROVIDER_URL = "https://landbouwcijfers.vlaanderen.be/open-geodata-landbouwgebruikspercelen"
 
-ATTRIBUTION = ""
-LICENSE = "CC0"  # Publiek / Toegang zonder voorwaarden
+"""
+The following publication urls use license https://data.vlaanderen.be/id/licentie/modellicentie-gratis-hergebruik/v1.0
+This license is documented at https://www.vlaanderen.be/digitaal-vlaanderen/onze-oplossingen/open-data/voorwaarden-voor-het-hergebruik-van-overheidsinformatie/modellicentie-gratis-hergebruik
+This documentation states the license is compatible with Creative Commons Attribution license 3.0 (CC BY 3.0)
+
+- https://metadata.vlaanderen.be/srv/dut/catalog.search#/metadata/ae94435d-1ffb-451b-9c8b-d7e8c2d42dc2
+- https://metadata.vlaanderen.be/srv/dut/catalog.search#/metadata/21dda3b2-6e27-4bf3-af34-013854331f41
+
+Bronvermeldingsvoorschrift (Attribution requirement): "Bron: Dept. LV"
+"""
+
+ATTRIBUTION = "Bron: Dept. LV"
+# Compatible with CC-BY-3.0, license https://data.vlaanderen.be/id/licentie/modellicentie-gratis-hergebruik/v1.0
+LICENSE = "CC-BY-3.0"
 
 # TODO we skip many, specific columns. Check the data survey or included documentation for more available columns
 COLUMNS = {
+    "geometry": "geometry",
     "BT_BRON": "source",
     "BT_OMSCH": "typology",
     "GRAF_OPP": "area",

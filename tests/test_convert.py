@@ -17,8 +17,9 @@ def out_file():
 
 
 @mark.parametrize("converter", ["nl", "nl_crop"])
-def test_converter(out_file, converter):
-    path = f"tests/data-files/{converter}.gpkg"
+def test_converter(out_file, converter, path=None):
+    if path is None:
+        path = f"tests/data-files/{converter}.gpkg"
     assert load_file(path), f"Input file missing: {path}"
 
     runner = CliRunner()
@@ -30,3 +31,7 @@ def test_converter(out_file, converter):
 
     result = runner.invoke(validate, [out_file.name, '--data'])
     assert result.exit_code == 0, result.output
+
+
+def test_be_vlg(out_file):
+    test_converter(out_file, 'be_vlg', "tests/data-files/be_vlg.zip")
