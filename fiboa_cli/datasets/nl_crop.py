@@ -27,7 +27,7 @@ ATTRIBUTION = None
 LICENSE = "CC0"  # http://creativecommons.org/publicdomain/mark/1.0/
 
 EXTENSIONS = []
-COLUMN_MIGRATIONS = []
+COLUMN_MIGRATIONS = {}
 COLUMNS = {
     'geometry': 'geometry',
     'id': 'id',

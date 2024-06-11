@@ -32,18 +32,17 @@ ADD_COLUMNS = {
 }
 
 EXTENSIONS = []
-COLUMN_MIGRATIONS = []
+COLUMN_MIGRATIONS = {}
 COLUMNS = {
     'geometry': 'geometry',
     'id': 'id',
     'area': "area",
-    'versiebron': 'source',
-    'type': 'category'
+    'versiebron': 'source'
 }
 
 COLUMN_FILTERS = {
-    # category = "Hout" | "Landbouwgrond" | "Overig" | "Water"
-    "category": lambda col: col == "Landbouwgrond"
+    # type = "Hout" | "Landbouwgrond" | "Overig" | "Water"
+    "type": lambda col: col == "Landbouwgrond"
 }
 
 
@@ -64,9 +63,6 @@ MISSING_SCHEMAS = {
         "source": {
             "type": "string"
         },
-        "category": {
-            "type": "string"
-        }
     }
 }
 
