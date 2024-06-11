@@ -9,7 +9,7 @@ from ..convert_utils import convert as convert_
 # File to read the data from
 # Can read any tabular data format that GeoPandas can read through read_file()
 # Supported protcols: HTTP(S), GCS, S3, or the local file system
-URI = "https://zenodo.org/records/8229128/files/SI_2021.zip?download=1"
+URI = "https://zenodo.org/records/10118572/files/SI_2021.zip?download=1"
 FILENAME = "SI_2021_EC21.shp"
 
 # Unique identifier for the collection
@@ -94,7 +94,7 @@ MIGRATION = None
 # Schemas for the fields that are not defined in fiboa
 # Keys must be the values from the COLUMNS dict, not the keys
 MISSING_SCHEMAS = {
-    'required': ['gerk_pid', 'crop_type_class', 'rastlina', 'crop_latin', 'color', 'EC_trans_n','EC_hcat_n', 'EC_hcat_c'], # i.e. non-nullable properties
+    'required': ['gerk_pid', 'crop_type_class', 'rastlina', 'crop_latin', 'color', 'EC_trans_n','EC_hcat_n'], # i.e. non-nullable properties
     'properties': {
         'gerk_pid': {
             'type': 'uint64'
@@ -115,9 +115,6 @@ MISSING_SCHEMAS = {
             'type': 'string'
         },
         'EC_hcat_n': {
-            'type': 'string'
-        },
-        'EC_hcat_c': {
             'type': 'string'
         }
     }
