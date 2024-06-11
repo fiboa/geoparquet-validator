@@ -33,8 +33,8 @@ Bronvermeldingsvoorschrift (Attribution requirement): "Bron: Dept. LV"
 """
 
 ATTRIBUTION = "Bron: Dept. LV"
-# Compatible with CC-BY-3.0, license https://data.vlaanderen.be/id/licentie/modellicentie-gratis-hergebruik/v1.0
-LICENSE = "CC-BY-3.0"
+# License is https://data.vlaanderen.be/id/licentie/modellicentie-gratis-hergebruik/v1.0, which is compatible with CC-BY-3.0
+LICENSE = {"title": "Licentie modellicentie-gratis-hergebruik/v1.0", "href": "https://data.vlaanderen.be/id/licentie/modellicentie-gratis-hergebruik/v1.0", "type": "text/html", "rel": "license"}
 
 # TODO we skip many, specific columns. Check the data survey or included documentation for more available columns
 COLUMNS = {
