@@ -23,10 +23,10 @@ def test_converter(out_file, converter):
 
     runner = CliRunner()
     result = runner.invoke(convert, [converter, '-o', out_file.name, '-c', path])
-    assert result.exit_code == 0
+    assert result.exit_code == 0, result.output
     error = re.search("Skipped - |No schema defined", result.output)
     if error:
         raise AssertionError(f"Found error in output: '{error.group(0)}'\n\n{result.output}")
 
     result = runner.invoke(validate, [out_file.name, '--data'])
-    assert result.exit_code == 0
+    assert result.exit_code == 0, result.output
