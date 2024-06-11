@@ -25,7 +25,7 @@ PROVIDER_NAME = "RVO / PDOK"
 PROVIDER_URL = "https://www.pdok.nl/introductie/-/article/basisregistratie-gewaspercelen-brp-"
 ATTRIBUTION = None
 # Both http://creativecommons.org/publicdomain/zero/1.0/deed.nl and http://creativecommons.org/publicdomain/mark/1.0/
-LICENSE = "CC0"
+LICENSE = "CC0-1.0"
 
 EXTENSIONS = []
 COLUMN_MIGRATIONS = {}
