@@ -25,7 +25,8 @@ BBOX = [2.35417303, 50.71447164, 7.5553525, 55.66948102]
 PROVIDER_NAME = "RVO / PDOK"
 PROVIDER_URL = "https://www.pdok.nl/introductie/-/article/referentiepercelen"
 ATTRIBUTION = None
-LICENSE = "CC0"  # http://creativecommons.org/publicdomain/mark/1.0/
+# Both http://creativecommons.org/publicdomain/zero/1.0/deed.nl and http://creativecommons.org/publicdomain/mark/1.0/
+LICENSE = "CC0"
 
 ADD_COLUMNS = {
     "determination_datetime": "2023-06-15T00:00:00Z"

@@ -15,7 +15,7 @@ annually has to register his crop fields with crops (for the Common Agricultural
 A dataset is generated for each year with reference date May 15.
 A view service and a download service are available for the most recent BRP crop plots.
 
-https://service.pdok.nl/rvo/brpgewaspercelen/atom/v1_0/index.xml
+<https://service.pdok.nl/rvo/brpgewaspercelen/atom/v1_0/index.xml>
 
 Data is currently available for the years 2009 to 2023.
 """
@@ -24,7 +24,8 @@ BBOX = [2.35417303, 50.71447164, 7.5553525, 55.66948102]
 PROVIDER_NAME = "RVO / PDOK"
 PROVIDER_URL = "https://www.pdok.nl/introductie/-/article/basisregistratie-gewaspercelen-brp-"
 ATTRIBUTION = None
-LICENSE = "CC0"  # http://creativecommons.org/publicdomain/mark/1.0/
+# Both http://creativecommons.org/publicdomain/zero/1.0/deed.nl and http://creativecommons.org/publicdomain/mark/1.0/
+LICENSE = "CC0"
 
 EXTENSIONS = []
 COLUMN_MIGRATIONS = {}
@@ -59,7 +60,8 @@ MIGRATION = migrate
 MISSING_SCHEMAS = {
     "properties": {
         "category": {
-            "type": "string"
+            "type": "string",
+            "enum": ["Grasland", "Bouwland"]
         },
         "crop_name": {
             "type": "string"
