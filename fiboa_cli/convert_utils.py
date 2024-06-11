@@ -36,6 +36,9 @@ def convert(
         log("Loading file")
     path = download_file(url, cache_file)
 
+    if not len(bbox) == 4:
+        raise ValueError("Bbox must be of length 4")
+
     log("Reading into GeoDataFrame")
     # If file is a parquet file then read with read_parquet
     if path.endswith(".parquet") or path.endswith(".geoparquet"):
