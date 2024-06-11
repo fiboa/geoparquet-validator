@@ -1,8 +1,13 @@
+import os
+
+from tempfile import TemporaryDirectory
+from zipfile import ZipFile
+
+from ..util import download_file, log
 from ..convert_utils import convert as convert_
 
 URI = "https://www.landbouwvlaanderen.be/bestanden/gis/Landbouwgebruikspercelen_2023_-_Definitief_(extractie_28-03-2024)_GPKG.zip"
-# in the zipfile, the gpkg has a different name so we need to add this while opening the file
-PATH_TEMPLATE = "/vsizip/{}/Landbouwgebruikspercelen_2023_-_Definitief_(extractie_28-03-2024).gpkg"
+FILENAME = "Landbouwgebruikspercelen_2023_-_Definitief_(extractie_28-03-2024).gpkg"
 
 ID = "be_vlg"
 TITLE = "Crop field boundaries for Belgium - Flanders"
@@ -59,27 +64,36 @@ MISSING_SCHEMAS = {
 
 # Conversion function, usually no changes required
 def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
-    convert_(
-        output_file,
-        cache_file,
-        URI,
-        COLUMNS,
-        ID,
-        TITLE,
-        DESCRIPTION,
-        BBOX,
-        provider_name=PROVIDER_NAME,
-        provider_url=PROVIDER_URL,
-        source_coop_url=source_coop_url,
-        extensions=EXTENSIONS,
-        missing_schemas=MISSING_SCHEMAS,
-        column_additions=ADD_COLUMNS,
-        column_migrations=COLUMN_MIGRATIONS,
-        column_filters=COLUMN_FILTERS,
-        migration=MIGRATION,
-        attribution=ATTRIBUTION,
-        store_collection=collection,
-        license=LICENSE,
-        compression=compression,
-        path_template=PATH_TEMPLATE
-    )
+    # We need to extract manually because the GeoPackage is zipped and in a folder, not at the root
+    log("Loading file from: " + URI)
+    path = download_file(URI, cache_file)
+
+    with TemporaryDirectory() as tmp_dir:
+        log("Unzipping to: " + tmp_dir)
+        with ZipFile(path, 'r') as f:
+            f.extractall(tmp_dir)
+
+            new_path = os.path.join(tmp_dir, FILENAME)
+            convert_(
+                output_file,
+                cache_file,
+                new_path,
+                COLUMNS,
+                ID,
+                TITLE,
+                DESCRIPTION,
+                BBOX,
+                provider_name=PROVIDER_NAME,
+                provider_url=PROVIDER_URL,
+                source_coop_url=source_coop_url,
+                extensions=EXTENSIONS,
+                missing_schemas=MISSING_SCHEMAS,
+                column_additions=ADD_COLUMNS,
+                column_migrations=COLUMN_MIGRATIONS,
+                column_filters=COLUMN_FILTERS,
+                migration=MIGRATION,
+                attribution=ATTRIBUTION,
+                store_collection=collection,
+                license=LICENSE,
+                compression=compression
+            )

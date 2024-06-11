@@ -28,7 +28,6 @@ def convert(
         store_collection = False,
         license = None,
         compression = None,
-        path_template = None,
         **kwargs):
     """
     Converts a German field boundary datasets to fiboa.
@@ -36,8 +35,6 @@ def convert(
     if not isinstance(get_fs(url), LocalFileSystem):
         log("Loading file")
     path = download_file(url, cache_file)
-    if path_template:
-        path = path_template.format(path)
 
     log("Reading into GeoDataFrame")
     # If file is a parquet file then read with read_parquet
