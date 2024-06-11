@@ -6,8 +6,8 @@ from shapely.validation import explain_validity
 
 from .types import PYTHON_TYPES, is_numerical_type, is_scalar_type
 
-REGEX_EMAIL = re.compile("[^@]+@[^@]+\.[^@]+")
-REGEX_UUID = re.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\Z")
+REGEX_EMAIL = re.compile("^[^@]+@[^@]+\\.[^@]+$")
+REGEX_UUID = re.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
 
 def validate_column(data, rules):
     for value in data:

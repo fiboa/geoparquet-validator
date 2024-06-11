@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Extensions were not correctly displayed in `describe` and `validate` command
+- Fixed regular expressions for email and uuid in data validation
 
 ## [v0.4.0] - 2024-05-10
 
