@@ -15,11 +15,11 @@ FILENAME = "SI_2021_EC21.shp"
 # Unique identifier for the collection
 ID = "ec_si"
 # Title of the collection
-TITLE = "Field boundaries for Slovenia from Eurocrops (2021)"
+TITLE = "Field boundaries for Slovenia from EuroCrops (2021)"
 # Description of the collection. Can be multiline and include CommonMark.
 DESCRIPTION = """
 This dataset contains the field boundaries for all of Slovenia in 2021. The data was collected by the Slovenian government and harmonized
-by the Eurocrops project and is available on Zenodo.
+by the EuroCrops project and is available on Zenodo.
 
 EuroCrops is a dataset collection combining all publicly available self-declared crop reporting datasets from countries of the European Union.
 The project is funded by the German Space Agency at DLR on behalf of the Federal Ministry for Economic Affairs and Climate Action (BMWK).
@@ -36,7 +36,7 @@ In the data you'll find this as additional attributes:
 BBOX = [13.410659993139568, 45.42227046875208, 16.596303417885895, 46.87424125552635]
 
 # Provider name, can be None if not applicable, must be provided if PROVIDER_URL is provided
-PROVIDER_NAME = "Eurocrops"
+PROVIDER_NAME = "EuroCrops"
 # URL to the homepage of the data or the provider, can be None if not applicable
 PROVIDER_URL = "https://github.com/maja601/EuroCrops/wiki/Slovenia"
 # Attribution, can be None if not applicable
@@ -118,7 +118,7 @@ MISSING_SCHEMAS = {
             'type': 'string'
         },
         'EC_hcat_c': {
-            'type': 'uint32'
+            'type': 'string'
         }
     }
 }
