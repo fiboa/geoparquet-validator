@@ -9,17 +9,17 @@ from ..convert_utils import convert as convert_
 # File to read the data from
 # Can read any tabular data format that GeoPandas can read through read_file()
 # Supported protcols: HTTP(S), GCS, S3, or the local file system
-URI = "https://zenodo.org/records/8229128/files/FR_2018.zip"
+URI = "https://zenodo.org/records/10118572/files/FR_2018.zip"
 FILENAME = "FR_2018/FR_2018_EC21.shp"
 
 # Unique identifier for the collection
 ID = "ec_fr"
 # Title of the collection
-TITLE = "Field boundaries for France from Eurocrops (2018)"
+TITLE = "Field boundaries for France from EuroCrops (2018)"
 # Description of the collection. Can be multiline and include CommonMark.
 DESCRIPTION = """
 This dataset contains the field boundaries for all of France in 2018. The data was collected by the French government and harmonized
-by the Eurocrops project and is available on Zenodo.
+by the EuroCrops project and is available on Zenodo.
 
 EuroCrops is a dataset collection combining all publicly available self-declared crop reporting datasets from countries of the European Union.
 The project is funded by the German Space Agency at DLR on behalf of the Federal Ministry for Economic Affairs and Climate Action (BMWK).
@@ -36,14 +36,14 @@ In the data you'll find this as additional attributes:
 BBOX = [-6.047022416643922, -3.916364769838749, 68.89050422648864, 51.075100624023094]
 
 # Provider name, can be None if not applicable, must be provided if PROVIDER_URL is provided
-PROVIDER_NAME = "Eurocrops"
+PROVIDER_NAME = "EuroCrops"
 # URL to the homepage of the data or the provider, can be None if not applicable
 PROVIDER_URL = "https://github.com/maja601/EuroCrops/wiki/France"
 # Attribution, can be None if not applicable
 ATTRIBUTION = "Institut National de l'Information Géographique et Forestière"
 
 # License of the data, either
-LICENSE = "CC-BY-2.0"
+LICENSE = "CC-BY-4.0"
 
 # Map original column names to fiboa property names
 COLUMNS = {

@@ -34,6 +34,9 @@ setup(
     ],
     extras_require={
         # Optional dependencies for datasets converters go here
+        'nl': [
+            "pyogrio"
+        ],
         'de_nrw': [
             # No optional dependencies for de_nrw datasets converter needed
         ]
