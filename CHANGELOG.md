@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Basic support for `patternProperties` in GeoParquet creation
+- Converter for The Netherlands (`nl` and `nl_crops`)
+- Converter for Belgium, Flanders (`be_vlg`)
 
 ### Changed
 
@@ -26,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Extensions were not correctly displayed in `describe` and `validate` command
+- Fixed regular expressions for email and uuid in data validation
 
 ## [v0.4.0] - 2024-05-10
 
