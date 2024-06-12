@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Basic support for `patternProperties` in GeoParquet creation
 - Converter for The Netherlands (`nl` and `nl_crops`)
 - Converter for Belgium, Flanders (`be_vlg`)
+- Converter for Slovenia via EuroCrops (`de_si`)
 
 ### Changed
 
@@ -34,7 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Converter for EuroCrops France dataset
+- Converter for France via EuroCrops (`ec_fr`)
 - `fiboa create-geojson`: Show conversion progress
 - `fiboa jsonschema` and `fiboa validate`: Support `geometryTypes` for `geometry` data type in GeoJSON
 - `fiboa validate`:
