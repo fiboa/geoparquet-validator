@@ -1,8 +1,8 @@
 from ..convert_utils import convert as convert_
 
-# This file consists of three shapefiles (DFBK_FB, DFBK_LE, DFBK_NBF)
-# We only want DFBK_FB and for me it loads only this file, but I'm not sure whether that's always the case
-URI = "https://data.geobasis-bb.de/geofachdaten/Landwirtschaft/dfbk.zip"
+SOURCES = {
+  "https://data.geobasis-bb.de/geofachdaten/Landwirtschaft/dfbk.zip": ["DFBK_FB.shp"]
+}
 ID = "de_bb"
 TITLE = "Field boundaries for Berlin / Brandenburg, Germany"
 DESCRIPTION = """A field block (German: "Feldblock") is a contiguous agricultural area surrounded by permanent boundaries, which is cultivated by one or more farmers with one or more crops, is fully or partially set aside or is fully or partially taken out of production."""
@@ -52,13 +52,13 @@ MISSING_SCHEMAS = {
     }
 }
 
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
     """
     Converts the Berlin/Brandenburg (Germany) field boundary datasets to fiboa.
     """
     convert_(
-        output_file, cache_file,
-        URI, COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
+        output_file, cache,
+        SOURCES, COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
         license=LICENSE,
         extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,

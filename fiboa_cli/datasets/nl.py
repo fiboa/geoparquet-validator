@@ -1,6 +1,6 @@
 from ..convert_utils import convert as convert_
 
-URI = "https://service.pdok.nl/rvo/referentiepercelen/atom/downloads/referentiepercelen.gpkg"
+SOURCES = "https://service.pdok.nl/rvo/referentiepercelen/atom/downloads/referentiepercelen.gpkg"
 
 ID = "nl"
 TITLE = "Field boundaries for The Netherlands"
@@ -68,11 +68,11 @@ MISSING_SCHEMAS = {
 }
 
 
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
     convert_(
         output_file,
-        cache_file,
-        URI,
+        cache,
+        SOURCES,
         COLUMNS,
         ID,
         TITLE,

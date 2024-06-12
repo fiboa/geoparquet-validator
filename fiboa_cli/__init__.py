@@ -336,7 +336,7 @@ def jsonschema(schema, out, fiboa_version, id_):
 @click.option(
     '--cache', '-c',
     type=click.Path(exists=False),
-    help='By default the CLI downloads the source data on every execution. Specify a local file path to avoid downloading the file again. If the file exists, reads from the path, otherwise stores the file there.',
+    help='By default the CLI downloads the source data on every execution. Specify a local folder to avoid downloading the file(s) again. If the file(s) exist, reads from there, otherwise stores the file there.',
     default=None
 )
 @click.option(
@@ -363,11 +363,12 @@ def convert(dataset, out, cache, source_coop, collection, compression):
     Converts existing field boundary datasets to fiboa.
     """
     log(f"fiboa CLI {__version__} - Convert '{dataset}'\n", "success")
-    try:
-        convert_(dataset, out, cache, source_coop, collection, compression)
-    except Exception as e:
-        log(e, "error")
-        sys.exit(1)
+    convert_(dataset, out, cache, source_coop, collection, compression)
+    # try:
+    #     convert_(dataset, out, cache, source_coop, collection, compression)
+    # except Exception as e:
+    #     log(e, "error")
+    #     sys.exit(1)
 
 
 ## CONVERTERS

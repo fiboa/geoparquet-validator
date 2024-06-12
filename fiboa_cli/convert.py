@@ -3,7 +3,7 @@ import os
 
 IGNORED_DATASET_FILES = ["__init__.py", "template.py"]
 
-def convert(dataset, output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
+def convert(dataset, output_file, cache = None, source_coop_url = None, collection = False, compression = None):
     if dataset in IGNORED_DATASET_FILES:
         raise Exception(f"'{dataset}' is not a converter")
     try:
@@ -11,7 +11,7 @@ def convert(dataset, output_file, cache_file = None, source_coop_url = None, col
     except ImportError as e:
         raise Exception(f"Converter for '{dataset}' not available or faulty: {e}")
 
-    converter.convert(output_file, cache_file = cache_file, source_coop_url = source_coop_url, collection = collection, compression = compression)
+    converter.convert(output_file, cache = cache, source_coop_url = source_coop_url, collection = collection, compression = compression)
 
 def list_all_converter_ids():
     datasets = importlib.import_module(".datasets", package="fiboa_cli")

@@ -3,7 +3,7 @@ from ..convert_utils import convert as convert_
 import re
 import pandas as pd
 
-URI = "https://www.geoproxy.geoportal-th.de/download-service/opendata/agrar/DGK_Thue.zip"
+SOURCES = "https://www.geoproxy.geoportal-th.de/download-service/opendata/agrar/DGK_Thue.zip"
 
 ID = "de_th"
 TITLE = "Field boundaries for Thuringia, Germany"
@@ -121,11 +121,11 @@ MISSING_SCHEMAS = {
 
 
 # Conversion function, usually no changes required
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
     convert_(
         output_file,
-        cache_file,
-        URI,
+        cache,
+        SOURCES,
         COLUMNS,
         ID,
         TITLE,

@@ -1,19 +1,23 @@
 from .const import STAC_TABLE_EXTENSION
 from .version import fiboa_version
-from .util import log, download_file, get_fs, to_iso8601
+from .util import log, get_fs, to_iso8601
 from .parquet import create_parquet
 
-from fsspec.implementations.local import LocalFileSystem
+from urllib.parse import urlparse
+from tempfile import TemporaryDirectory
 
+import base64
 import os
 import re
 import json
 import geopandas as gpd
 import pandas as pd
+import sys
+import zipfile
 
 def convert(
-        output_file, cache_file,
-        url, columns,
+        output_file, cache_path,
+        urls, columns,
         id, title, description, bbox,
         provider_name = None,
         provider_url = None,
@@ -30,20 +34,26 @@ def convert(
         compression = None,
         **kwargs):
     """
-    Converts a German field boundary datasets to fiboa.
+    Converts a field boundary datasets to fiboa.
     """
-    if not isinstance(get_fs(url), LocalFileSystem):
-        log("Loading file")
-    path = download_file(url, cache_file)
+    log(f"Getting file(s) if not cached yet")
+    paths = download_files(urls, cache_path)
 
-    log("Reading into GeoDataFrame")
-    # If file is a parquet file then read with read_parquet
-    if path.endswith(".parquet") or path.endswith(".geoparquet"):
-        gdf = gpd.read_parquet(path, **kwargs)
-    else:
-        gdf = gpd.read_file(path, **kwargs)
+    log(f"Reading into GeoDataFrame")
+    gdfs = []
+    for path in paths:
+        # If file is a parquet file then read with read_parquet
+        if path.endswith(".parquet") or path.endswith(".geoparquet"):
+            data = gpd.read_parquet(path, **kwargs)
+        else:
+            data = gpd.read_file(path, **kwargs)
 
-    log("GeoDataFrame created from source:")
+        gdfs.append(data)
+
+    gdf = pd.concat(gdfs)
+    del gdfs
+
+    log("GeoDataFrame created from source(s):")
     print(gdf.head())
 
     # 1. Run global migration
@@ -279,3 +289,62 @@ def add_asset_to_collection(collection, output_file, rows = None, columns = None
     c["assets"]["data"] = asset
 
     return c
+
+
+def download_files(uris, cache_folder = None):
+    """Download (and cache) files from various sources"""
+    if cache_folder is None:
+        args = {}
+        if sys.version_info.major >= 3 and sys.version_info.minor >= 12:
+            args.delete = True # only available in Python 3.12 and later
+        with TemporaryDirectory(**args) as tmp_folder:
+            cache_folder = tmp_folder
+
+    if isinstance(uris, str):
+        name = os.path.basename(urlparse(uris).path)
+        uris = {uris: name}
+
+    paths = []
+    for uri, target in uris.items():
+        extract = isinstance(target, list)
+        if extract:
+            name = base64.urlsafe_b64encode(uri.encode()).decode()
+        else:
+            name = target
+
+        cache_fs = get_fs(cache_folder)
+        if not cache_fs.exists(cache_folder):
+            cache_fs.makedirs(cache_folder)
+
+        cache_file = os.path.join(cache_folder, name)
+
+        if not cache_fs.exists(cache_file):
+            source_fs = get_fs(uri)
+            with cache_fs.open(cache_file, mode='wb') as file:
+                stream_file(source_fs, uri, file)
+
+        if extract:
+            if zipfile.is_zipfile(cache_file):
+                zip_folder = os.path.join(cache_folder, "extracted." + os.path.splitext(name)[0])
+                with zipfile.ZipFile(cache_file, 'r') as zip_file:
+                    zip_file.extractall(zip_folder)
+
+                for file in target:
+                    paths.append(os.path.join(zip_folder, file))
+            else:
+                raise ValueError("Only ZIP files are supported for extraction")
+        else:
+            paths.append(cache_file)
+
+    print(paths)
+
+    return paths
+
+
+def stream_file(fs, src_uri, dst_file, chunk_size = 10 * 1024 * 1024):
+    with fs.open(src_uri, mode='rb') as f:
+        while True:
+            chunk = f.read(chunk_size)
+            if not chunk:
+                break
+            dst_file.write(chunk)

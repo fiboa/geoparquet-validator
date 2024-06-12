@@ -13,59 +13,22 @@ from fsspec.implementations.http import HTTPFileSystem
 from fsspec.implementations.local import LocalFileSystem
 from pyarrow import NativeFile
 from pyarrow.fs import FSSpecHandler, PyFileSystem
-from tempfile import NamedTemporaryFile
 from typing import Union
 
 from .const import LOG_STATUS_COLOR, SUPPORTED_PROTOCOLS, STAC_COLLECTION_SCHEMA, GEOPARQUET_SCHEMA
 from .geopandas import decode_metadata, arrow_to_geopandas
 
-small_file_cache = {}
-big_file_cache = {}
+file_cache = {}
 
 def log(text: str, status="info", nl = True):
     """Log a message with a severity level (which leads to different colors)"""
     click.echo(click.style(text, fg=LOG_STATUS_COLOR[status]), nl=nl)
 
 
-def stream_file(fs, src_uri, dst_file, chunk_size = 10 * 1024 * 1024):
-    with fs.open(src_uri, mode='rb') as f:
-        while True:
-            chunk = f.read(chunk_size)
-            if not chunk:
-                break
-            dst_file.write(chunk)
-
-
-def download_file(uri, cache_file = None):
-    """Download files from various sources"""
-    if uri not in big_file_cache:
-        source_fs = get_fs(uri)
-        if isinstance(source_fs, LocalFileSystem):
-            big_file_cache[uri] = uri
-        else:
-            if cache_file is not None:
-                cache_fs = get_fs(cache_file)
-                if not cache_fs.exists(cache_file):
-                    with cache_fs.open(cache_file, mode='wb') as file:
-                        stream_file(source_fs, uri, file)
-
-                path = cache_file
-            else:
-                _, extension = os.path.splitext(uri)
-                with NamedTemporaryFile(delete=False, suffix=extension) as tmp_file:
-                    stream_file(source_fs, uri, tmp_file)
-
-                path = tmp_file.name
-
-            big_file_cache[uri] = path
-
-    return big_file_cache[uri]
-
-
 def load_file(uri):
     """Load files from various sources"""
-    if uri in small_file_cache:
-        return small_file_cache[uri]
+    if uri in file_cache:
+        return file_cache[uri]
 
     fs = get_fs(uri)
 
@@ -77,7 +40,7 @@ def load_file(uri):
     elif uri.endswith(".json") or uri.endswith(".geojson"):
         data = json.loads(data)
 
-    small_file_cache[uri] = data
+    file_cache[uri] = data
 
     return data
 
