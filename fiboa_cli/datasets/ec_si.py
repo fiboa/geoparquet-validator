@@ -116,6 +116,9 @@ MISSING_SCHEMAS = {
         },
         'EC_hcat_n': {
             'type': 'string'
+        },
+        'EC_hcat_c': {
+            'type': 'uint32'
         }
     }
 }
