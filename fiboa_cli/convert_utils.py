@@ -296,7 +296,7 @@ def download_files(uris, cache_folder = None):
     if cache_folder is None:
         args = {}
         if sys.version_info.major >= 3 and sys.version_info.minor >= 12:
-            args.delete = True # only available in Python 3.12 and later
+            args.delete = False # only available in Python 3.12 and later
         with TemporaryDirectory(**args) as tmp_folder:
             cache_folder = tmp_folder
 
@@ -317,26 +317,25 @@ def download_files(uris, cache_folder = None):
             cache_fs.makedirs(cache_folder)
 
         cache_file = os.path.join(cache_folder, name)
+        zip_folder = os.path.join(cache_folder, "extracted." + os.path.splitext(name)[0])
 
         if not cache_fs.exists(cache_file):
             source_fs = get_fs(uri)
             with cache_fs.open(cache_file, mode='wb') as file:
                 stream_file(source_fs, uri, file)
 
-        if extract:
-            if zipfile.is_zipfile(cache_file):
-                zip_folder = os.path.join(cache_folder, "extracted." + os.path.splitext(name)[0])
-                with zipfile.ZipFile(cache_file, 'r') as zip_file:
-                    zip_file.extractall(zip_folder)
+            if extract:
+                if zipfile.is_zipfile(cache_file):
+                    with zipfile.ZipFile(cache_file, 'r') as zip_file:
+                        zip_file.extractall(zip_folder)
+                else:
+                    raise ValueError("Only ZIP files are supported for extraction")
 
-                for file in target:
-                    paths.append(os.path.join(zip_folder, file))
-            else:
-                raise ValueError("Only ZIP files are supported for extraction")
+        if extract:
+            for filename in target:
+                paths.append(os.path.join(zip_folder, filename))
         else:
             paths.append(cache_file)
-
-    print(paths)
 
     return paths
 

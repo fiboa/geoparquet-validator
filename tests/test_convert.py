@@ -1,6 +1,5 @@
 import re
 from pytest import fixture, mark
-from fiboa_cli.util import load_file
 from fiboa_cli import convert, validate
 import tempfile
 from click.testing import CliRunner
@@ -19,8 +18,7 @@ def out_file():
 @mark.parametrize("converter", ["nl", "nl_crop"])
 def test_converter(out_file, converter, path=None):
     if path is None:
-        path = f"tests/data-files/{converter}.gpkg"
-    assert load_file(path), f"Input file missing: {path}"
+        path = f"tests/data-files/convert/{converter}"
 
     runner = CliRunner()
     result = runner.invoke(convert, [converter, '-o', out_file.name, '-c', path])
@@ -34,4 +32,4 @@ def test_converter(out_file, converter, path=None):
 
 
 def test_be_vlg(out_file):
-    test_converter(out_file, 'be_vlg', "tests/data-files/be_vlg.zip")
+    test_converter(out_file, 'be_vlg')

@@ -363,12 +363,11 @@ def convert(dataset, out, cache, source_coop, collection, compression):
     Converts existing field boundary datasets to fiboa.
     """
     log(f"fiboa CLI {__version__} - Convert '{dataset}'\n", "success")
-    convert_(dataset, out, cache, source_coop, collection, compression)
-    # try:
-    #     convert_(dataset, out, cache, source_coop, collection, compression)
-    # except Exception as e:
-    #     log(e, "error")
-    #     sys.exit(1)
+    try:
+        convert_(dataset, out, cache, source_coop, collection, compression)
+    except Exception as e:
+        log(e, "error")
+        sys.exit(1)
 
 
 ## CONVERTERS
