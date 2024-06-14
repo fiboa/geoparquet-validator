@@ -35,3 +35,7 @@ def test_converter(out_file, converter, path=None):
 
 def test_be_vlg(out_file):
     test_converter(out_file, 'be_vlg', "tests/data-files/be_vlg.zip")
+
+
+def test_fr(out_file):
+    test_converter(out_file, 'be_vlg', "tests/data-files/fr.7z")
