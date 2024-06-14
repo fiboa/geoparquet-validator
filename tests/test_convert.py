@@ -38,4 +38,4 @@ def test_be_vlg(out_file):
 
 
 def test_fr(out_file):
-    test_converter(out_file, 'be_vlg', "tests/data-files/fr.7z")
+    test_converter(out_file, 'fr', "tests/data-files/fr.7z")

@@ -4,7 +4,7 @@ from ..util import download_file, log
 import os
 
 URI = "https://data.geopf.fr/telechargement/download/RPG/RPG_2-0__GPKG_LAMB93_FXX_2022-01-01/RPG_2-0__GPKG_LAMB93_FXX_2022-01-01.7z.001"
-ID = "FR"
+ID = "fr"
 TITLE = "Registre Parcellaire Graphique; Crop Fields France"
 DESCRIPTION = """
 France has published Crop Field data for many years. Crop fields are declared by farmers within the Common Agricultural Policy (CAP) subsidy scheme.
@@ -13,7 +13,7 @@ The anonymized version is distributed as part of the public service for making r
 """
 BBOX = [-6.047022416643922, -3.916364769838749, 68.89050422648864, 51.075100624023094]
 
-PROVIDER_NAME = "Anstitut National de l'Information Géographique et Forestière (contact.geoservices@ign.fr )"
+PROVIDER_NAME = "Anstitut National de l'Information Géographique et Forestière"
 PROVIDER_URL = "https://www.data.gouv.fr/en/datasets/registre-parcellaire-graphique-rpg-contours-des-parcelles-et-ilots-culturaux-et-leur-groupe-de-cultures-majoritaire/"
 # Attribution example as described in the open license
 ATTRIBUTION = "IGN — Original data downloaded from https://geoservices.ign.fr/rpg, updated on June 14 2024"
