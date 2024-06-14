@@ -24,6 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e .[nl]
+          pip install -e .[fr]
           pip install -r requirements-dev.txt
       - name: Execute test suites
         run: pytest

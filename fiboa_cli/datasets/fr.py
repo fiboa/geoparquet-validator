@@ -33,8 +33,9 @@ ADD_COLUMNS = {
 EXTENSIONS = []
 
 COLUMN_MIGRATIONS = {}
-COLUMN_FILTERS = {}
-
+COLUMN_FILTERS = {
+    "surf_parc": lambda col: col > 0.0  # fiboa validator requires area > 0.0
+}
 MISSING_SCHEMAS = {
     "properties": {
         "crop_code": {
