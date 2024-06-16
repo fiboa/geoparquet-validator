@@ -1,4 +1,5 @@
 from ..convert_utils import convert as convert_
+import pandas as pd
 
 URI = "http://use_your_own_copy/"
 # Call `fiboa convert be_wa -c your_own_downloaded_file` . See data-survey for data acquisition instructions
@@ -40,7 +41,6 @@ ADD_COLUMNS = {}
 # A list of implemented extension identifiers
 EXTENSIONS = []
 
-import pandas as pd
 COLUMN_MIGRATIONS = {
     "determination_datetime": lambda col: pd.to_datetime(col, format='%Y') + pd.DateOffset(months=4, days=14)
 }
