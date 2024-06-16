@@ -1,5 +1,6 @@
 import re
 from pytest import fixture, mark
+from pathlib import Path
 from fiboa_cli.util import load_file
 from fiboa_cli import convert, validate
 import tempfile
@@ -16,10 +17,9 @@ def out_file():
         yield out
 
 
-@mark.parametrize("converter", ["nl", "nl_crop"])
-def test_converter(out_file, converter, path=None):
-    if path is None:
-        path = f"tests/data-files/{converter}.gpkg"
+@mark.parametrize("converter", ["nl", "nl_crop", "be_vlg", "fr"])
+def test_converter(out_file, converter):
+    path = next(Path("tests/data-files").glob(f"{converter}.*")).as_posix()
     assert load_file(path), f"Input file missing: {path}"
 
     runner = CliRunner()

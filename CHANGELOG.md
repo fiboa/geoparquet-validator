@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for Belgium, Flanders (`be_vlg`)
 - Converter for Slovenia via EuroCrops (`de_si`)
 - Converter for Belgium, Wallonia (`be_wa`)
+- Converter for France (`fr`)
 
 ### Changed
 

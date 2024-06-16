@@ -37,6 +37,9 @@ setup(
         'nl': [
             "pyogrio"
         ],
+        'fr': [
+            'py7zr'
+        ],
         'de_nrw': [
             # No optional dependencies for de_nrw datasets converter needed
         ]
