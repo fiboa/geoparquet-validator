@@ -17,7 +17,7 @@ def out_file():
         yield out
 
 
-@mark.parametrize("converter", ["nl", "nl_crop", "be_vlg", "fr"])
+@mark.parametrize("converter", ["nl", "nl_crop", "be_vlg", "fr", "be_wa"])
 def test_converter(out_file, converter):
     path = next(Path("tests/data-files").glob(f"{converter}.*")).as_posix()
     assert load_file(path), f"Input file missing: {path}"
@@ -31,11 +31,3 @@ def test_converter(out_file, converter):
 
     result = runner.invoke(validate, [out_file.name, '--data'])
     assert result.exit_code == 0, result.output
-
-
-def test_be_vlg(out_file):
-    test_converter(out_file, 'be_vlg', "tests/data-files/be_vlg.zip")
-
-
-def test_be_wa(out_file):
-    test_converter(out_file, 'be_wa', "tests/data-files/be_wa.zip")
