@@ -32,6 +32,9 @@ def convert(
     """
     Converts a German field boundary datasets to fiboa.
     """
+    if len(bbox) != 4:
+        raise ValueError("Bounding box must be of length 4")
+
     if not isinstance(get_fs(url), LocalFileSystem):
         log("Loading file")
     path = download_file(url, cache_file)
