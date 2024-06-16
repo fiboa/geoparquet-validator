@@ -17,7 +17,7 @@ PROVIDER_NAME = "Anstitut National de l'Information Géographique et Forestière
 PROVIDER_URL = "https://www.data.gouv.fr/en/datasets/registre-parcellaire-graphique-rpg-contours-des-parcelles-et-ilots-culturaux-et-leur-groupe-de-cultures-majoritaire/"
 # Attribution example as described in the open license
 ATTRIBUTION = "IGN — Original data downloaded from https://geoservices.ign.fr/rpg, updated on June 14 2024"
-LICENSE = {"title": "Etalab-License_Ouverte", "href": "https://etalab.gouv.fr/licence-ouverte-open-licence", "type": "text/html", "rel": "license"}
+LICENSE = {"title": "Licence Ouverte / Open Licence", "href": "https://etalab.gouv.fr/licence-ouverte-open-licence", "type": "text/html", "rel": "license"}
 
 COLUMNS = {
     'geometry': 'geometry',
