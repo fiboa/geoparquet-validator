@@ -1,9 +1,10 @@
 from ..convert_utils import convert as convert_
-from tempfile import TemporaryDirectory
-from ..util import download_file, log
-import os
 
-URI = "https://data.geopf.fr/telechargement/download/RPG/RPG_2-0__GPKG_LAMB93_FXX_2022-01-01/RPG_2-0__GPKG_LAMB93_FXX_2022-01-01.7z.001"
+SOURCES = {
+    "https://data.geopf.fr/telechargement/download/RPG/RPG_2-0__GPKG_LAMB93_FXX_2022-01-01/RPG_2-0__GPKG_LAMB93_FXX_2022-01-01.7z.001": [
+        "RPG_2-0__GPKG_LAMB93_FXX_2022-01-01/RPG/1_DONNEES_LIVRAISON_2023-08-01/RPG_2-0_GPKG_LAMB93_FXX-2022/PARCELLES_GRAPHIQUES.gpkg"
+    ]
+}
 ID = "fr"
 TITLE = "Registre Parcellaire Graphique; Crop Fields France"
 DESCRIPTION = """
@@ -30,9 +31,7 @@ COLUMNS = {
 ADD_COLUMNS = {
     "determination_datetime": "2022-01-15T00:00:00Z"
 }
-EXTENSIONS = []
 
-COLUMN_MIGRATIONS = {}
 COLUMN_FILTERS = {
     "surf_parc": lambda col: col > 0.0  # fiboa validator requires area > 0.0
 }
@@ -48,45 +47,25 @@ MISSING_SCHEMAS = {
 }
 
 
-def migrate(gdf):
-    # Convert accidental multipolygon type to polygon
-    gdf = gdf.explode(index_parts=False)
-    return gdf
-
-
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
-    # We need to extract manually because the GeoPackage is 7zipped
-    log("Loading file from: " + URI)
-    path = download_file(URI, cache_file)
-    import py7zr
-
-    with TemporaryDirectory() as tmp_dir:
-        log("Unzipping to: " + tmp_dir)
-        with py7zr.SevenZipFile(path, 'r') as f:
-            gpkg = next(f for f in f.getnames() if f.endswith('.gpkg'))
-
-            f.extractall(tmp_dir)
-            new_path = os.path.join(tmp_dir, gpkg)
-            convert_(
-                output_file,
-                cache_file,
-                new_path,
-                COLUMNS,
-                ID,
-                TITLE,
-                DESCRIPTION,
-                BBOX,
-                provider_name=PROVIDER_NAME,
-                provider_url=PROVIDER_URL,
-                source_coop_url=source_coop_url,
-                extensions=EXTENSIONS,
-                missing_schemas=MISSING_SCHEMAS,
-                column_additions=ADD_COLUMNS,
-                column_migrations=COLUMN_MIGRATIONS,
-                column_filters=COLUMN_FILTERS,
-                migration=migrate,
-                attribution=ATTRIBUTION,
-                store_collection=collection,
-                license=LICENSE,
-                compression=compression,
-            )
+def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
+    convert_(
+        output_file,
+        cache,
+        SOURCES,
+        COLUMNS,
+        ID,
+        TITLE,
+        DESCRIPTION,
+        BBOX,
+        provider_name=PROVIDER_NAME,
+        provider_url=PROVIDER_URL,
+        source_coop_url=source_coop_url,
+        missing_schemas=MISSING_SCHEMAS,
+        column_additions=ADD_COLUMNS,
+        column_filters=COLUMN_FILTERS,
+        attribution=ATTRIBUTION,
+        store_collection=collection,
+        license=LICENSE,
+        compression=compression,
+        explode_multipolygon=True
+    )

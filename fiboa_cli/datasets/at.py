@@ -1,15 +1,8 @@
 from ..convert_utils import convert as convert_
-from ..util import download_file, log
 
-from tempfile import TemporaryDirectory
-from zipfile import ZipFile
-
-import os
-
-# This file consists of three shapefiles (DFBK_FB, DFBK_LE, DFBK_NBF)
-# We only want DFBK_FB and for me it loads only this file, but I'm not sure whether that's always the case
-URI = "https://inspire.lfrz.gv.at/009501/ds/inspire_referenzen_2021_polygon.gpkg.zip"
-FILENAME = "INSPIRE_REFERENZEN_2021_POLYGON.gpkg"
+SOURCES = {
+    "https://inspire.lfrz.gv.at/009501/ds/inspire_referenzen_2021_polygon.gpkg.zip": ["INSPIRE_REFERENZEN_2021_POLYGON.gpkg"]
+}
 ID = "at"
 TITLE = "Field boundaries for Austria"
 DESCRIPTION = """**Field boundaries for Austria - INVEKOS Referenzen Österreich 2021.**
@@ -50,31 +43,19 @@ MISSING_SCHEMAS = {
     }
 }
 
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
     """
     Converts the Austrian field boundary datasets to fiboa.
     """
-
-    # There's a bug in the file that let's the unzipping fail in the normal flow
-    log("Loading file from: " + URI)
-    path = download_file(URI, cache_file)
-
-    with TemporaryDirectory() as tmp_dir:
-        log("Unzipping to: " + tmp_dir)
-        with ZipFile(path, 'r') as f:
-            f.extractall(tmp_dir)
-
-        new_path = os.path.join(tmp_dir, FILENAME)
-
-        convert_(
-            output_file, cache_file, new_path,
-            COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
-            license=LICENSE,
-            extensions = EXTENSIONS,
-            missing_schemas=MISSING_SCHEMAS,
-            source_coop_url=source_coop_url,
-            provider_name=PROVIDER_NAME,
-            provider_url=PROVIDER_URL,
-            store_collection=collection,
-            compression=compression,
-        )
+    convert_(
+        output_file, cache, SOURCES,
+        COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
+        license=LICENSE,
+        extensions = EXTENSIONS,
+        missing_schemas=MISSING_SCHEMAS,
+        source_coop_url=source_coop_url,
+        provider_name=PROVIDER_NAME,
+        provider_url=PROVIDER_URL,
+        store_collection=collection,
+        compression=compression,
+    )

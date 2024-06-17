@@ -6,10 +6,22 @@
 
 from ..convert_utils import convert as convert_
 
-# File to read the data from
-# Can read any tabular data format that GeoPandas can read through read_file()
-# Supported protcols: HTTP(S), GCS, S3, or the local file system
-URI = "https://fiboa.example/file.xyz"
+# File(s) to read the data from, usually publicly accessible URLs.
+# Can read any (zipped) tabular data format that GeoPandas can read through read_file() or read_parquet().
+# Supported protocols: HTTP(S), GCS, S3, or the local file system
+#
+# Multiple options are possible:
+# 1. a single URL (filename must be in the URL). The file is read as is.
+SOURCES = "https://fiboa.example/file.xyz"
+# 2. a dictionary with a mapping of URLs (where the filename can't necessarily be determined from the URL) to filenames.
+# SOURCES = {
+#   "https://fiboa.example/archive/758?download=1": "us.gpkg"
+#   "https://fiboa.example/archive/355?download=1": "canada.gpkg"
+# }
+# 3. a dictionary with a mapping of URLs to a list of filenames in ZIP ot 7Z files to read from.
+# SOURCES = {
+#   "https://fiboa.example/north_america.zip": ["us.gpkg", "canaga.gpkg"]
+# }
 
 # Unique identifier for the collection
 ID = "abc"
@@ -83,7 +95,7 @@ MISSING_SCHEMAS = {
 
 
 # Conversion function, usually no changes required
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
     """
     Converts the field boundary datasets to fiboa.
 
@@ -104,7 +116,7 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
 
     Parameters:
     output_file (str): Path where the Parquet file shall be stored.
-    cache_file (str): Path to a cached file of the data. Default: None.
+    cache (str): Path to a cached folder for the data. Default: None.
                       Can be used to avoid repetitive downloads from the original data source.
     source_coop_url (str): URL to the (future) Source Cooperative repository. Default: None
     collection (bool): Additionally, store the collection separate from Parquet file. Default: False
@@ -113,8 +125,8 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
     """
     convert_(
         output_file,
-        cache_file,
-        URI,
+        cache,
+        SOURCES,
         COLUMNS,
         ID,
         TITLE,
