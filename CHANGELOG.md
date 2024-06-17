@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- ...
+
+### Changed
+
+- ...
+
+### Deprecated
+
+- ...
+
+### Removed
+
+- ...
+
+### Fixed
+
+- ...
+
+## [v0.5.0] - 2024-06-17
+
+### Added
+
 - Basic support for `patternProperties` in GeoParquet creation
 - The converter template accepts multiple input URLs
 - Added parameter to explode multipolygons to polygons (`explode_multipolygon`, default: `False`)
@@ -22,15 +44,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - The `--cache` option for the `convert` command asks for a folder instead of a file
+- The `cache_file` parameter in converters has been renamed to `cache` (requires changes in the converter templates)
 - The converter template allows for more detailed source information
-
-### Deprecated
-
-- ...
-
-### Removed
-
-- ...
+- The `URI` constant in the template was renamed to `SOURCES` (requires changes in the converter templates)
 
 ### Fixed
 
@@ -259,7 +275,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release
 
-[Unreleased]: <https://github.com/fiboa/cli/compare/v0.4.0...main>
+[Unreleased]: <https://github.com/fiboa/cli/compare/v0.5.0...main>
+[v0.5.0]: <https://github.com/fiboa/cli/compare/v0.4.0...v0.5.0>
 [v0.4.0]: <https://github.com/fiboa/cli/compare/v0.3.10...v0.4.0>
 [v0.3.10]: <https://github.com/fiboa/cli/compare/v0.3.9...v0.3.10>
 [v0.3.9]: <https://github.com/fiboa/cli/compare/v0.3.8...v0.3.9>
