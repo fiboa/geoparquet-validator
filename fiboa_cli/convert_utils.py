@@ -6,7 +6,6 @@ from .parquet import create_parquet
 from urllib.parse import urlparse
 from tempfile import TemporaryDirectory
 
-import base64
 import os
 import re
 import json
@@ -14,6 +13,7 @@ import geopandas as gpd
 import pandas as pd
 import sys
 import zipfile
+import py7zr
 
 def convert(
         output_file, cache_path,
@@ -32,6 +32,7 @@ def convert(
         store_collection = False,
         license = None,
         compression = None,
+        explode_multipolygon = False,
         **kwargs):
     """
     Converts a field boundary datasets to fiboa.
@@ -109,7 +110,11 @@ def convert(
             else:
                 log(f"Column '{key}' not found in dataset, skipping migration", "warning")
 
-    if has_migration or has_col_migrations or has_col_filters or has_col_additions:
+    # 4b. For geometry column, convert multipolygon type to polygon
+    if explode_multipolygon:
+        gdf = gdf.explode(index_parts=False)
+
+    if has_migration or has_col_migrations or has_col_filters or has_col_additions or explode_multipolygon:
         log("GeoDataFrame after migrations and filters:")
         print(gdf.head())
 
@@ -304,14 +309,18 @@ def download_files(uris, cache_folder = None):
             cache_folder = tmp_folder
 
     if isinstance(uris, str):
-        name = os.path.basename(urlparse(uris).path)
-        uris = {uris: name}
+        uris = {uris: name_from_url(uris)}
 
     paths = []
+    i = 0
     for uri, target in uris.items():
-        extract = isinstance(target, list)
-        if extract:
-            name = base64.urlsafe_b64encode(uri.encode()).decode()
+        i = i + 1
+        is_archive = isinstance(target, list)
+        if is_archive:
+            name = name_from_url(uri)
+            # if there's no file extension, it's likely a folder, which may not be unique
+            if "." not in name:
+                name = str(i)
         else:
             name = target
 
@@ -321,26 +330,34 @@ def download_files(uris, cache_folder = None):
 
         cache_file = os.path.join(cache_folder, name)
         zip_folder = os.path.join(cache_folder, "extracted." + os.path.splitext(name)[0])
+        must_extract = is_archive and not os.path.exists(zip_folder)
 
-        if not cache_fs.exists(cache_file):
+        if (not is_archive or must_extract) and not cache_fs.exists(cache_file):
             source_fs = get_fs(uri)
             with cache_fs.open(cache_file, mode='wb') as file:
                 stream_file(source_fs, uri, file)
 
-            if extract:
-                if zipfile.is_zipfile(cache_file):
-                    with zipfile.ZipFile(cache_file, 'r') as zip_file:
-                        zip_file.extractall(zip_folder)
-                else:
-                    raise ValueError("Only ZIP files are supported for extraction")
+        if must_extract:
+            if zipfile.is_zipfile(cache_file):
+                with zipfile.ZipFile(cache_file, 'r') as zip_file:
+                    zip_file.extractall(zip_folder)
+            elif py7zr.is_7zfile(cache_file):
+                with py7zr.SevenZipFile(cache_file, 'r') as sz_file:
+                    sz_file.extractall(zip_folder)
+            else:
+                raise ValueError("Only ZIP and 7Z files are supported for extraction")
 
-        if extract:
+        if is_archive:
             for filename in target:
                 paths.append(os.path.join(zip_folder, filename))
         else:
             paths.append(cache_file)
 
     return paths
+
+
+def name_from_url(url):
+    return os.path.basename(urlparse(url).path)
 
 
 def stream_file(fs, src_uri, dst_file, chunk_size = 10 * 1024 * 1024):

@@ -14,3 +14,4 @@ __pycache__/
 
 # Example files
 *.parquet
+/tests/data-files/convert/*/extracted.*/

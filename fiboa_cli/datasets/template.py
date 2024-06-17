@@ -18,7 +18,7 @@ SOURCES = "https://fiboa.example/file.xyz"
 #   "https://fiboa.example/archive/758?download=1": "us.gpkg"
 #   "https://fiboa.example/archive/355?download=1": "canada.gpkg"
 # }
-# 3. a dictionary with a mapping of URLs to a list of filenames in ZIP files to read from.
+# 3. a dictionary with a mapping of URLs to a list of filenames in ZIP ot 7Z files to read from.
 # SOURCES = {
 #   "https://fiboa.example/north_america.zip": ["us.gpkg", "canaga.gpkg"]
 # }

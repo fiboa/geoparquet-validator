@@ -8,18 +8,15 @@ from click.testing import CliRunner
 Create input files with: `ogr2ogr output.gpkg -limit 100 input.gpkg`
 """
 
-
 @fixture
 def out_file():
     with tempfile.NamedTemporaryFile() as out:
         yield out
 
 
-@mark.parametrize("converter", ["nl", "nl_crop", "be_vlg", "fr"])
-def test_converter(out_file, converter, path=None):
-    if path is None:
-        path = f"tests/data-files/convert/{converter}"
-
+@mark.parametrize("converter", ["at", "be_vlg", "de_sh", "fr", "nl", "nl_crop"])
+def test_converter(out_file, converter):
+    path = f"tests/data-files/convert/{converter}"
     runner = CliRunner()
     result = runner.invoke(convert, [converter, '-o', out_file.name, '-c', path])
     assert result.exit_code == 0, result.output
