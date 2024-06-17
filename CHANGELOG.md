@@ -10,14 +10,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Basic support for `patternProperties` in GeoParquet creation
+- The converter template accepts multiple input URLs
 - Converter for The Netherlands (`nl` and `nl_crops`)
 - Converter for Belgium, Flanders (`be_vlg`)
 - Converter for Slovenia via EuroCrops (`de_si`)
 - Converter for France (`fr`)
+- Added parameter to explode multipolygons to polygons (`explode_multipolygon`, default: `False`)
 
 ### Changed
 
-- ...
+- The `--cache` option for the `convert` command asks for a folder instead of a file
+- The converter template allows for more detailed source information
 
 ### Deprecated
 

@@ -1,16 +1,9 @@
-import os
-
-from tempfile import TemporaryDirectory
-from zipfile import ZipFile
-
-from ..util import download_file, log
 from ..convert_utils import convert as convert_
 
 # File to read the data from
-# Can read any tabular data format that GeoPandas can read through read_file()
-# Supported protcols: HTTP(S), GCS, S3, or the local file system
-URI = "https://zenodo.org/records/10118572/files/SI_2021.zip?download=1"
-FILENAME = "SI_2021_EC21.shp"
+SOURCES = {
+  "https://zenodo.org/records/10118572/files/SI_2021.zip?download=1": ["SI_2021_EC21.shp"]
+}
 
 # Unique identifier for the collection
 ID = "ec_si"
@@ -125,7 +118,7 @@ MISSING_SCHEMAS = {
 
 
 # Conversion function, usually no changes required
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
     """
     Converts the field boundary datasets to fiboa.
 
@@ -146,44 +139,33 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
 
     Parameters:
     output_file (str): Path where the Parquet file shall be stored.
-    cache_file (str): Path to a cached file of the data. Default: None.
+    cache (str): Path to a cached file of the data. Default: None.
                       Can be used to avoid repetitive downloads from the original data source.
     source_coop_url (str): URL to the (future) Source Cooperative repository. Default: None
     collection (bool): Additionally, store the collection separate from Parquet file. Default: False
     compression (str): Compression method for the Parquet file. Default: zstd
     kwargs: Additional keyword arguments for GeoPanda's read_file() or read_parquet() function.
     """
-
-    log("Loading file from: " + URI)
-    path = download_file(URI, cache_file)
-
-    with TemporaryDirectory() as tmp_dir:
-        log("Unzipping to: " + tmp_dir)
-        with ZipFile(path, 'r') as f:
-            f.extractall(tmp_dir)
-
-        new_path = os.path.join(tmp_dir, FILENAME)
-
-        convert_(
-            output_file,
-            cache_file,
-            new_path,
-            COLUMNS,
-            ID,
-            TITLE,
-            DESCRIPTION,
-            BBOX,
-            provider_name=PROVIDER_NAME,
-            provider_url=PROVIDER_URL,
-            source_coop_url=source_coop_url,
-            extensions=EXTENSIONS,
-            missing_schemas=MISSING_SCHEMAS,
-            column_migrations=COLUMN_MIGRATIONS,
-            column_filters=COLUMN_FILTERS,
-            column_additions=ADD_COLUMNS,
-            migration=MIGRATION,
-            attribution=ATTRIBUTION,
-            store_collection=collection,
-            license=LICENSE,
-            compression=compression,
-        )
+    convert_(
+        output_file,
+        cache,
+        SOURCES,
+        COLUMNS,
+        ID,
+        TITLE,
+        DESCRIPTION,
+        BBOX,
+        provider_name=PROVIDER_NAME,
+        provider_url=PROVIDER_URL,
+        source_coop_url=source_coop_url,
+        extensions=EXTENSIONS,
+        missing_schemas=MISSING_SCHEMAS,
+        column_migrations=COLUMN_MIGRATIONS,
+        column_filters=COLUMN_FILTERS,
+        column_additions=ADD_COLUMNS,
+        migration=MIGRATION,
+        attribution=ATTRIBUTION,
+        store_collection=collection,
+        license=LICENSE,
+        compression=compression,
+    )

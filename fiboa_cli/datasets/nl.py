@@ -1,6 +1,6 @@
 from ..convert_utils import convert as convert_
 
-URI = "https://service.pdok.nl/rvo/referentiepercelen/atom/downloads/referentiepercelen.gpkg"
+SOURCES = "https://service.pdok.nl/rvo/referentiepercelen/atom/downloads/referentiepercelen.gpkg"
 
 ID = "nl"
 TITLE = "Field boundaries for The Netherlands"
@@ -32,8 +32,6 @@ ADD_COLUMNS = {
     "determination_datetime": "2023-06-15T00:00:00Z"
 }
 
-EXTENSIONS = []
-COLUMN_MIGRATIONS = {}
 COLUMNS = {
     'geometry': 'geometry',
     'id': 'id',
@@ -46,18 +44,12 @@ COLUMN_FILTERS = {
     "type": lambda col: col == "Landbouwgrond"
 }
 
-
 def migrate(gdf):
     # Projection is in CRS 28992 (RD New), this is the area calculation method of the source organization
     gdf['area'] = gdf.area / 10000
     # index attribute is available through pyogrio
     gdf['id'] = gdf.index
-    # Convert accidental multipolygon type to polygon
-    gdf = gdf.explode(index_parts=False)
     return gdf
-
-
-MIGRATION = migrate
 
 MISSING_SCHEMAS = {
     "properties": {
@@ -68,11 +60,11 @@ MISSING_SCHEMAS = {
 }
 
 
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
     convert_(
         output_file,
-        cache_file,
-        URI,
+        cache,
+        SOURCES,
         COLUMNS,
         ID,
         TITLE,
@@ -81,16 +73,15 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
         provider_name=PROVIDER_NAME,
         provider_url=PROVIDER_URL,
         source_coop_url=source_coop_url,
-        extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
         column_additions=ADD_COLUMNS,
-        column_migrations=COLUMN_MIGRATIONS,
         column_filters=COLUMN_FILTERS,
-        migration=MIGRATION,
+        migration=migrate,
         attribution=ATTRIBUTION,
         store_collection=collection,
         license=LICENSE,
         compression=compression,
+        explode_multipolygon=True,
         # pyogrio + fix_as_index allow us to use the fid column
         # see https://github.com/geopandas/geopandas/issues/2794
         engine='pyogrio',

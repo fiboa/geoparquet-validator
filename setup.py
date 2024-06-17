@@ -30,18 +30,13 @@ setup(
         "requests>=2.30",
         "aiohttp>=3.9",
         "shapely>=2.0",
-        "numpy>=1.20.0"
+        "numpy>=1.20.0",
+        "py7zr>=0.21.0"
     ],
     extras_require={
         # Optional dependencies for datasets converters go here
         'nl': [
             "pyogrio"
-        ],
-        'fr': [
-            'py7zr'
-        ],
-        'de_nrw': [
-            # No optional dependencies for de_nrw datasets converter needed
         ]
     },
     packages=find_packages(),

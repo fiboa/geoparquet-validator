@@ -1,19 +1,23 @@
 from .const import STAC_TABLE_EXTENSION
 from .version import fiboa_version
-from .util import log, download_file, get_fs, to_iso8601
+from .util import log, get_fs, to_iso8601
 from .parquet import create_parquet
 
-from fsspec.implementations.local import LocalFileSystem
+from urllib.parse import urlparse
+from tempfile import TemporaryDirectory
 
 import os
 import re
 import json
 import geopandas as gpd
 import pandas as pd
+import sys
+import zipfile
+import py7zr
 
 def convert(
-        output_file, cache_file,
-        url, columns,
+        output_file, cache_path,
+        urls, columns,
         id, title, description, bbox,
         provider_name = None,
         provider_url = None,
@@ -28,25 +32,32 @@ def convert(
         store_collection = False,
         license = None,
         compression = None,
+        explode_multipolygon = False,
         **kwargs):
     """
-    Converts a German field boundary datasets to fiboa.
+    Converts a field boundary datasets to fiboa.
     """
     if len(bbox) != 4:
         raise ValueError("Bounding box must be of length 4")
 
-    if not isinstance(get_fs(url), LocalFileSystem):
-        log("Loading file")
-    path = download_file(url, cache_file)
+    log(f"Getting file(s) if not cached yet")
+    paths = download_files(urls, cache_path)
 
-    log("Reading into GeoDataFrame")
-    # If file is a parquet file then read with read_parquet
-    if path.endswith(".parquet") or path.endswith(".geoparquet"):
-        gdf = gpd.read_parquet(path, **kwargs)
-    else:
-        gdf = gpd.read_file(path, **kwargs)
+    log(f"Reading into GeoDataFrame")
+    gdfs = []
+    for path in paths:
+        # If file is a parquet file then read with read_parquet
+        if path.endswith(".parquet") or path.endswith(".geoparquet"):
+            data = gpd.read_parquet(path, **kwargs)
+        else:
+            data = gpd.read_file(path, **kwargs)
 
-    log("GeoDataFrame created from source:")
+        gdfs.append(data)
+
+    gdf = pd.concat(gdfs)
+    del gdfs
+
+    log("GeoDataFrame created from source(s):")
     print(gdf.head())
 
     # 1. Run global migration
@@ -99,7 +110,11 @@ def convert(
             else:
                 log(f"Column '{key}' not found in dataset, skipping migration", "warning")
 
-    if has_migration or has_col_migrations or has_col_filters or has_col_additions:
+    # 4b. For geometry column, convert multipolygon type to polygon
+    if explode_multipolygon:
+        gdf = gdf.explode(index_parts=False)
+
+    if has_migration or has_col_migrations or has_col_filters or has_col_additions or explode_multipolygon:
         log("GeoDataFrame after migrations and filters:")
         print(gdf.head())
 
@@ -282,3 +297,73 @@ def add_asset_to_collection(collection, output_file, rows = None, columns = None
     c["assets"]["data"] = asset
 
     return c
+
+
+def download_files(uris, cache_folder = None):
+    """Download (and cache) files from various sources"""
+    if cache_folder is None:
+        args = {}
+        if sys.version_info.major >= 3 and sys.version_info.minor >= 12:
+            args.delete = False # only available in Python 3.12 and later
+        with TemporaryDirectory(**args) as tmp_folder:
+            cache_folder = tmp_folder
+
+    if isinstance(uris, str):
+        uris = {uris: name_from_url(uris)}
+
+    paths = []
+    i = 0
+    for uri, target in uris.items():
+        i = i + 1
+        is_archive = isinstance(target, list)
+        if is_archive:
+            name = name_from_url(uri)
+            # if there's no file extension, it's likely a folder, which may not be unique
+            if "." not in name:
+                name = str(i)
+        else:
+            name = target
+
+        cache_fs = get_fs(cache_folder)
+        if not cache_fs.exists(cache_folder):
+            cache_fs.makedirs(cache_folder)
+
+        cache_file = os.path.join(cache_folder, name)
+        zip_folder = os.path.join(cache_folder, "extracted." + os.path.splitext(name)[0])
+        must_extract = is_archive and not os.path.exists(zip_folder)
+
+        if (not is_archive or must_extract) and not cache_fs.exists(cache_file):
+            source_fs = get_fs(uri)
+            with cache_fs.open(cache_file, mode='wb') as file:
+                stream_file(source_fs, uri, file)
+
+        if must_extract:
+            if zipfile.is_zipfile(cache_file):
+                with zipfile.ZipFile(cache_file, 'r') as zip_file:
+                    zip_file.extractall(zip_folder)
+            elif py7zr.is_7zfile(cache_file):
+                with py7zr.SevenZipFile(cache_file, 'r') as sz_file:
+                    sz_file.extractall(zip_folder)
+            else:
+                raise ValueError("Only ZIP and 7Z files are supported for extraction")
+
+        if is_archive:
+            for filename in target:
+                paths.append(os.path.join(zip_folder, filename))
+        else:
+            paths.append(cache_file)
+
+    return paths
+
+
+def name_from_url(url):
+    return os.path.basename(urlparse(url).path)
+
+
+def stream_file(fs, src_uri, dst_file, chunk_size = 10 * 1024 * 1024):
+    with fs.open(src_uri, mode='rb') as f:
+        while True:
+            chunk = f.read(chunk_size)
+            if not chunk:
+                break
+            dst_file.write(chunk)
