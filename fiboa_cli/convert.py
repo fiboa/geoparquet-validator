@@ -12,11 +12,10 @@ def convert(dataset, output_file, cache = None, source_coop_url = None, collecti
     except ImportError as e:
         raise Exception(f"Converter for '{dataset}' not available or faulty: {e}")
 
-    if (not hasattr(converter, "SOURCES") or converter.SOURCES is None) and not cache:
+    if hasattr(converter, "DATA_ACCESS") and not cache:
         log("Data access is restricted. You need to manually get the data from the source.", "warning")
-        if hasattr(converter, "DATA_ACCESS"):
-            log("Instructions for data access:", "warning")
-            log(converter.DATA_ACCESS, "info")
+        log("Instructions for data access:", "warning")
+        log(converter.DATA_ACCESS.strip(), "info")
         raise Exception("Provide the folder that contains the downloaded files through the `-c` parameter.")
 
     converter.convert(output_file, cache = cache, source_coop_url = source_coop_url, collection = collection, compression = compression)

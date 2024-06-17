@@ -1,8 +1,13 @@
 from ..convert_utils import convert as convert_
 import pandas as pd
 
-URI = "http://use_your_own_copy/"
-# Call `fiboa convert be_wa -c your_own_downloaded_file` . See data-survey for data acquisition instructions
+SOURCES = {
+    "be_wa.zip": ["SIGEC_PARC_AGRI_ANON__2022.gpkg"]
+}
+DATA_ACCESS = """
+To download the data, create an account at <https://geoportail.wallonie.be/>. Go to the dataset at <https://geoportail.wallonie.be/catalogue/49294570-2a8d-49ca-995c-1b0890672bc8.html>. Select 'Accès' and add the data to your downloads (click 'AJOUTER À MES TÉLÉCHARGEMENTS'). Then finish the download through 'finalisez votre demande de téléchargement' at <https://geoportail.wallonie.be/geodata-donwload.html> and select the required data format and projection. Choose 'OGC GeoPackage (.gpkg)' in 'Belge 1972 / Belgian Lambert 72'.
+Select 'Region Wallone' at 'DÉCOUPAGE' for the full dataset. Select 'Je souhaite une license' to acquire a license. Indicate whether it's Professional or Personal ('particulier') use and choose an end-date of the license. You will receive an e-mail with the license and another e-mail with a link to the data. Store the downloaded file as 'be_wa.zip'.
+"""
 
 ID = "be_wa"
 TITLE = "Belgium Wallonia: Parcellaire Agricole Anonyme"
@@ -20,7 +25,7 @@ PROVIDER_URL = "https://geoportail.wallonie.be/catalogue/49294570-2a8d-49ca-995c
 ATTRIBUTION = "Service public de Wallonie (SPW)"
 
 LICENSE = {
-    "title": "Conditions générales d’utilisation des données géographiques numériques du Service public de Wallonie",
+    "title": "Conditions générales d'utilisation des données géographiques numériques du Service public de Wallonie",
     "href": "https://geoportail.wallonie.be/files/documents/ConditionsSPW/DataSPW-CGU.pdf",
     "type": "text/html",
     "rel": "license"
@@ -36,18 +41,9 @@ COLUMNS = {
     'GROUPE_CULT': 'group_code',
 }
 
-ADD_COLUMNS = {}
-
-# A list of implemented extension identifiers
-EXTENSIONS = []
-
 COLUMN_MIGRATIONS = {
     "determination_datetime": lambda col: pd.to_datetime(col, format='%Y') + pd.DateOffset(months=4, days=14)
 }
-
-COLUMN_FILTERS = {}
-
-MIGRATION = None
 
 MISSING_SCHEMAS = {
     "properties": {
@@ -63,11 +59,11 @@ MISSING_SCHEMAS = {
     }
 }
 
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
     convert_(
         output_file,
-        cache_file,
-        URI,
+        cache,
+        SOURCES,
         COLUMNS,
         ID,
         TITLE,
@@ -76,12 +72,8 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
         provider_name=PROVIDER_NAME,
         provider_url=PROVIDER_URL,
         source_coop_url=source_coop_url,
-        extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
-        column_additions=ADD_COLUMNS,
         column_migrations=COLUMN_MIGRATIONS,
-        column_filters=COLUMN_FILTERS,
-        migration=MIGRATION,
         attribution=ATTRIBUTION,
         store_collection=collection,
         license=LICENSE,
