@@ -378,7 +378,7 @@ def converters():
     """
     log(f"fiboa CLI {__version__} - List of Converters\n", "success")
 
-    keys = ["TITLE", "LICENSE", "PROVIDER_NAME", "URI"]
+    keys = ["TITLE", "LICENSE", "PROVIDER_NAME", "SOURCES"]
     converters = list_all_converters(keys)
     df = pd.DataFrame.from_dict(converters, orient='index', columns=keys)
 

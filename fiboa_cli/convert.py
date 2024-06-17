@@ -32,7 +32,18 @@ def list_all_converters(keys):
         try:
             converter = read_converter(id)
             for key in keys:
-                obj[key] = getattr(converter, key)
+                value = getattr(converter, key)
+
+                if key == "SOURCES":
+                    if isinstance(value, str):
+                        value = tuple([value])
+                    elif isinstance(value, dict):
+                        value = value.keys()
+                elif key == "LICENSE" and isinstance(value, dict):
+                    value = value["href"]
+
+                obj[key] = value
+
             converters[id] = obj
         except ImportError:
             pass
