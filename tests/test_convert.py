@@ -1,7 +1,7 @@
 import re
+import tempfile
 from pytest import fixture, mark
 from fiboa_cli import convert, validate
-import tempfile
 from click.testing import CliRunner
 
 """
@@ -15,7 +15,7 @@ def out_file():
         yield out
 
 
-@mark.parametrize("converter", ["nl", "nl_crop"])
+@mark.parametrize("converter", ["nl", "nl_crop", "be_vlg", "fr"])
 def test_converter(out_file, converter, path=None):
     if path is None:
         path = f"tests/data-files/convert/{converter}"
@@ -30,6 +30,3 @@ def test_converter(out_file, converter, path=None):
     result = runner.invoke(validate, [out_file.name, '--data'])
     assert result.exit_code == 0, result.output
 
-
-def test_be_vlg(out_file):
-    test_converter(out_file, 'be_vlg')

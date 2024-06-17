@@ -36,6 +36,9 @@ def convert(
     """
     Converts a field boundary datasets to fiboa.
     """
+    if len(bbox) != 4:
+        raise ValueError("Bounding box must be of length 4")
+
     log(f"Getting file(s) if not cached yet")
     paths = download_files(urls, cache_path)
 
