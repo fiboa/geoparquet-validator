@@ -1,16 +1,9 @@
-import os
-
-from tempfile import TemporaryDirectory
-from zipfile import ZipFile
-
-from ..util import download_file, log
 from ..convert_utils import convert as convert_
 
 # File to read the data from
-# Can read any tabular data format that GeoPandas can read through read_file()
-# Supported protcols: HTTP(S), GCS, S3, or the local file system
-URI = "https://zenodo.org/records/10118572/files/FR_2018.zip"
-FILENAME = "FR_2018/FR_2018_EC21.shp"
+SOURCES = {
+  "https://zenodo.org/records/10118572/files/FR_2018.zip": ["FR_2018/FR_2018_EC21.shp"]
+}
 
 # Unique identifier for the collection
 ID = "ec_fr"
@@ -108,38 +101,27 @@ MISSING_SCHEMAS = {
 
 
 # Conversion function, usually no changes required
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
-    # We need to extract manually because the GeoPackage is zipped and in a folder, not at the root
-    log("Loading file from: " + URI)
-    path = download_file(URI, cache_file)
-
-    with TemporaryDirectory() as tmp_dir:
-        log("Unzipping to: " + tmp_dir)
-        with ZipFile(path, 'r') as f:
-            f.extractall(tmp_dir)
-
-        new_path = os.path.join(tmp_dir, FILENAME)
-
-        convert_(
-            output_file,
-            cache_file,
-            new_path,
-            COLUMNS,
-            ID,
-            TITLE,
-            DESCRIPTION,
-            BBOX,
-            provider_name=PROVIDER_NAME,
-            provider_url=PROVIDER_URL,
-            source_coop_url=source_coop_url,
-            extensions=EXTENSIONS,
-            missing_schemas=MISSING_SCHEMAS,
-            column_migrations=COLUMN_MIGRATIONS,
-            column_filters=COLUMN_FILTERS,
-            column_additions=ADD_COLUMNS,
-            migration=MIGRATION,
-            attribution=ATTRIBUTION,
-            store_collection=collection,
-            license=LICENSE,
-            compression=compression,
-        )
+def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
+    convert_(
+        output_file,
+        cache,
+        SOURCES,
+        COLUMNS,
+        ID,
+        TITLE,
+        DESCRIPTION,
+        BBOX,
+        provider_name=PROVIDER_NAME,
+        provider_url=PROVIDER_URL,
+        source_coop_url=source_coop_url,
+        extensions=EXTENSIONS,
+        missing_schemas=MISSING_SCHEMAS,
+        column_migrations=COLUMN_MIGRATIONS,
+        column_filters=COLUMN_FILTERS,
+        column_additions=ADD_COLUMNS,
+        migration=MIGRATION,
+        attribution=ATTRIBUTION,
+        store_collection=collection,
+        license=LICENSE,
+        compression=compression,
+    )

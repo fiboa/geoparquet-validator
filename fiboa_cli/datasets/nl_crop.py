@@ -2,7 +2,7 @@ from ..convert_utils import convert as convert_
 import pandas as pd
 
 
-URI = "https://service.pdok.nl/rvo/brpgewaspercelen/atom/v1_0/downloads/brpgewaspercelen_concept_2023.gpkg"
+SOURCES = "https://service.pdok.nl/rvo/brpgewaspercelen/atom/v1_0/downloads/brpgewaspercelen_concept_2023.gpkg"
 
 ID = "nl_crop"
 TITLE = "BRP Crop Field Boundaries for The Netherlands (CAP-based)"
@@ -73,11 +73,11 @@ MISSING_SCHEMAS = {
 }
 
 
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
     convert_(
         output_file,
-        cache_file,
-        URI,
+        cache,
+        SOURCES,
         COLUMNS,
         ID,
         TITLE,

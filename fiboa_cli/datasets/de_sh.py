@@ -1,6 +1,6 @@
 from ..convert_utils import convert as convert_
 
-URI = "https://service.gdi-sh.de/SH_OpenGBD/feeds/Atom_SH_Feldblockfinder_OpenGBD/data/Feldbloecke_2024_GPKG.zip"
+SOURCES = "https://service.gdi-sh.de/SH_OpenGBD/feeds/Atom_SH_Feldblockfinder_OpenGBD/data/Feldbloecke_2024_GPKG.zip"
 ID = "de_sh"
 TITLE = "Field boundaries for Schleswig-Holstein (SH), Germany"
 DESCRIPTION = """A field block (German: "Feldblock") is a contiguous agricultural area surrounded by permanent boundaries, which is cultivated by one or more farmers with one or more crops, is fully or partially set aside or is fully or partially taken out of production."""
@@ -17,8 +17,7 @@ COLUMNS = {
     'fachguelti': 'determination_datetime',
     'FLIK': ['flik', 'id'], # make flik id a dedicated column to align with NRW etc.
     'Flaeche': 'area',
-    'HBN': 'hbn',
-    'SHAPE_LEN': "perimeter"
+    'HBN': 'hbn'
 }
 MISSING_SCHEMAS = {
     'properties': {
@@ -28,13 +27,13 @@ MISSING_SCHEMAS = {
     }
 }
 
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
     """
     Converts the Schleswig-Holstein (Germany) field boundary datasets to fiboa.
     """
     convert_(
-        output_file, cache_file,
-        URI, COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
+        output_file, cache,
+        SOURCES, COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
         extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
         license=LICENSE,

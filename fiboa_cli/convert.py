@@ -1,9 +1,10 @@
 import importlib
 import os
+from .util import log
 
 IGNORED_DATASET_FILES = ["__init__.py", "template.py"]
 
-def convert(dataset, output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
+def convert(dataset, output_file, cache = None, source_coop_url = None, collection = False, compression = None):
     if dataset in IGNORED_DATASET_FILES:
         raise Exception(f"'{dataset}' is not a converter")
     try:
@@ -11,7 +12,13 @@ def convert(dataset, output_file, cache_file = None, source_coop_url = None, col
     except ImportError as e:
         raise Exception(f"Converter for '{dataset}' not available or faulty: {e}")
 
-    converter.convert(output_file, cache_file = cache_file, source_coop_url = source_coop_url, collection = collection, compression = compression)
+    if hasattr(converter, "DATA_ACCESS") and not cache:
+        log("Data access is restricted. You need to manually get the data from the source.", "warning")
+        log("Instructions for data access:", "warning")
+        log(converter.DATA_ACCESS.strip(), "info")
+        raise Exception("Provide the folder that contains the downloaded files through the `-c` parameter.")
+
+    converter.convert(output_file, cache = cache, source_coop_url = source_coop_url, collection = collection, compression = compression)
 
 def list_all_converter_ids():
     datasets = importlib.import_module(".datasets", package="fiboa_cli")

@@ -1,14 +1,12 @@
 import re
-from pytest import fixture, mark
-from fiboa_cli.util import load_file
-from fiboa_cli import convert, validate
 import tempfile
+from pytest import fixture, mark
+from fiboa_cli import convert, validate
 from click.testing import CliRunner
 
 """
 Create input files with: `ogr2ogr output.gpkg -limit 100 input.gpkg`
 """
-
 
 @fixture
 def out_file():
@@ -16,12 +14,9 @@ def out_file():
         yield out
 
 
-@mark.parametrize("converter", ["nl", "nl_crop"])
-def test_converter(out_file, converter, path=None):
-    if path is None:
-        path = f"tests/data-files/{converter}.gpkg"
-    assert load_file(path), f"Input file missing: {path}"
-
+@mark.parametrize("converter", ["at", "be_vlg", "be_wa", "de_sh", "fr", "nl", "nl_crop"])
+def test_converter(out_file, converter):
+    path = f"tests/data-files/convert/{converter}"
     runner = CliRunner()
     result = runner.invoke(convert, [converter, '-o', out_file.name, '-c', path])
     assert result.exit_code == 0, result.output
@@ -32,6 +27,3 @@ def test_converter(out_file, converter, path=None):
     result = runner.invoke(validate, [out_file.name, '--data'])
     assert result.exit_code == 0, result.output
 
-
-def test_be_vlg(out_file):
-    test_converter(out_file, 'be_vlg', "tests/data-files/be_vlg.zip")
