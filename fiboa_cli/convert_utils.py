@@ -317,9 +317,12 @@ def download_files(uris, cache_folder = None):
         i = i + 1
         is_archive = isinstance(target, list)
         if is_archive:
-            name = name_from_url(uri)
-            # if there's no file extension, it's likely a folder, which may not be unique
-            if "." not in name:
+            try:
+                name = name_from_url(uri)
+                # if there's no file extension, it's likely a folder, which may not be unique
+                if "." not in name:
+                    name = str(i)
+            except:
                 name = str(i)
         else:
             name = target
@@ -332,7 +335,7 @@ def download_files(uris, cache_folder = None):
         zip_folder = os.path.join(cache_folder, "extracted." + os.path.splitext(name)[0])
         must_extract = is_archive and not os.path.exists(zip_folder)
 
-        if (not is_archive or must_extract) and not cache_fs.exists(cache_file):
+        if (not is_archive or must_extract) and not cache_fs.exists(cache_file) and uri != "":
             source_fs = get_fs(uri)
             with cache_fs.open(cache_file, mode='wb') as file:
                 stream_file(source_fs, uri, file)
