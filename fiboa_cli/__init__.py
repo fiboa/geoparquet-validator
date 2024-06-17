@@ -336,7 +336,7 @@ def jsonschema(schema, out, fiboa_version, id_):
 @click.option(
     '--cache', '-c',
     type=click.Path(exists=False),
-    help='By default the CLI downloads the source data on every execution. Specify a local folder to avoid downloading the file(s) again. If the file(s) exist, reads from there, otherwise stores the file there.',
+    help='By default the CLI downloads the source data on every execution. Specify a local folder to avoid downloading the files again. If the files exist, reads from there, otherwise stores the files there.',
     default=None
 )
 @click.option(
