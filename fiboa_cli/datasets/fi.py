@@ -1,7 +1,7 @@
 from ..convert_utils import convert as convert_
 import pandas as pd
 
-URI = "https://download.inspire.ruokavirasto-awsa.com/data/2023/LandUse.ExistingLandUse.GSAAAgriculturalParcel.gpkg"
+SOURCES = "https://download.inspire.ruokavirasto-awsa.com/data/2023/LandUse.ExistingLandUse.GSAAAgriculturalParcel.gpkg"
 ID = "fi"
 TITLE = "Finnish Crop Fields (Maatalousmaa)"
 DESCRIPTION = """
@@ -24,18 +24,10 @@ COLUMNS = {
     "KASVIKOODI_SELITE_FI": "crop_name",
 }
 
-ADD_COLUMNS = {}
-EXTENSIONS = []
-
-COLUMN_MIGRATIONS = {}
-COLUMN_FILTERS = {}
-
-
 def migrate(gdf):
     # Make year (1st january) from column "VUOSI"
     gdf['determination_datetime'] = pd.to_datetime(gdf['VUOSI'], format='%Y')
     return gdf
-
 
 MISSING_SCHEMAS = {
     "properties": {
@@ -51,12 +43,11 @@ MISSING_SCHEMAS = {
     }
 }
 
-
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
     convert_(
         output_file,
-        cache_file,
-        URI,
+        cache,
+        SOURCES,
         COLUMNS,
         ID,
         TITLE,
@@ -65,11 +56,7 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
         provider_name=PROVIDER_NAME,
         provider_url=PROVIDER_URL,
         source_coop_url=source_coop_url,
-        extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
-        column_additions=ADD_COLUMNS,
-        column_migrations=COLUMN_MIGRATIONS,
-        column_filters=COLUMN_FILTERS,
         migration=migrate,
         attribution=ATTRIBUTION,
         store_collection=collection,

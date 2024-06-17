@@ -335,7 +335,7 @@ def download_files(uris, cache_folder = None):
         zip_folder = os.path.join(cache_folder, "extracted." + os.path.splitext(name)[0])
         must_extract = is_archive and not os.path.exists(zip_folder)
 
-        if (not is_archive or must_extract) and not cache_fs.exists(cache_file) and uri != "":
+        if (not is_archive or must_extract) and not cache_fs.exists(cache_file):
             source_fs = get_fs(uri)
             with cache_fs.open(cache_file, mode='wb') as file:
                 stream_file(source_fs, uri, file)
