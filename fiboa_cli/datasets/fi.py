@@ -24,10 +24,16 @@ COLUMNS = {
     "KASVIKOODI_SELITE_FI": "crop_name",
 }
 
+COLUMN_FILTERS = {
+    "PINTA_ALA": lambda col: col > 0.0  # fiboa validator requires area > 0.0
+}
+
 def migrate(gdf):
     # Make year (1st january) from column "VUOSI"
     gdf['determination_datetime'] = pd.to_datetime(gdf['VUOSI'], format='%Y')
+    gdf['geometry'] = gdf["geometry"].make_valid()
     return gdf
+
 
 MISSING_SCHEMAS = {
     "properties": {
@@ -56,6 +62,7 @@ def convert(output_file, cache = None, source_coop_url = None, collection = Fals
         provider_name=PROVIDER_NAME,
         provider_url=PROVIDER_URL,
         source_coop_url=source_coop_url,
+        column_filters=COLUMN_FILTERS,
         missing_schemas=MISSING_SCHEMAS,
         migration=migrate,
         attribution=ATTRIBUTION,
