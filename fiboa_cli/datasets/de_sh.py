@@ -7,8 +7,6 @@ DESCRIPTION = """A field block (German: "Feldblock") is a contiguous agricultura
 PROVIDER_NAME = "Land Schleswig-Holstein"
 PROVIDER_URL = "https://sh-mis.gdi-sh.de/catalog/#/datasets/iso/21f67269-780f-4f3c-8f66-03dde27acfe7"
 LICENSE = "dl-de/zero-2-0"
-# From http://osmtipps.lefty1963.de/2008/10/bundeslnder.html
-BBOX = [7.8685145620,53.3590675115,11.3132037822,55.0573747014]
 EXTENSIONS = [
     "https://fiboa.github.io/flik-extension/v0.1.0/schema.yaml"
 ]
@@ -33,7 +31,7 @@ def convert(output_file, cache = None, source_coop_url = None, collection = Fals
     """
     convert_(
         output_file, cache,
-        SOURCES, COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
+        SOURCES, COLUMNS, ID, TITLE, DESCRIPTION,
         extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
         license=LICENSE,

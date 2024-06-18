@@ -25,8 +25,6 @@ In the data you'll find this as additional attributes:
 - `EC_hcat_n`: The machine-readable HCAT name of the crop
 - `EC_hcat_c`: The 10-digit HCAT code indicating the hierarchy of the crop
 """
-# Bounding box of the data in WGS84 coordinates
-BBOX = [-6.047022416643922, -3.916364769838749, 68.89050422648864, 51.075100624023094]
 
 # Provider name, can be None if not applicable, must be provided if PROVIDER_URL is provided
 PROVIDER_NAME = "EuroCrops"
@@ -110,7 +108,6 @@ def convert(output_file, cache = None, source_coop_url = None, collection = Fals
         ID,
         TITLE,
         DESCRIPTION,
-        BBOX,
         provider_name=PROVIDER_NAME,
         provider_url=PROVIDER_URL,
         source_coop_url=source_coop_url,

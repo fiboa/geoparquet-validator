@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- ...
+- The `BBOX` is optional in the converter template as it will be computed automatically from the data.
 
 ### Deprecated
 
@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- ...
+- Fixed schema issue for the `tk10` column in `de_bb` converter
 
 ## [v0.5.0] - 2024-06-17
 

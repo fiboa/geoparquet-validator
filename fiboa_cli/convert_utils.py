@@ -5,6 +5,7 @@ from .parquet import create_parquet
 
 from urllib.parse import urlparse
 from tempfile import TemporaryDirectory
+from shapely.geometry import box
 
 import os
 import re
@@ -18,7 +19,7 @@ import py7zr
 def convert(
         output_file, cache_path,
         urls, columns,
-        id, title, description, bbox,
+        id, title, description, bbox = None,
         provider_name = None,
         provider_url = None,
         source_coop_url = None,
@@ -37,7 +38,7 @@ def convert(
     """
     Converts a field boundary datasets to fiboa.
     """
-    if len(bbox) != 4:
+    if bbox is not None and len(bbox) != 4:
         raise ValueError("Bounding box must be of length 4")
 
     log(f"Getting file(s) if not cached yet")
@@ -173,7 +174,7 @@ def convert(
 
 def create_collection(
         gdf,
-        id, title, description, bbox,
+        id, title, description, bbox = None,
         provider_name = None,
         provider_url = None,
         source_coop_url = None,
@@ -184,6 +185,9 @@ def create_collection(
     """
     Creates a collection for the field boundary datasets.
     """
+    if bbox is None:
+        bbox = list(gpd.GeoSeries([box(*gdf.total_bounds)], crs=gdf.crs).to_crs(epsg=4326).total_bounds)
+
     collection = {
         "fiboa_version": fiboa_version,
         "fiboa_extensions": extensions,
@@ -196,7 +200,7 @@ def create_collection(
         "extent": {
             "spatial": {
                 "bbox": [bbox]
-            }
+            },
         },
         "links": []
     }

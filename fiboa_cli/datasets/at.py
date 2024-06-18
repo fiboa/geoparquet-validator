@@ -13,7 +13,6 @@ Reference parcel: is the physical block that can be clearly delimited from the o
 PROVIDER_NAME = "Agrarmarkt Austria"
 PROVIDER_URL = "https://geometadatensuche.inspire.gv.at/metadatensuche/inspire/api/records/9db8a0c3-e92a-4df4-9d55-8210e326a7ed"
 LICENSE = "CC-BY-4.0"
-BBOX = [9.527906274165764, 46.41230158735734, 17.15786908837973, 49.021160570100974]
 COLUMNS = {
     'geometry': 'geometry',
     'RFL_ID': 'id',
@@ -49,7 +48,7 @@ def convert(output_file, cache = None, source_coop_url = None, collection = Fals
     """
     convert_(
         output_file, cache, SOURCES,
-        COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
+        COLUMNS, ID, TITLE, DESCRIPTION,
         license=LICENSE,
         extensions = EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,

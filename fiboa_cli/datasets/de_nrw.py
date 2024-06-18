@@ -7,8 +7,6 @@ DESCRIPTION = """A field block (German: "Feldblock") is a contiguous agricultura
 LICENSE = "dl-de/by-2-0"
 PROVIDER_NAME = "Land Nordrhein-Westfalen / Open.NRW"
 PROVIDER_URL = "https://www.opengeodata.nrw.de/produkte/umwelt_klima/bodennutzung/landwirtschaft/"
-# From http://osmtipps.lefty1963.de/2008/10/bundeslnder.html
-BBOX = [5.8659988131,50.3226989435,9.4476584861,52.5310351488]
 EXTENSIONS = [
     "https://fiboa.github.io/inspire-extension/v0.2.0/schema.yaml",
     "https://fiboa.github.io/flik-extension/v0.1.0/schema.yaml"
@@ -40,7 +38,7 @@ def convert(output_file, cache = None, source_coop_url = None, collection = Fals
     """
     convert_(
         output_file, cache,
-        SOURCES, COLUMNS, ID, TITLE, DESCRIPTION, BBOX,
+        SOURCES, COLUMNS, ID, TITLE, DESCRIPTION,
         license=LICENSE,
         extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,

@@ -20,7 +20,6 @@ The following field block types exist:
 We filter on "Agricultural area" in this converter.
 For crop data, look at BasisRegistratie gewasPercelen (BRP)
 """
-BBOX = [2.35417303, 50.71447164, 7.5553525, 55.66948102]
 
 PROVIDER_NAME = "RVO / PDOK"
 PROVIDER_URL = "https://www.pdok.nl/introductie/-/article/referentiepercelen"
@@ -69,7 +68,6 @@ def convert(output_file, cache = None, source_coop_url = None, collection = Fals
         ID,
         TITLE,
         DESCRIPTION,
-        BBOX,
         provider_name=PROVIDER_NAME,
         provider_url=PROVIDER_URL,
         source_coop_url=source_coop_url,

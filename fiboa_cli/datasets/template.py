@@ -29,8 +29,6 @@ ID = "abc"
 TITLE = "Field boundaries for ABC"
 # Description of the collection. Can be multiline and include CommonMark.
 DESCRIPTION = """Describe the dataset here."""
-# Bounding box of the data in WGS84 coordinates
-BBOX = [7.8685145620,53.3590675115,11.3132037822,55.0573747014]
 
 # Provider name, can be None if not applicable, must be provided if PROVIDER_URL is provided
 PROVIDER_NAME = "ABC Corp."
@@ -131,7 +129,6 @@ def convert(output_file, cache = None, source_coop_url = None, collection = Fals
         ID,
         TITLE,
         DESCRIPTION,
-        BBOX,
         provider_name=PROVIDER_NAME,
         provider_url=PROVIDER_URL,
         source_coop_url=source_coop_url,

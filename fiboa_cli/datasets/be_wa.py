@@ -18,7 +18,6 @@ The PAA represents the public version of the agricultural plot. It therefore doe
 
 You can download the data yourself, but the license does not allow public distribution. You can obtain a personal/company license for free, or freely use a WMS service for visualization.
 """
-BBOX = [2.840195234589047, 49.48469172050167, 6.4282309142607055, 50.80877425797556]
 
 PROVIDER_NAME = "Service public de Wallonie (SPW)"
 PROVIDER_URL = "https://geoportail.wallonie.be/catalogue/49294570-2a8d-49ca-995c-1b0890672bc8.html"
@@ -68,7 +67,6 @@ def convert(output_file, cache = None, source_coop_url = None, collection = Fals
         ID,
         TITLE,
         DESCRIPTION,
-        BBOX,
         provider_name=PROVIDER_NAME,
         provider_url=PROVIDER_URL,
         source_coop_url=source_coop_url,
