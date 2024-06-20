@@ -308,7 +308,7 @@ def download_files(uris, cache_folder = None):
     if cache_folder is None:
         args = {}
         if sys.version_info.major >= 3 and sys.version_info.minor >= 12:
-            args.delete = False # only available in Python 3.12 and later
+            args["delete"] = False # only available in Python 3.12 and later
         with TemporaryDirectory(**args) as tmp_folder:
             cache_folder = tmp_folder
 
