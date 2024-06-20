@@ -4,7 +4,7 @@ from ..convert_utils import convert as convert_
 
 # This local path should not be the main way this converter work. When there's some open data
 # we could point at that, but the ideal way this converter should work is by letting the user pass
-# in a local or remote path that is produced by Planet's field boundary output, converting 
+# in a local or remote path that is produced by Planet's field boundary output, converting
 # whatever data is in it into fiboa. Not sure how to do that yet, seems like a -i flag could work
 # to complement -o, and then perhaps allow this converter to make it required? Or it could
 # default to an open dataset, but then have -i override (and check to make sure it matches)
@@ -12,8 +12,10 @@ SOURCES = "/Users/cholmes/repos/data-fiboa/source/FIELD_BOUNDARIES_v1.0.0_S2_P1M
 
 # Unique identifier for the collection
 ID = "planet_afb"
+# Geonames for the data (e.g. Country, Region, Source, Year)
+SHORT_NAME = "Planet Field Boundaries"
 # Title of the collection
-TITLE = "Field boundaries created by Planet's Automated Field Boundary detection algorithm."
+TITLE = "Field boundaries created by Planet's Automated Field Boundary detection algorithm"
 # Description of the collection. Can be multiline and include CommonMark.
 DESCRIPTION = "These field boundaries were originally created by Planet's automated field boundary detection algorithm, and converted to the fiboa format."
 
@@ -28,7 +30,7 @@ ATTRIBUTION = "© 2024 Planet Labs, PBC"
 # 1. a SPDX license identifier (including "dl-de/by-2-0" / "dl-de/zero-2-0"), or
 # LICENSE = "CC-BY-4.0"
 # 2. a STAC Link Object with relation type "license"
-LICENSE = {"title": "Proprietary", "href": "https://www.planet.com/licensing-information/", "type": "text/html", "rel": "license"}
+LICENSE = {"title": "Proprietary License", "href": "https://www.planet.com/licensing-information/", "type": "text/html", "rel": "license"}
 
 # Map original column names to fiboa property names
 # You also need to list any column that you may have added in the MIGRATION function (see below).
@@ -47,7 +49,7 @@ ADD_COLUMNS = {
     # Hardcoding for this particular dataset, but Planet currently does not have a date column,
     # but does include the date in the filename. So not sure if there's a way to pull the date
     # from the filename? I suppose not now when there's no way to pass in the file name...
-    "determination_datetime": "2023-01-01T00:00:00Z"
+    # "determination_datetime": "2023-01-01T00:00:00Z"
 }
 
 # A list of implemented extension identifiers
