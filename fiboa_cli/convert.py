@@ -32,7 +32,7 @@ def list_all_converters(keys):
         try:
             converter = read_converter(id)
             for key in keys:
-                value = getattr(converter, key)
+                value = getattr(converter, key, None)
 
                 if key == "SOURCES" and isinstance(value, dict):
                     value = ", ".join(list(value.keys()))
