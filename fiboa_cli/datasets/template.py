@@ -25,8 +25,10 @@ SOURCES = "https://fiboa.example/file.xyz"
 
 # Unique identifier for the collection
 ID = "abc"
+# Geonames for the data (e.g. Country, Region, Source, Year)
+SHORT_NAME = "Country, Region, etc."
 # Title of the collection
-TITLE = "Field boundaries for ABC"
+TITLE = "Field boundaries for Country, Region, etc."
 # Description of the collection. Can be multiline and include CommonMark.
 DESCRIPTION = """Describe the dataset here."""
 

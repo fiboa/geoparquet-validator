@@ -4,6 +4,7 @@ SOURCES = {
     "https://inspire.lfrz.gv.at/009501/ds/inspire_referenzen_2021_polygon.gpkg.zip": ["INSPIRE_REFERENZEN_2021_POLYGON.gpkg"]
 }
 ID = "at"
+SHORT_NAME = "Austria"
 TITLE = "Field boundaries for Austria"
 DESCRIPTION = """**Field boundaries for Austria - INVEKOS Referenzen Österreich 2021.**
 

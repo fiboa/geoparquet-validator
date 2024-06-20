@@ -7,6 +7,8 @@ SOURCES = {
 
 # Unique identifier for the collection
 ID = "ec_si"
+# Geonames for the data
+SHORT_NAME = "Slovenia (Eurocrops, 2021)"
 # Title of the collection
 TITLE = "Field boundaries for Slovenia from EuroCrops (2021)"
 # Description of the collection. Can be multiline and include CommonMark.

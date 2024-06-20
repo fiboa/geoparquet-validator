@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- ...
+- Added a `SHORT_NAME` variable to the converter template
 
 ### Changed
 
 - The `BBOX` is optional in the converter template as it will be computed automatically from the data.
+- `fiboa converters` is more readable by default
+- `fiboa converters` output can be customized with options `-p`, `-s` and `-v`.
 
 ### Deprecated
 

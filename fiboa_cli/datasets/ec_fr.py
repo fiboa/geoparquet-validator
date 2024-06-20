@@ -7,6 +7,8 @@ SOURCES = {
 
 # Unique identifier for the collection
 ID = "ec_fr"
+# Geonames for the data
+SHORT_NAME = "France (Eurocrops, 2018)"
 # Title of the collection
 TITLE = "Field boundaries for France from EuroCrops (2018)"
 # Description of the collection. Can be multiline and include CommonMark.

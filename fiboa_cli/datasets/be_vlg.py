@@ -5,6 +5,7 @@ SOURCES = {
 }
 
 ID = "be_vlg"
+SHORT_NAME = "Belgium, Flanders"
 TITLE = "Crop field boundaries for Belgium - Flanders"
 DESCRIPTION = """
 Since 2020, the Department of Agriculture and Fisheries has been publishing a more extensive set of data related to agricultural use plots (from the 2008 campaign).

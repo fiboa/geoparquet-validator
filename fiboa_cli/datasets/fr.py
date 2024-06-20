@@ -6,6 +6,7 @@ SOURCES = {
     ]
 }
 ID = "fr"
+SHORT_NAME = "France"
 TITLE = "Registre Parcellaire Graphique; Crop Fields France"
 DESCRIPTION = """
 France has published Crop Field data for many years. Crop fields are declared by farmers within the Common Agricultural Policy (CAP) subsidy scheme.

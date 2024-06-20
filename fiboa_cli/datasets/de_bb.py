@@ -4,6 +4,7 @@ SOURCES = {
   "https://data.geobasis-bb.de/geofachdaten/Landwirtschaft/dfbk.zip": ["DFBK_FB.shp"]
 }
 ID = "de_bb"
+SHORT_NAME = "Germany, Berlin/Brandenburg"
 TITLE = "Field boundaries for Berlin / Brandenburg, Germany"
 DESCRIPTION = """A field block (German: "Feldblock") is a contiguous agricultural area surrounded by permanent boundaries, which is cultivated by one or more farmers with one or more crops, is fully or partially set aside or is fully or partially taken out of production."""
 LICENSE = "dl-de/by-2-0"

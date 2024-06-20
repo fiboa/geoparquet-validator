@@ -2,6 +2,7 @@ from ..convert_utils import convert as convert_
 
 SOURCES = "https://sla.niedersachsen.de/mapbender_sla/download/FB_NDS.zip"
 ID = "de_nds"
+SHORT_NAME = "Germany, Lower Saxony"
 TITLE = "Field boundaries for Lower Saxony, Germany"
 DESCRIPTION = """A field block (German: "Feldblock") is a contiguous agricultural area surrounded by permanent boundaries, which is cultivated by one or more farmers with one or more crops, is fully or partially set aside or is fully or partially taken out of production."""
 PROVIDER_NAME = "ML/SLA Niedersachsen"

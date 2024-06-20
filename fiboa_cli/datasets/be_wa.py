@@ -10,6 +10,7 @@ Select 'Region Wallone' at 'DÉCOUPAGE' for the full dataset. Select 'Je souhait
 """
 
 ID = "be_wa"
+SHORT_NAME = "Belgium, Wallonia"
 TITLE = "Belgium Wallonia: Parcellaire Agricole Anonyme"
 DESCRIPTION = """
 The Crop Fields (PAA) covers land use in agricultural and forestry areas managed as part of the implementation of the Common Agricultural Policy by the Paying Agency of Wallonia.

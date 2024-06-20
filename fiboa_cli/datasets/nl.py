@@ -3,6 +3,7 @@ from ..convert_utils import convert as convert_
 SOURCES = "https://service.pdok.nl/rvo/referentiepercelen/atom/downloads/referentiepercelen.gpkg"
 
 ID = "nl"
+SHORT_NAME = "Netherlands"
 TITLE = "Field boundaries for The Netherlands"
 DESCRIPTION = """
 A field block (Dutch: "Referentieperceel"), formerly known as "AAN" (Agrarisch Areaal Nederland),

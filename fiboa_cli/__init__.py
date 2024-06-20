@@ -372,18 +372,57 @@ def convert(dataset, out, cache, source_coop, collection, compression):
 
 ## CONVERTERS
 @click.command()
-def converters():
+@click.option(
+    '--provider', '-p',
+    is_flag=True,
+    type=click.BOOL,
+    help='Show the provider name',
+    default=False
+)
+@click.option(
+    '--provider', '-p',
+    is_flag=True,
+    type=click.BOOL,
+    help='Show the provider name',
+    default=False
+)
+@click.option(
+    '--sources', '-s',
+    is_flag=True,
+    type=click.BOOL,
+    help='Show the source(s)',
+    default=False
+)
+@click.option(
+    '--verbose', '-v',
+    is_flag=True,
+    type=click.BOOL,
+    help='Does not shorten the content of the columns',
+    default=False
+)
+def converters(provider, sources, verbose):
     """
     Lists all available converters.
     """
     log(f"fiboa CLI {__version__} - List of Converters\n", "success")
 
-    keys = ["TITLE", "LICENSE", "PROVIDER_NAME", "SOURCES"]
+    columns = {
+        "SHORT_NAME": "Short Title",
+        "LICENSE": "License"
+    }
+    if provider:
+        columns["PROVIDER_NAME"] = "Provider"
+    if sources:
+        columns["SOURCES"] = "Source(s)"
+
+    keys = list(columns.keys())
     converters = list_all_converters(keys)
     df = pd.DataFrame.from_dict(converters, orient='index', columns=keys)
+    df.rename(columns = columns, inplace = True)
 
     pd.set_option('display.max_columns', None)
     pd.set_option('display.max_rows', None)
+    pd.set_option('display.max_colwidth', None if verbose else 35)
 
     log(df)
 

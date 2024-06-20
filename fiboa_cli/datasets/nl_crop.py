@@ -5,6 +5,7 @@ import pandas as pd
 SOURCES = "https://service.pdok.nl/rvo/brpgewaspercelen/atom/v1_0/downloads/brpgewaspercelen_concept_2023.gpkg"
 
 ID = "nl_crop"
+SHORT_NAME = "Netherlands (Crops)"
 TITLE = "BRP Crop Field Boundaries for The Netherlands (CAP-based)"
 DESCRIPTION = """
 "BasisRegistratiePercelen" (BRP) combines the location of

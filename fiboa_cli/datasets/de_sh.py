@@ -2,6 +2,7 @@ from ..convert_utils import convert as convert_
 
 SOURCES = "https://service.gdi-sh.de/SH_OpenGBD/feeds/Atom_SH_Feldblockfinder_OpenGBD/data/Feldbloecke_2024_GPKG.zip"
 ID = "de_sh"
+SHORT_NAME = "Germany, Schleswig-Holstein"
 TITLE = "Field boundaries for Schleswig-Holstein (SH), Germany"
 DESCRIPTION = """A field block (German: "Feldblock") is a contiguous agricultural area surrounded by permanent boundaries, which is cultivated by one or more farmers with one or more crops, is fully or partially set aside or is fully or partially taken out of production."""
 PROVIDER_NAME = "Land Schleswig-Holstein"

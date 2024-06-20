@@ -34,11 +34,8 @@ def list_all_converters(keys):
             for key in keys:
                 value = getattr(converter, key)
 
-                if key == "SOURCES":
-                    if isinstance(value, str):
-                        value = tuple([value])
-                    elif isinstance(value, dict):
-                        value = value.keys()
+                if key == "SOURCES" and isinstance(value, dict):
+                    value = ", ".join(list(value.keys()))
                 elif key == "LICENSE" and isinstance(value, dict):
                     value = value["href"]
 

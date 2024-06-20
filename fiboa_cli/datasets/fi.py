@@ -3,6 +3,7 @@ import pandas as pd
 
 SOURCES = "https://download.inspire.ruokavirasto-awsa.com/data/2023/LandUse.ExistingLandUse.GSAAAgriculturalParcel.gpkg"
 ID = "fi"
+SHORT_NAME = "Finland"
 TITLE = "Finnish Crop Fields (Maatalousmaa)"
 DESCRIPTION = """
 The Finnish Food Authority (FFA) since 2020 produces spatial data sets,
