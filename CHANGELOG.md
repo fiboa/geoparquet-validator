@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Added a `SHORT_NAME` variable to the converter template
+- Added a `FILE_MIGRATION` variable to the converter template for per-file migrations
 
 ### Changed
 

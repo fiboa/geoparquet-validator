@@ -29,6 +29,7 @@ def convert(
         column_filters = {},
         column_migrations = {},
         migration = None,
+        file_migration = None,
         attribution = None,
         store_collection = False,
         license = None,
@@ -46,12 +47,19 @@ def convert(
 
     log(f"Reading into GeoDataFrame")
     gdfs = []
-    for path in paths:
+    for path, uri in paths:
         # If file is a parquet file then read with read_parquet
         if path.endswith(".parquet") or path.endswith(".geoparquet"):
             data = gpd.read_parquet(path, **kwargs)
         else:
             data = gpd.read_file(path, **kwargs)
+
+        # 0. Run migration per file
+        if callable(file_migration):
+            log("Applying per file migrations")
+            data = file_migration(data, path, uri)
+            if not isinstance(data, gpd.GeoDataFrame):
+                raise ValueError("Per-file migration function must return a GeoDataFrame")
 
         gdfs.append(data)
 
@@ -356,9 +364,9 @@ def download_files(uris, cache_folder = None):
 
         if is_archive:
             for filename in target:
-                paths.append(os.path.join(zip_folder, filename))
+                paths.append((os.path.join(zip_folder, filename), uri))
         else:
-            paths.append(cache_file)
+            paths.append((cache_file, uri))
 
     return paths
 
