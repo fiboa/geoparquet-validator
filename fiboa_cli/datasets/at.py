@@ -43,13 +43,14 @@ MISSING_SCHEMAS = {
     }
 }
 
-def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, input_files = None, cache = None, source_coop_url = None, collection = False, compression = None):
     """
     Converts the Austrian field boundary datasets to fiboa.
     """
     convert_(
         output_file, cache, SOURCES,
         COLUMNS, ID, TITLE, DESCRIPTION,
+        input_files=input_files,
         license=LICENSE,
         extensions = EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,

@@ -1,9 +1,8 @@
 from .const import STAC_TABLE_EXTENSION
 from .version import fiboa_version
-from .util import log, get_fs, to_iso8601
+from .util import log, get_fs, name_from_uri, to_iso8601
 from .parquet import create_parquet
 
-from urllib.parse import urlparse
 from tempfile import TemporaryDirectory
 from shapely.geometry import box
 
@@ -19,7 +18,9 @@ import py7zr
 def convert(
         output_file, cache_path,
         urls, columns,
-        id, title, description, bbox = None,
+        id, title, description,
+        input_files = None,
+        bbox = None,
         provider_name = None,
         provider_url = None,
         source_coop_url = None,
@@ -40,12 +41,18 @@ def convert(
     Converts a field boundary datasets to fiboa.
     """
     if bbox is not None and len(bbox) != 4:
-        raise ValueError("Bounding box must be of length 4")
+        raise ValueError("If provided, the bounding box must consist of 4 numbers")
 
-    log(f"Getting file(s) if not cached yet")
+    if input_files is not None and isinstance(input_files, dict) and len(input_files) > 0:
+        log("Using user provided input file(s) instead of the pre-defined file(s)", "warning")
+        urls = input_files
+    elif urls is None:
+        raise ValueError("No input files provided")
+
+    log("Getting file(s) if not cached yet")
     paths = download_files(urls, cache_path)
 
-    log(f"Reading into GeoDataFrame")
+    log("Reading into GeoDataFrame")
     gdfs = []
     for path, uri in paths:
         # If file is a parquet file then read with read_parquet
@@ -321,7 +328,7 @@ def download_files(uris, cache_folder = None):
             cache_folder = tmp_folder
 
     if isinstance(uris, str):
-        uris = {uris: name_from_url(uris)}
+        uris = {uris: name_from_uri(uris)}
 
     paths = []
     i = 0
@@ -330,7 +337,7 @@ def download_files(uris, cache_folder = None):
         is_archive = isinstance(target, list)
         if is_archive:
             try:
-                name = name_from_url(uri)
+                name = name_from_uri(uri)
                 # if there's no file extension, it's likely a folder, which may not be unique
                 if "." not in name:
                     name = str(i)
@@ -369,10 +376,6 @@ def download_files(uris, cache_folder = None):
             paths.append((cache_file, uri))
 
     return paths
-
-
-def name_from_url(url):
-    return os.path.basename(urlparse(url).path)
 
 
 def stream_file(fs, src_uri, dst_file, chunk_size = 10 * 1024 * 1024):

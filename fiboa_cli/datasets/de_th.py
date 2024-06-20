@@ -119,7 +119,7 @@ MISSING_SCHEMAS = {
 
 
 # Conversion function, usually no changes required
-def convert(output_file, cache = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, input_files = None, cache = None, source_coop_url = None, collection = False, compression = None):
     convert_(
         output_file,
         cache,
@@ -128,6 +128,7 @@ def convert(output_file, cache = None, source_coop_url = None, collection = Fals
         ID,
         TITLE,
         DESCRIPTION,
+        input_files=input_files,
         migration=MIGRATION,
         provider_name=PROVIDER_NAME,
         provider_url=PROVIDER_URL,
