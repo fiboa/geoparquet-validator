@@ -29,15 +29,9 @@ ADD_COLUMNS = {
     "determination_datetime": "2023-01-01T00:00:00Z"
 }
 
-EXTENSIONS = []
-
 COLUMN_MIGRATIONS = {
     "Shape_Area": lambda col: col / 10000.0
 }
-
-COLUMN_FILTERS = {}
-
-MIGRATION = None
 
 MISSING_SCHEMAS = {
     "properties": {
@@ -77,14 +71,11 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         TITLE,
         DESCRIPTION,
         input_files=input_files,
-        migration=MIGRATION,
         provider_name=PROVIDER_NAME,
         provider_url=PROVIDER_URL,
         source_coop_url=source_coop_url,
-        extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
         column_migrations=COLUMN_MIGRATIONS,
-        column_filters=COLUMN_FILTERS,
         attribution=ATTRIBUTION,
         store_collection=collection,
         license=LICENSE,
