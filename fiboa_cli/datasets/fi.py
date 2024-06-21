@@ -1,5 +1,6 @@
 from ..convert_utils import convert as convert_
 import pandas as pd
+import numpy as np
 
 SOURCES = "https://download.inspire.ruokavirasto-awsa.com/data/2023/LandUse.ExistingLandUse.GSAAAgriculturalParcel.gpkg"
 ID = "fi"
@@ -19,15 +20,19 @@ COLUMNS = {
     "geometry": "geometry",
     "PERUSLOHKOTUNNUS": "id",
     "LOHKONUMERO": "block_id",
-    "PINTA_ALA": "area",
+    "area": "area",
     "KASVIKOODI": "crop_code",
     "KASVIKOODI_SELITE_FI": "crop_name",
 }
 
+
 def migrate(gdf):
     # Make year (1st january) from column "VUOSI"
     gdf['determination_datetime'] = pd.to_datetime(gdf['VUOSI'], format='%Y')
+    gdf['geometry'] = gdf["geometry"].make_valid()
+    gdf['area'] = np.where(gdf['PINTA_ALA'] == 0, gdf.area / 10000, gdf['PINTA_ALA'])
     return gdf
+
 
 MISSING_SCHEMAS = {
     "properties": {
