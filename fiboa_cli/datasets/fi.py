@@ -25,8 +25,6 @@ COLUMNS = {
     "KASVIKOODI_SELITE_FI": "crop_name",
 }
 
-COLUMN_FILTERS = {}
-
 
 def migrate(gdf):
     # Make year (1st january) from column "VUOSI"
@@ -63,7 +61,6 @@ def convert(output_file, cache = None, source_coop_url = None, collection = Fals
         provider_name=PROVIDER_NAME,
         provider_url=PROVIDER_URL,
         source_coop_url=source_coop_url,
-        column_filters=COLUMN_FILTERS,
         missing_schemas=MISSING_SCHEMAS,
         migration=migrate,
         attribution=ATTRIBUTION,
