@@ -12,49 +12,45 @@ import pandas as pd
 # Can read any tabular data format that GeoPandas can read through read_file()
 # Supported protcols: HTTP(S), GCS, S3, or the local file system
 
-# original dataset : https://www.geodata.se/geodataportalen/srv/swe/catalog.search;jsessionid=6C2D281619D69AC2356E1BD4C1923A3A#/search?resultType=swe-details&_schema=iso19139*&type=dataset%20or%20series&from=1&to=20&fast=index&_content_type=json&sortBy=relevance&or=jordbruksblock
-URI = "/mnt/c/kerner-lab/fieldscapes/sweden/all_parcels.gpkg" # data seubset for FieldScapes
+# data original source : https://landbrugsgeodata.fvm.dk/
+SOURCES = "/mnt/c/Snehal/Kerner Lab/tge-fiboa/denmark/all_parcels.gpkg" # data subset for FieldScapes
 
 # Unique identifier for the collection
-ID = "se"
+ID = "fieldscapes_denmark_2021"
 # Title of the collection
-TITLE = "Field boundaries for Sweden"
+TITLE = "Field boundaries for Denmark (FieldScapes)"
 # Description of the collection. Can be multiline and include CommonMark.
 
-# Adapted from https://collections.eurodatacube.com/sweden-lpis/
-DESCRIPTION = """Sweden's Land Parcel Identification System (LPIS) data collection (also agricultural blocks/ 'jordbruksblock') is managed by the Swedish Board of Agriculture, and also made available on the INSPIRE Geoportal. The Swedish agricultural blocks are vector data containing information on maximum eligible agricultural land according to EU definitions. The agricultural blocks are used by the Swedish Board of Agriculture to administer support to farmers, therefore the collection does not include all agricultural land in Sweden, but only the parts that a farmer has sought support for at some time.
+# Description in also adapted from https://collections.eurodatacube.com/denmark-lpis/
+DESCRIPTION = """Danish Land Parcel Identification System (LPIS) data collection or (field blocks/ 'Markblokke') is managed by The Danish Agency for Agriculture.
 
-A block is a polygon/surface that delimits an area of ​​agricultural land. A block is delimited by fixed boundaries. Examples of fixed boundaries are roads, stone walls, forests and buildings.
-
-The dataset Agricultural blocks contains approximately 1,143,000 blocks. Of these, approximately 891,000 are arable land blocks and approximately 252,000 pasture land blocks. The total area is 3.2 million hectares, of which 2.7 million hectares are arable land and 510,000 hectares are pasture land. The average area for the arable land blocks is 3.03 ha and for the pasture blocks the corresponding figure is 2.03 ha.
-"""
-
+The field block map is a digital field map, with agricultural areas gathered in field blocks. A field block is a geographically coherent unit consisting of agricultural land. The boundaries of the field blocks typically follow permanent divisions in the landscape. The map is used in the administration of cases linked to the geographical determination of cultivation areas, primarily by the EU's area-based support schemes. The field block map is continuously updated on the basis of orthophotos and reports from farmers and authorities. The field block map covers approx. 2.8 million hectares of agricultural land. Each field block is identified with a field block number, area, type. A field block means a continuous area on which one or more farmers grow one or more different crops. The map is updated every night with changes from case processing."""
 # Bounding box of the data in WGS84 coordinates
-BBOX = [7.8685145620,53.3590675115,11.3132037822,55.0573747014]
+BBOX = [8.7378109937414692,10.4170362955184004, 55.1917137800704012, 57.4329738730357988]
 
 # Provider name, can be None if not applicable, must be provided if PROVIDER_URL is provided
-PROVIDER_NAME = "The Swedish Agency for Agriculture"
+PROVIDER_NAME = "The Danish Agency for Agriculture"
 # URL to the homepage of the data or the provider, can be None if not applicable
-PROVIDER_URL = "https://www.geodata.se/geodataportalen/srv/swe/catalog.search;jsessionid=6C2D281619D69AC2356E1BD4C1923A3A#/metadata/df439ba5-014e-44ec-86cb-ddb9e5ba306c"
+PROVIDER_URL = "https://geodata-info.dk/srv/eng/catalog.search#/metadata/d91b2c99-d9b0-4e6d-b323-20ac80548186"
 # Attribution, can be None if not applicable
-ATTRIBUTION = "The Swedish Agency for Agriculture"
+ATTRIBUTION = "The Danish Agency for Agriculture"
 
 # License of the data, either
 # 1. a SPDX license identifier (including "dl-de/by-2-0" / "dl-de/zero-2-0"), or
-
-# Invalid License Identifier as of now. Link : https://www.geodata.se/geodataportalen/srv/swe/catalog.search;jsessionid=6C2D281619D69AC2356E1BD4C1923A3A#/metadata/df439ba5-014e-44ec-86cb-ddb9e5ba306c
-LICENSE = "No restrictions on public access"
+LICENSE = "CC0-1.0"
 # 2. a STAC Link Object with relation type "license"
 # LICENSE = {"title": "CC-BY-4.0", "href": "https://creativecommons.org/licenses/by/4.0/", "type": "text/html", "rel": "license"}
 
 # Map original column names to fiboa property names
 # You also need to list any column that you may have added in the MIGRATION function (see below).
-COLUMNS = {
-    'AREAL': 'area',# fiboa core field
-    'BLOCKID':'id',# fiboa core field
-    'REGION':'region', #fiboa custom field 
-    'KATEGORI': 'land_cover_category',  #fiboa custom field 
-    'AGOSLAG':'land_cover_class', #fiboa custom field 
+COLUMNS = {    
+    'MARKBLOKNR' : 'id', # fiboa core field , TODO MARKBLOKNR-id conversion is needed.     
+    'GEOMETRISK' : 'area',# fiboa core field i.e total area = eligible area + ineligible area
+    'TARAAREAL': 'ineligible_area', #fiboa custom field
+    'STOETPROC' : 'support_proc',  # fiboa custom field - translated. Supported Scheme. Currently all values are NaN
+    'GB_FRADRAG' : 'deduction', # fiboa custom field - translated 
+    'MB_TYPE' : 'block_type', #fiboa custom field
+    'GB_AREAL': 'eligible_area', # fiboa custom field i.e. eligible area
     'geometry':'geometry'# fiboa core field
 }
 
@@ -73,15 +69,14 @@ EXTENSIONS = []
 # Function signature:
 #   func(column: pd.Series) -> pd.Series
 COLUMN_MIGRATIONS = {
-    'AREAL': lambda column: column * 100, # sq. km to hectares,
-    'AGOSLAG': lambda column: column.map({'AKER' : 'Farmland', 'AKER_PERMGRAS' : 'Cropland – long-lying grassland', 'BETE' : 'Pastures', 'AKER_PERMGROD' : 'Cropland – permanent crops', 'ÖVRM' : 'Other land', 'OKÄNT' : 'Unknown','VÅTMARK': 'Wetland'})
+    'MB_TYPE': lambda column: column.map({'OMD' : 'Rotational crops', 'PGR' : 'Permanent grass', 'ING' : 'None', 'PAF' : 'Permanent crops', 'MIX' : 'Mixed permanent grass and arable land', 'VKS' : 'Plants under greenhouse/ nurseries /potted plants', 'LDP' : 'Afforestation'}),
 }
 
 # Filter columns to only include the ones that are relevant for the collection,
 # e.g. only rows that contain the word "agriculture" but not "forest" in the column "land_cover_type".
 # Lamda function accepts a Pandas Series and returns a Series or a Tuple with a Series and True to inverse the mask.
 COLUMN_FILTERS = {
-    'AGOSLAG': lambda col: (col.isin(["Farmland", "Cropland – permanent crops"]), True)
+    'MB_TYPE': lambda col: (col.isin(["Rotational crops", "Permanent crops", "Plants under greenhouse/ nurseries /potted plants"]), True)
 }
 
 # Custom function to migrate the GeoDataFrame if the other options are not sufficient
@@ -90,31 +85,52 @@ COLUMN_FILTERS = {
 #   func(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame
 MIGRATION = None
 
+# Custom function to execute actions on the the GeoDataFrame that are loaded from individual file.
+# This is useful if the data is split into multiple files and columns should be added or changed
+# on a per-file basis for example.
+# The path contains the local path to the file that was read.
+# The uri contains the URL that was read.
+# Function signature:
+#   func(gdf: gpd.GeoDataFrame, path: string, uri: string) -> gpd.GeoDataFrame
+FILE_MIGRATION = None
+
+
 # Schemas for the fields that are not defined in fiboa
 # Keys must be the values from the COLUMNS dict, not the keys
 MISSING_SCHEMAS = {
-    # "required": ["my_id"], # i.e. non-nullable properties
     "properties": {
-        'land_cover_category': {
-            'type': 'string'
+        'eligible_area': {
+            'type': 'float',
+            'exclusiveMinimum': 0
         },
-        'land_cover_class': {
-            'type': 'string'
+        'ineligible_area': {
+            'type': 'float',
+            'exclusiveMinimum': 0
         },
-        'region': {
-            'type': 'string'
-        }
+        'deduction': {
+            'type': 'float',
+            'exclusiveMinimum': 0
+        },
+        'support_proc': {
+            'type': 'float',
+            'exclusiveMinimum': 0
+        },
+        'block_type': {
+            'type': 'string',
+            'enum': [ 'Rotational crops',  'Permanent grass', 'None', 'Permanent crops', 'Mixed permanent grass and arable land', 'Plants under greenhouse/ nurseries /potted plants',  'Afforestation']
+        }       
+
     }
 }
 
 
 # Conversion function, usually no changes required
-def convert(output_file, cache_file = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, input_files = None, cache = None, source_coop_url = None, collection = False, compression = None):
     """
     Converts the field boundary datasets to fiboa.
 
     For reference, this is the order in which the conversion steps are applied:
-    0. Read GeoDataFrame from file
+    0. Read GeoDataFrame from file(s) and run the FILE_MIGRATION function if provided
     1. Run global migration (if provided through MIGRATION)
     2. Run filters to remove rows that shall not be in the final data
        (if provided through COLUMN_FILTERS)
@@ -130,7 +146,7 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
 
     Parameters:
     output_file (str): Path where the Parquet file shall be stored.
-    cache_file (str): Path to a cached file of the data. Default: None.
+    cache (str): Path to a cached folder for the data. Default: None.
                       Can be used to avoid repetitive downloads from the original data source.
     source_coop_url (str): URL to the (future) Source Cooperative repository. Default: None
     collection (bool): Additionally, store the collection separate from Parquet file. Default: False
@@ -139,13 +155,14 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
     """
     convert_(
         output_file,
-        cache_file,
-        URI,
+        cache,
+        SOURCES,
         COLUMNS,
         ID,
         TITLE,
         DESCRIPTION,
-        BBOX,
+        bbox = BBOX,
+        input_files=input_files,
         provider_name=PROVIDER_NAME,
         provider_url=PROVIDER_URL,
         source_coop_url=source_coop_url,
@@ -155,6 +172,7 @@ def convert(output_file, cache_file = None, source_coop_url = None, collection =
         column_migrations=COLUMN_MIGRATIONS,
         column_filters=COLUMN_FILTERS,
         migration=MIGRATION,
+        file_migration=FILE_MIGRATION,
         attribution=ATTRIBUTION,
         store_collection=collection,
         license=LICENSE,
