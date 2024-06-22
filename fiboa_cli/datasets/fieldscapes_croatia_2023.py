@@ -13,7 +13,7 @@ import pandas as pd
 # Supported protcols: HTTP(S), GCS, S3, or the local file system
 
 # original source : https://www.apprrr.hr/wp-content/uploads/nipp/land_parcels.gpkg
-SOURCES = "/mnt/c/Snehal/Kerner Lab/tge-fiboa/croatia/all_parcels.gpkg" # data subset for FieldScapes
+SOURCES = "/mnt/c/Kerner Lab/tge-fiboa/croatia/all_parcels.gpkg" # data subset for FieldScapes
 
 # Unique identifier for the collection
 ID = "fieldscapes_croatia_2023"

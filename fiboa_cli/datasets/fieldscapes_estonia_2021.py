@@ -11,7 +11,7 @@ import pandas as pd
 # File to read the data from
 # Can read any tabular data format that GeoPandas can read through read_file()
 # Supported protcols: HTTP(S), GCS, S3, or the local file system
-SOURCES = "/mnt/c/Snehal/Kerner Lab/tge-fiboa/estonia/all_parcels.gpkg" # data subset for FieldScapes
+SOURCES = "/mnt/c/Kerner Lab/tge-fiboa/estonia/all_parcels.gpkg" # data subset for FieldScapes
 
 # Unique identifier for the collection
 ID = "fieldscapes_estonia_2021"
