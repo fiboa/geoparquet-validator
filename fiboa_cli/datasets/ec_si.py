@@ -46,7 +46,7 @@ COLUMNS = {
     'EC_trans_n': 'EC_trans_n', #fiboa custom field
     'EC_hcat_n': 'EC_hcat_n', #fiboa custom field
     'EC_hcat_c': 'EC_hcat_c', #fiboa custom field
-    'EC_NUTS3': 'EC_nuts3', #fiboa custom field
+    'EC_NUTS3': 'EC_NUTS3', #fiboa custom field
 }
 
 ADD_COLUMNS = {}
@@ -78,7 +78,7 @@ MISSING_SCHEMAS = {
         'EC_hcat_c': {
             'type': 'uint32'
         },
-        'EC_nuts3': {
+        'EC_NUTS3': {
             'type': 'string'
         }
     }
