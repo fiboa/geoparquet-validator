@@ -21,7 +21,8 @@ COLUMNS = {
     "CUL_ID": "block_id",
     "CUL_CODIGO": "crop_code",
     "CT_português": "crop_name",
-    "Shape_Area": "area"
+    "Shape_Area": "area",
+    "Shape_Length": "perimeter"
 }
 
 ADD_COLUMNS = {
