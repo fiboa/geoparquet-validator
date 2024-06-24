@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - The `BBOX` is optional in the converter template as it will be computed automatically from the data.
+- The `PROVIDER_NAME` and `PROVIDER_URL` variables in the converter template were replaced by `PROVIDERS`
 - `fiboa converters` is more readable by default
 - `fiboa converters` output can be customized with options `-p`, `-s` and `-v`.
 - Upgraded to geopandas 1.0.0rc.1, which migrates from fiona to pyogrio for data loading

@@ -28,8 +28,13 @@ crop parcel to a region. It might happen that a parcel is not correctly allocate
 to be an aid for a meaningful spatial division of the dataset into training, validation, and test sets.
 """
 
-PROVIDER_NAME = "EuroCrops"
-PROVIDER_URL = "https://github.com/maja601/EuroCrops/wiki/Slovenia"
+PROVIDERS = [
+    {
+        "name": "EuroCrops",
+        "url": "https://github.com/maja601/EuroCrops/wiki/Slovenia",
+        "roles": ["producer", "licensor"]
+    }
+]
 ATTRIBUTION = "Ministrstvo za kmetijstvo, gozdarstvo in prehrano"
 
 LICENSE = "CC-BY-4.0"
@@ -95,8 +100,7 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         TITLE,
         DESCRIPTION,
         input_files=input_files,
-        provider_name=PROVIDER_NAME,
-        provider_url=PROVIDER_URL,
+        providers=PROVIDERS,
         source_coop_url=source_coop_url,
         missing_schemas=MISSING_SCHEMAS,
         column_additions=ADD_COLUMNS,

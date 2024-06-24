@@ -385,17 +385,10 @@ def convert(dataset, out, input, cache, source_coop, collection, compression):
 ## CONVERTERS
 @click.command()
 @click.option(
-    '--provider', '-p',
+    '--providers', '-p',
     is_flag=True,
     type=click.BOOL,
-    help='Show the provider name',
-    default=False
-)
-@click.option(
-    '--provider', '-p',
-    is_flag=True,
-    type=click.BOOL,
-    help='Show the provider name',
+    help='Show the provider name(s)',
     default=False
 )
 @click.option(
@@ -412,7 +405,7 @@ def convert(dataset, out, input, cache, source_coop, collection, compression):
     help='Does not shorten the content of the columns',
     default=False
 )
-def converters(provider, sources, verbose):
+def converters(providers, sources, verbose):
     """
     Lists all available converters.
     """
@@ -422,8 +415,8 @@ def converters(provider, sources, verbose):
         "SHORT_NAME": "Short Title",
         "LICENSE": "License"
     }
-    if provider:
-        columns["PROVIDER_NAME"] = "Provider"
+    if providers:
+        columns["PROVIDERS"] = "Provider(s)"
     if sources:
         columns["SOURCES"] = "Source(s)"
 

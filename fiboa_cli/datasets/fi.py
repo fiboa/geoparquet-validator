@@ -11,8 +11,13 @@ The Finnish Food Authority (FFA) since 2020 produces spatial data sets,
 more specifically in this context the "Field parcel register" and "Agricultural parcel containing spatial data".
 A set called "Agricultural land: arable land, permanent grassland or permanent crop (land use)".
 """
-PROVIDER_NAME = "Finnish Food Authority"
-PROVIDER_URL = "https://www.ruokavirasto.fi/en/about-us/open-information/spatial-data-sets/"
+PROVIDERS = [
+    {
+        "name": "Finnish Food Authority",
+        "url": "https://www.ruokavirasto.fi/en/about-us/open-information/spatial-data-sets/",
+        "roles": ["producer", "licensor"]
+    }
+]
 ATTRIBUTION = "Finnish Food Authority"
 
 LICENSE = "CC-BY-4.0"
@@ -58,8 +63,7 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         TITLE,
         DESCRIPTION,
         input_files=input_files,
-        provider_name=PROVIDER_NAME,
-        provider_url=PROVIDER_URL,
+        providers=PROVIDERS,
         source_coop_url=source_coop_url,
         missing_schemas=MISSING_SCHEMAS,
         migration=migrate,

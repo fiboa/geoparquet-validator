@@ -22,8 +22,13 @@ We filter on "Agricultural area" in this converter.
 For crop data, look at BasisRegistratie gewasPercelen (BRP)
 """
 
-PROVIDER_NAME = "RVO / PDOK"
-PROVIDER_URL = "https://www.pdok.nl/introductie/-/article/referentiepercelen"
+PROVIDERS = [
+    {
+        "name": "RVO / PDOK",
+        "url": "https://www.pdok.nl/introductie/-/article/referentiepercelen",
+        "roles": ["producer", "licensor"]
+    }
+]
 ATTRIBUTION = None
 # Both http://creativecommons.org/publicdomain/zero/1.0/deed.nl and http://creativecommons.org/publicdomain/mark/1.0/
 LICENSE = "CC0-1.0"
@@ -69,8 +74,7 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         TITLE,
         DESCRIPTION,
         input_files=input_files,
-        provider_name=PROVIDER_NAME,
-        provider_url=PROVIDER_URL,
+        providers=PROVIDERS,
         source_coop_url=source_coop_url,
         missing_schemas=MISSING_SCHEMAS,
         column_additions=ADD_COLUMNS,

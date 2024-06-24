@@ -22,8 +22,7 @@ def convert(
         id, title, description,
         input_files = None,
         bbox = None,
-        provider_name = None,
-        provider_url = None,
+        providers = [],
         source_coop_url = None,
         extensions = [],
         missing_schemas = {},
@@ -178,8 +177,7 @@ def convert(
     collection = create_collection(
         gdf,
         id, title, description, bbox,
-        provider_name = provider_name,
-        provider_url = provider_url,
+        providers = providers,
         source_coop_url = source_coop_url,
         extensions = extensions,
         attribution = attribution,
@@ -206,8 +204,7 @@ def convert(
 def create_collection(
         gdf,
         id, title, description, bbox = None,
-        provider_name = None,
-        provider_url = None,
+        providers = [],
         source_coop_url = None,
         extensions = [],
         attribution = None,
@@ -227,7 +224,7 @@ def create_collection(
         "title": title,
         "description": description,
         "license": "proprietary",
-        "providers": [],
+        "providers": providers,
         "extent": {
             "spatial": {
                 "bbox": [bbox]
@@ -247,20 +244,14 @@ def create_collection(
         # Without temporal extent it's not valid STAC
         collection["stac_version"] = "1.0.0"
 
-    # Add providers
-    if provider_name is not None:
-        collection["providers"].append({
-            "name": provider_name,
-            "roles": ["producer", "licensor"],
-            "url": provider_url
-        })
-
+    # Add fiboa CLI to providers
     collection["providers"].append({
         "name": "fiboa CLI",
         "roles": ["processor"],
         "url": "https://pypi.org/project/fiboa-cli"
     })
 
+    # Add source coop to providers if applicable
     if source_coop_url is not None:
         collection["providers"].append({
             "name": "Source Cooperative",

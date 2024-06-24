@@ -38,10 +38,17 @@ TITLE = "Field boundaries for Country, Region, etc."
 # Description of the collection. Can be multiline and include CommonMark.
 DESCRIPTION = """Describe the dataset here."""
 
-# Provider name, can be None if not applicable, must be provided if PROVIDER_URL is provided
-PROVIDER_NAME = "ABC Corp."
-# URL to the homepage of the data or the provider, can be None if not applicable
-PROVIDER_URL = "https://abc.example"
+# A list of providers that contributed to the data.
+# This should be an array of Provider Objects:
+# https://github.com/radiantearth/stac-spec/blob/master/collection-spec/collection-spec.md#provider-object
+PROVIDERS = [
+    {
+        "name": "ABC Corp",
+        "url": "https://abc.example",
+        "roles": ["producer", "licensor"]
+    }
+]
+
 # Attribution (e.g. copyright or citation statement as requested by provider).
 # The attribution is usually shown on the map, in the lower right corner.
 # Can be None if not applicable
@@ -149,8 +156,7 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         TITLE,
         DESCRIPTION,
         input_files=input_files,
-        provider_name=PROVIDER_NAME,
-        provider_url=PROVIDER_URL,
+        providers=PROVIDERS,
         source_coop_url=source_coop_url,
         extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
