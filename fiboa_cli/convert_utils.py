@@ -57,11 +57,10 @@ def convert(
     gdfs = []
     for path, uri in paths:
         log(f"Reading {path} into GeoDataFrame(s)")
+        is_parquet = path.endswith(".parquet") or path.endswith(".geoparquet")
         layers = [None]
-        # If file is a parquet file then read with read_parquet
-        if path.endswith(".parquet") or path.endswith(".geoparquet"):
-            data = gpd.read_parquet(path, **kwargs)
-        else:
+        # Parquet doesn't support layers
+        if not is_parquet:
             all_layers = gpd.list_layers(path)
             if layer_filter is not None:
                 layers = [layer for layer in all_layers["name"] if layer_filter(str(layer), path)]
@@ -73,7 +72,10 @@ def convert(
                 kwargs["layer"] = layer
                 log(f"Reading {layer} into GeoDataFrame")
 
-            data = gpd.read_file(path, **kwargs)
+            if is_parquet:
+                data = gpd.read_parquet(path, **kwargs)
+            else:
+                data = gpd.read_file(path, **kwargs)
 
             # 0. Run migration per file/layer
             if callable(file_migration):
