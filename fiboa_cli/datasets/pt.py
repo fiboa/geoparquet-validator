@@ -1,13 +1,12 @@
 from ..convert_utils import convert as convert_
-import geopandas as gpd
-import pandas as pd
-import fiona
 
 SOURCES = "https://www.ifap.pt/isip/ows/resources/2023/Continente.gpkg"
 #SOURCES = "https://www.ifap.pt/isip/ows/resources/2022/2022.zip"
+LAYER_FILTER = lambda layer, uri: layer.startswith("Culturas_")
 
 ID = "pt"
 TITLE = "Field boundaries for Portugal (identificação de parcelas)"
+SHORT_NAME = "Portugal"
 DESCRIPTION = """Open field boundaries from Portugal"""
 PROVIDER_NAME = "IPAP - Instituto de Financiamento da Agricultura e Pescas"
 PROVIDER_URL = "https://www.ifap.pt/isip/ows/"
@@ -48,19 +47,6 @@ MISSING_SCHEMAS = {
 }
 
 
-def file_migration(data, path, uri):
-    # filter for layers starting with Culturas_
-    gdfs = []
-    layers = fiona.listlayers(path)
-    for layer in layers:
-        if not layer.startswith("Culturas_"):
-            continue
-        data = gpd.read_file(path, layer=layer)
-        gdfs.append(data)
-
-    return pd.concat(gdfs)
-
-
 def convert(output_file, input_files = None, cache = None, source_coop_url = None, collection = False, compression = None):
     convert_(
         output_file,
@@ -80,5 +66,5 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         store_collection=collection,
         license=LICENSE,
         compression=compression,
-        file_migration=file_migration
+        layer_filter=LAYER_FILTER
     )
