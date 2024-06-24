@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Added a `SHORT_NAME` variable to the converter template
 - Added a `FILE_MIGRATION` variable to the converter template for per-file migrations
+- Added a `LAYER_FILTER` variable to the converter template for loading specific layers from a file
 - Added `-i` parameter to specify input files for converters
 - Further tests
 
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The `BBOX` is optional in the converter template as it will be computed automatically from the data.
 - `fiboa converters` is more readable by default
 - `fiboa converters` output can be customized with options `-p`, `-s` and `-v`.
+- Upgraded to geopandas 1.0.0rc.1, which migrates from fiona to pyogrio for data loading
 
 ### Deprecated
 

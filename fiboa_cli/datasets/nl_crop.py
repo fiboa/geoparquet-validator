@@ -50,7 +50,6 @@ def migrate(gdf):
     gdf['area'] = gdf.area / 10000
     # Add 15th of may to original "year" (jaar) column
     gdf['determination_datetime'] = pd.to_datetime(gdf['jaar'], format='%Y') + pd.DateOffset(months=4, days=14)
-    # index attribute is available through pyogrio
     gdf['id'] = gdf.index
     return gdf
 

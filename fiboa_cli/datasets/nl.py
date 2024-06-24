@@ -47,7 +47,6 @@ COLUMN_FILTERS = {
 def migrate(gdf):
     # Projection is in CRS 28992 (RD New), this is the area calculation method of the source organization
     gdf['area'] = gdf.area / 10000
-    # index attribute is available through pyogrio
     gdf['id'] = gdf.index
     return gdf
 
@@ -82,8 +81,7 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         license=LICENSE,
         compression=compression,
         explode_multipolygon=True,
-        # pyogrio + fix_as_index allow us to use the fid column
+        # fix_as_index allow us to use the fid column
         # see https://github.com/geopandas/geopandas/issues/2794
-        engine='pyogrio',
         fid_as_index=True
     )

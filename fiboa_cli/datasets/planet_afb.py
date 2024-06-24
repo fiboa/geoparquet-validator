@@ -48,7 +48,7 @@ ADD_COLUMNS = {
 
 EXTENSIONS = []
 
-def FILE_MIGRATION(gdf, path, uri):
+def FILE_MIGRATION(gdf, path, uri, layer = None):
     # The file name contains the date, so we can use that to add a
     # date column to the dataset.
     # Assumed filename:

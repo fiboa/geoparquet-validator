@@ -3,6 +3,7 @@ from .version import fiboa_version
 from .util import log, get_fs, name_from_uri, to_iso8601
 from .parquet import create_parquet
 
+from fsspec.implementations.local import LocalFileSystem
 from tempfile import TemporaryDirectory
 from shapely.geometry import box
 
@@ -31,6 +32,7 @@ def convert(
         column_migrations = {},
         migration = None,
         file_migration = None,
+        layer_filter = None,
         attribution = None,
         store_collection = False,
         license = None,
@@ -52,23 +54,35 @@ def convert(
     log("Getting file(s) if not cached yet")
     paths = download_files(urls, cache_path)
 
-    log("Reading into GeoDataFrame")
     gdfs = []
     for path, uri in paths:
+        log(f"Reading {path} into GeoDataFrame(s)")
+        layers = [None]
         # If file is a parquet file then read with read_parquet
         if path.endswith(".parquet") or path.endswith(".geoparquet"):
             data = gpd.read_parquet(path, **kwargs)
         else:
+            all_layers = gpd.list_layers(path)
+            if layer_filter is not None:
+                layers = [layer for layer in all_layers["name"] if layer_filter(str(layer), path)]
+                if len(layers) == 0:
+                    log(f"No layers left for layering after filtering", "warning")
+
+        for layer in layers:
+            if layer is not None:
+                kwargs["layer"] = layer
+                log(f"Reading {layer} into GeoDataFrame")
+
             data = gpd.read_file(path, **kwargs)
 
-        # 0. Run migration per file
-        if callable(file_migration):
-            log("Applying per file migrations")
-            data = file_migration(data, path, uri)
-            if not isinstance(data, gpd.GeoDataFrame):
-                raise ValueError("Per-file migration function must return a GeoDataFrame")
+            # 0. Run migration per file/layer
+            if callable(file_migration):
+                log("Applying per-file/layer migrations")
+                data = file_migration(data, path, uri, layer)
+                if not isinstance(data, gpd.GeoDataFrame):
+                    raise ValueError("Per-file/layer migration function must return a GeoDataFrame")
 
-        gdfs.append(data)
+            gdfs.append(data)
 
     gdf = pd.concat(gdfs)
     del gdfs
@@ -346,16 +360,20 @@ def download_files(uris, cache_folder = None):
         else:
             name = target
 
+        source_fs = get_fs(uri)
         cache_fs = get_fs(cache_folder)
         if not cache_fs.exists(cache_folder):
             cache_fs.makedirs(cache_folder)
 
-        cache_file = os.path.join(cache_folder, name)
+        if isinstance(source_fs, LocalFileSystem):
+            cache_file = uri
+        else:
+            cache_file = os.path.join(cache_folder, name)
+
         zip_folder = os.path.join(cache_folder, "extracted." + os.path.splitext(name)[0])
         must_extract = is_archive and not os.path.exists(zip_folder)
 
         if (not is_archive or must_extract) and not cache_fs.exists(cache_file):
-            source_fs = get_fs(uri)
             with cache_fs.open(cache_file, mode='wb') as file:
                 stream_file(source_fs, uri, file)
 
