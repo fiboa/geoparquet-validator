@@ -168,6 +168,10 @@ def validate_schema(files, metaschema):
         "metaschema": metaschema
     }
     exit = 0
+    if len(files) == 0:
+        log("No files to validate", "error")
+        exit = 2
+
     for file in files:
         log(f"Validating {file}", "info")
         result = validate_schema_(file, config)

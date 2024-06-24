@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added a `SHORT_NAME` variable to the converter template
 - Added a `FILE_MIGRATION` variable to the converter template for per-file migrations
 - Added `-i` parameter to specify input files for converters
+- Further tests
 
 ### Changed
 
@@ -30,6 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixed schema issue for the `tk10` column in `de_bb` converter
+- jsonschema library doesn't warn against external references any longer
 
 ## [v0.5.0] - 2024-06-17
 
