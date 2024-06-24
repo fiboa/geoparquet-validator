@@ -144,7 +144,7 @@ def convert(
 
     # 4b. For geometry column, convert multipolygon type to polygon
     if explode_multipolygon:
-        gdf = gdf.explode(index_parts=False)
+        gdf = gdf.explode()
 
     if has_migration or has_col_migrations or has_col_filters or has_col_additions or explode_multipolygon:
         log("GeoDataFrame after migrations and filters:")

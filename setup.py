@@ -26,7 +26,7 @@ setup(
         "pyarrow>=14.0",
         "fsspec>=2024.0",
         "click>=8.1",
-        "geopandas>=1.0.0rc.1",
+        "geopandas>=1.0.0",
         "requests>=2.30",
         "aiohttp>=3.9",
         "shapely>=2.0",
