@@ -42,7 +42,9 @@ DESCRIPTION = """Describe the dataset here."""
 PROVIDER_NAME = "ABC Corp."
 # URL to the homepage of the data or the provider, can be None if not applicable
 PROVIDER_URL = "https://abc.example"
-# Attribution, can be None if not applicable
+# Attribution (e.g. copyright or citation statement as requested by provider).
+# The attribution is usually shown on the map, in the lower right corner.
+# Can be None if not applicable
 ATTRIBUTION = "© 2024 ABC Corp."
 
 # License of the data, either
@@ -60,7 +62,6 @@ COLUMNS = {
 # Add columns with constant values.
 # The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2020-01-01T00:00:00Z"
 }
 
 # A list of implemented extension identifiers
