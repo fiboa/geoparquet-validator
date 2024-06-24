@@ -7,9 +7,14 @@ LAYER_FILTER = lambda layer, uri: layer.startswith("Culturas_")
 ID = "pt"
 TITLE = "Field boundaries for Portugal (identificação de parcelas)"
 SHORT_NAME = "Portugal"
-DESCRIPTION = """Open field boundaries from Portugal"""
-PROVIDER_NAME = "IPAP - Instituto de Financiamento da Agricultura e Pescas"
-PROVIDER_URL = "https://www.ifap.pt/isip/ows/"
+DESCRIPTION = "Open field boundaries from Portugal"
+PROVIDERS = [
+    {
+        "name": "IPAP - Instituto de Financiamento da Agricultura e Pescas",
+        "url": "https://www.ifap.pt/isip/ows/",
+        "roles": ["producer", "licensor"]
+    }
+]
 ATTRIBUTION = None
 
 # Inspire license. Not 100% clear at source
@@ -58,8 +63,7 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         TITLE,
         DESCRIPTION,
         input_files=input_files,
-        provider_name=PROVIDER_NAME,
-        provider_url=PROVIDER_URL,
+        providers=PROVIDERS,
         source_coop_url=source_coop_url,
         missing_schemas=MISSING_SCHEMAS,
         column_migrations=COLUMN_MIGRATIONS,
