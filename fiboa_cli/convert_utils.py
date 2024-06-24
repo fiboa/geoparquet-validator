@@ -69,7 +69,7 @@ def convert(
         for layer in layers:
             if layer is not None:
                 kwargs["layer"] = layer
-                log(f"Reading {layer} into GeoDataFrame")
+                log(f"- Reading layer {layer} into GeoDataFrame")
 
             if is_parquet:
                 data = gpd.read_parquet(path, **kwargs)
