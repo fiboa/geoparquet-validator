@@ -28,13 +28,8 @@ crop parcel to a region. It might happen that a parcel is not correctly allocate
 to be an aid for a meaningful spatial division of the dataset into training, validation, and test sets.
 """
 
-PROVIDERS = [
-    {
-        "name": "EuroCrops",
-        "url": "https://github.com/maja601/EuroCrops/wiki/Slovenia",
-        "roles": ["producer", "licensor"]
-    }
-]
+PROVIDER_NAME = "EuroCrops"
+PROVIDER_URL = "https://github.com/maja601/EuroCrops/wiki/Slovenia"
 ATTRIBUTION = "Ministrstvo za kmetijstvo, gozdarstvo in prehrano"
 
 LICENSE = "CC-BY-4.0"
@@ -51,8 +46,10 @@ COLUMNS = {
     'EC_trans_n': 'EC_trans_n', #fiboa custom field
     'EC_hcat_n': 'EC_hcat_n', #fiboa custom field
     'EC_hcat_c': 'EC_hcat_c', #fiboa custom field
-    'EC_NUTS3': 'EC_NUTS3', #fiboa custom field
+    'EC_NUTS3': 'EC_nuts3', #fiboa custom field
 }
+
+COLUMN_MIGRATIONS = {'AREA': lambda column:column * 0.0001}
 
 ADD_COLUMNS = {}
 
@@ -83,7 +80,7 @@ MISSING_SCHEMAS = {
         'EC_hcat_c': {
             'type': 'uint32'
         },
-        'EC_NUTS3': {
+        'EC_nuts3': {
             'type': 'string'
         }
     }
@@ -100,9 +97,11 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         TITLE,
         DESCRIPTION,
         input_files=input_files,
-        providers=PROVIDERS,
+        provider_name=PROVIDER_NAME,
+        provider_url=PROVIDER_URL,
         source_coop_url=source_coop_url,
         missing_schemas=MISSING_SCHEMAS,
+        column_migrations=COLUMN_MIGRATIONS,
         column_additions=ADD_COLUMNS,
         attribution=ATTRIBUTION,
         store_collection=collection,
