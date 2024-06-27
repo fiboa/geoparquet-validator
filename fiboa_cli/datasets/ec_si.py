@@ -54,6 +54,8 @@ COLUMNS = {
     'EC_NUTS3': 'EC_NUTS3', #fiboa custom field
 }
 
+COLUMN_MIGRATIONS = {'AREA': lambda column:column * 0.0001}
+
 ADD_COLUMNS = {}
 
 MISSING_SCHEMAS = {
@@ -103,6 +105,7 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         providers=PROVIDERS,
         source_coop_url=source_coop_url,
         missing_schemas=MISSING_SCHEMAS,
+        column_migrations=COLUMN_MIGRATIONS,
         column_additions=ADD_COLUMNS,
         attribution=ATTRIBUTION,
         store_collection=collection,
