@@ -18,7 +18,7 @@ ID = "fieldscapes_rwanda_2021"
 # Title of the collection
 TITLE = "Field boundaries for Rwanda (Fieldscapes)"
 # Description of the collection. Can be multiline and include CommonMark.
-DESCRIPTION = """ The dataset contains field boundaries for the Rwanda."""
+DESCRIPTION = "The dataset contains field boundaries for the Rwanda."
 # Bounding box of the data in WGS84 coordinates
 BBOX = [30.291994000000003, -1.5900790000000018, 30.423433000000003, -1.3917700000000055]
 
