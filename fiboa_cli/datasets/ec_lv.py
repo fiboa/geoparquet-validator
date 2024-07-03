@@ -43,11 +43,11 @@ EXTENSIONS = [
 COLUMNS = {
     'geometry': 'geometry', #fiboa core field
     'OBJECTID': 'id', #fiboa core field
-    'AREA_DECLARED': 'area', #fiboa core field
+    'AREA_DECLA': 'area', #fiboa core field
     'DATA_CHANG': 'determination_datetime', #fiboa core field
-    'PERIOD_CODE': 'year', #fiboa custom field
+    'PERIOD_COD': 'year', #fiboa custom field
     'PARCEL_ID': 'parcel_id', #fiboa custom field
-    'PRODUCT_CODE': 'crop_id', #fiboa custom field
+    'PRODUCT_CO': 'crop_id', #fiboa custom field
     'AID_FORMS': 'subsidy_type', #fiboa custom field
     'EC_NUTS3': 'EC_NUTS3', #fiboa custom field
     # 'PRODUCT_DE': 'PRODUCT_DE', #fiboa custom field
@@ -56,12 +56,7 @@ COLUMNS = {
     'EC_hcat_c': 'ec:hcat_code' #hcat-extension field
 }
 
-def migration(gdf):
-    col = 'DATA_CHANG'
-    gdf[col] = pd.to_datetime(gdf[col], format = "%Y/%m/%d %H:%M:%S.%f", utc = True)
-    return gdf
-
-MIGRATION = migration
+COLUMN_MIGRATIONS = {'DATA_CHANG': lambda column: pd.to_datetime(column, format = "%Y/%m/%d %H:%M:%S.%f", utc = True)}
 
 MISSING_SCHEMAS = {
     'required': [
@@ -114,7 +109,7 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         TITLE,
         DESCRIPTION,
         input_files=input_files,
-        migration=MIGRATION,
+        column_migrations=COLUMN_MIGRATIONS,
         providers=PROVIDERS,
         source_coop_url=source_coop_url,
         extensions=EXTENSIONS,
