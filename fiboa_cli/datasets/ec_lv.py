@@ -36,6 +36,10 @@ ATTRIBUTION = "Lauku atbalsta dienests"
 
 LICENSE = "CC-BY-4.0"
 
+EXTENSIONS = [
+    "https://fiboa.github.io/hcat-extension/v0.1.0/schema.yaml"
+]
+
 COLUMNS = {
     'geometry': 'geometry', #fiboa core field
     'OBJECTID': 'id', #fiboa core field
@@ -46,10 +50,10 @@ COLUMNS = {
     'PRODUCT_CODE': 'crop_id', #fiboa custom field
     'AID_FORMS': 'subsidy_type', #fiboa custom field
     'EC_NUTS3': 'EC_NUTS3', #fiboa custom field
-    'PRODUCT_DE': 'PRODUCT_DE', #fiboa custom field
-    'EC_trans_n': 'EC_trans_n', #fiboa custom field
-    'EC_hcat_n': 'EC_hcat_n', #fiboa custom field
-    'EC_hcat_c': 'EC_hcat_c' #fiboa custom field
+    # 'PRODUCT_DE': 'PRODUCT_DE', #fiboa custom field
+    'EC_trans_n': 'ec:translated_name', #hcat-extension field
+    'EC_hcat_n': 'ec:hcat_name', #hcat-extension field
+    'EC_hcat_c': 'ec:hcat_code' #hcat-extension field
 }
 
 def migration(gdf):
@@ -60,7 +64,14 @@ def migration(gdf):
 MIGRATION = migration
 
 MISSING_SCHEMAS = {
-    'required': ['year', 'parcel_id', 'crop_id','subsidy_type', 'EC_NUTS3', 'PRODUCT_DE', 'EC_trans_n', 'EC_hcat_n', 'EC_hcat_c'],
+    'required': [
+        'year', 
+        'parcel_id', 
+        'crop_id',
+        'subsidy_type', 
+        'EC_NUTS3', 
+        # 'PRODUCT_DE', 
+    ],
     'properties': {
         'year': {
             'type': 'uint16',
@@ -86,20 +97,9 @@ MISSING_SCHEMAS = {
             'maxLength': 5,
             'pattern': '^[A-Z]{2}[0-9]{3}'
         },
-        'PRODUCT_DE': {
-            'type': 'string'
-        },
-        'EC_trans_n': {
-            'type': 'string'
-        },
-        'EC_hcat_n': {
-            'type': 'string'
-        },
-        'EC_hcat_c': {
-            'type': 'uint32',
-            'minLength': 10,
-            'maxLength': 10
-        }
+        # 'PRODUCT_DE': {
+        #     'type': 'string'
+        # },
     }
 }
 
@@ -117,6 +117,7 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         migration=MIGRATION,
         providers=PROVIDERS,
         source_coop_url=source_coop_url,
+        extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
         attribution=ATTRIBUTION,
         store_collection=collection,
