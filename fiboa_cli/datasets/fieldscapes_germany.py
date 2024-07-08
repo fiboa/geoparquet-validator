@@ -11,10 +11,10 @@ from ..convert_utils import convert as convert_
 # Supported protcols: HTTP(S), GCS, S3, or the local file system
 
 # Local URI added to the repository for initial conversion, Original Source https://beta.source.coop/esa/fusion-competition/
-URI = "/home/byteboogie/work/labwork_hkerner/fieldscapes/germany/boundaries_germany_2021.gpkg"
+URI = "/home/byteboogie/work/labwork_hkerner/fieldscapes/germany/boundaries_germany.gpkg"
 
 # Unique identifier for the collection
-ID = "fieldscapes_germany_2021"
+ID = "fieldscapes_germany"
 # Title of the collection
 TITLE = "Field boundaries for Germany, Brandenburg (Fieldscapes)"
 # Description of the collection. Can be multiline and include CommonMark.
@@ -43,13 +43,14 @@ COLUMNS = {
     "SHAPE_LEN": "perimeter",
     "geometry": "geometry",
     "crop_id": "crop_id",
-    "crop_name": "crop_name"
+    "crop_name": "crop_name",
+    "determination_datetime": "determination_datetime"
 }
 
 # Add columns with constant values.
 # The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2021-01-01T00:00:00Z"
+
 }
 
 # A list of implemented extension identifiers
@@ -80,7 +81,15 @@ MIGRATION = None
 # Schemas for the fields that are not defined in fiboa
 # Keys must be the values from the COLUMNS dict, not the keys
 MISSING_SCHEMAS = {
-
+    "required": [ "crop_id", "crop_name" ], # i.e. non-nullable properties
+    "properties": {
+        "crop_id": {
+            "type": "int64"
+        },
+        "crop_name": {
+            "type": "string"
+        }
+    }
 }
 
 
