@@ -11,23 +11,23 @@ from ..convert_utils import convert as convert_
 # Supported protcols: HTTP(S), GCS, S3, or the local file system
 
 # Local URI added to the repository for initial conversion, Original Source https://beta.source.coop/esa/fusion-competition/
-URI = "/home/byteboogie/work/labwork_hkerner/fieldscapes/spain/boundaries_spain_2021.gpkg"
+URI = "/home/byteboogie/work/labwork_hkerner/fieldscapes/india/boundaries_india_2016.gpkg"
 
 # Unique identifier for the collection
-ID = "fieldscapes_spain_2021"
+ID = "fieldscapes_india_2016"
 # Title of the collection
-TITLE = "Field boundaries for Spain (Fieldscapes)"
+TITLE = "Field boundaries for India (Fieldscapes)"
 # Description of the collection. Can be multiline and include CommonMark.
-DESCRIPTION =  "The dataset contains field boundaries for the Spain."
+DESCRIPTION = " The dataset contains field boundaries for the India."
 # Bounding box of the data in WGS84 coordinates
-BBOX = [-2.499084664267865, 41.91145885943749, -1.512287728289516, 42.99672068077151]
+BBOX = [68.79696863780806, 9.248616997240717, 96.23688077261794, 34.5325092898945]
 
 # Provider name, can be None if not applicable, must be provided if PROVIDER_URL is provided
-PROVIDER_NAME = "Euro Crops"
+PROVIDER_NAME = "Nasa Harvest"
 # URL to the homepage of the data or the provider, can be None if not applicable
-PROVIDER_URL = "https://zenodo.org/records/6868143/files/ES_NA_2020.zip?download=1"
+PROVIDER_URL = "https://zenodo.org/records/7315090"
 # Attribution, can be None if not applicable
-ATTRIBUTION = "SIGPAC Nevarra"
+ATTRIBUTION = "Nasa Harvest Rwanda Field Boundary Competition"
 
 # License of the data, either
 # 1. a SPDX license identifier (including "dl-de/by-2-0" / "dl-de/zero-2-0"), or
@@ -39,17 +39,13 @@ LICENSE = "CC-BY-4.0"
 # You also need to list any column that you may have added in the MIGRATION function (see below).
 COLUMNS = {
     "id": "id",
-    "geom_area": "area",
-    "crop_code": "crop_id",
-    "crop_name": "crop_name",
-    "geom_peri": "perimeter",
     "geometry": "geometry"
 }
 
 # Add columns with constant values.
 # The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2021-01-01T00:00:00Z"
+    "determination_datetime": "2016-09-01T00:00:00Z"
 }
 
 # A list of implemented extension identifiers
@@ -80,14 +76,9 @@ MIGRATION = None
 # Schemas for the fields that are not defined in fiboa
 # Keys must be the values from the COLUMNS dict, not the keys
 MISSING_SCHEMAS = {
-    "required": [ "crop_id", "crop_name" ], # i.e. non-nullable properties
+    "required": [ ], # i.e. non-nullable properties
     "properties": {
-        "crop_id": {
-            "type": "string"
-        },
-        "crop_name": {
-            "type": "string"
-        }
+        
     }
 }
 
