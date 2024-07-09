@@ -46,7 +46,7 @@ COLUMNS = {
 # Add columns with constant values.
 # The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2022-01-01T00:00:00Z"
+    "determination_datetime": "2022-02-28T00:00:00Z"
 }
 
 # A list of implemented extension identifiers
