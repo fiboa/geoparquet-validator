@@ -36,9 +36,9 @@ ATTRIBUTION = "Lauku atbalsta dienests"
 
 LICENSE = "CC-BY-4.0"
 
-EXTENSIONS = [
-    "https://fiboa.github.io/hcat-extension/v0.1.0/schema.yaml"
-]
+# EXTENSIONS = [
+#     "https://fiboa.github.io/hcat-extension/v0.1.0/schema.yaml"
+# ]
 
 COLUMNS = {
     'geometry': 'geometry', #fiboa core field
@@ -51,12 +51,17 @@ COLUMNS = {
     'AID_FORMS': 'subsidy_type', #fiboa custom field
     'EC_NUTS3': 'EC_NUTS3', #fiboa custom field
     # 'PRODUCT_DE': 'PRODUCT_DE', #fiboa custom field
-    'EC_trans_n': 'ec:translated_name', #hcat-extension field
-    'EC_hcat_n': 'ec:hcat_name', #hcat-extension field
-    'EC_hcat_c': 'ec:hcat_code' #hcat-extension field
+    # 'EC_trans_n': 'ec:translated_name', #hcat-extension field
+    # 'EC_hcat_n': 'ec:hcat_name', #hcat-extension field
+    # 'EC_hcat_c': 'ec:hcat_code' #hcat-extension field
+    'EC_trans_n': 'EC_trans_n', #fiboa custom field
+    'EC_hcat_n': 'EC_hcat_n', #fiboa custom field
+    'EC_hcat_c': 'EC_hcat_c' #fiboa custom field
 }
 
-COLUMN_MIGRATIONS = {'DATA_CHANG': lambda column: pd.to_datetime(column, format = "%Y/%m/%d %H:%M:%S.%f", utc = True)}
+COLUMN_MIGRATIONS = {
+    'DATA_CHANG': lambda column: pd.to_datetime(column, format = "%Y/%m/%d %H:%M:%S.%f", utc = True)
+}
 
 MISSING_SCHEMAS = {
     'required': [
@@ -66,6 +71,9 @@ MISSING_SCHEMAS = {
         'subsidy_type', 
         'EC_NUTS3', 
         # 'PRODUCT_DE', 
+        'EC_trans_n',
+        'EC_hcat_n',
+        'EC_hcat_c'
     ],
     'properties': {
         'year': {
@@ -95,6 +103,17 @@ MISSING_SCHEMAS = {
         # 'PRODUCT_DE': {
         #     'type': 'string'
         # },
+        'EC_trans_n': {
+            'type': 'string'
+        },
+        'EC_hcat_n': {
+            'type': 'string'
+        },
+        'EC_hcat_c': {
+            'type': 'uint32',
+            'minimum': 3000000000,
+            'maximum': 3399000000
+        }
     }
 }
 
@@ -112,7 +131,7 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         column_migrations=COLUMN_MIGRATIONS,
         providers=PROVIDERS,
         source_coop_url=source_coop_url,
-        extensions=EXTENSIONS,
+        # extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
         attribution=ATTRIBUTION,
         store_collection=collection,
