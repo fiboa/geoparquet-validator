@@ -39,13 +39,14 @@ LICENSE = "CC-BY-4.0"
 # You also need to list any column that you may have added in the MIGRATION function (see below).
 COLUMNS = {
     "id": "id",
-    "geometry": "geometry"
+    "geometry": "geometry",
+    "datetime" : "determination_datetime",
 }
 
 # Add columns with constant values.
 # The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2020-01-01T00:00:00Z"
+
 }
 
 # A list of implemented extension identifiers
@@ -76,14 +77,9 @@ MIGRATION = None
 # Schemas for the fields that are not defined in fiboa
 # Keys must be the values from the COLUMNS dict, not the keys
 MISSING_SCHEMAS = {
-    "required": [ "crop_id", "crop_name" ], # i.e. non-nullable properties
+    "required": [ ], # i.e. non-nullable properties
     "properties": {
-        "crop_id": {
-            "type": "int64"
-        },
-        "crop_name": {
-            "type": "string"
-        }
+        
     }
 }
 
