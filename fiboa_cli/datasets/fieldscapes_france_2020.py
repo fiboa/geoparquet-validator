@@ -14,7 +14,7 @@ import pandas as pd
 SOURCES = "/mnt/c/Snehal/Kerner Lab/tge-fiboa/france/all_parcels.gpkg"
 
 # Unique identifier for the collection
-ID = "fs_rpg_fr"
+ID = "fieldscapes_france_2020"
 # Title of the collection
 TITLE = "Field boundaries for France (FieldScapes)"
 # Description of the collection. Can be multiline and include CommonMark.
@@ -40,9 +40,9 @@ ATTRIBUTION = "National Institute of Geographic and Forestry Information (IGN-F)
 
 # License of the data, either
 # 1. a SPDX license identifier (including "dl-de/by-2-0" / "dl-de/zero-2-0"), or
-LICENSE = "Open Licence"
+# LICENSE = "Open Licence"
 # 2. a STAC Link Object with relation type "license"
-# LICENSE = {"title": "CC-BY-4.0", "href": "https://creativecommons.org/licenses/by/4.0/", "type": "text/html", "rel": "license"}
+LICENSE = {"title": "Open Licence", "href": "https://geoservices.ign.fr/sites/default/files/2023-11/DC_DL_RPG_2-1_0.pdf", "type": "text/html", "rel": "license"}
 
 # Map original column names to fiboa property names
 # You also need to list any column that you may have added in the MIGRATION function (see below).
@@ -57,7 +57,7 @@ COLUMNS = {
 # Add columns with constant values.
 # The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2021-01-01T00:00:00Z"
+    "determination_datetime": "2020-12-31T00:00:00Z"
 }
 
 # A list of implemented extension identifiers

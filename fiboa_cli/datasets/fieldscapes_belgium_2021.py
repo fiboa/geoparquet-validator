@@ -33,9 +33,9 @@ ATTRIBUTION = "The Agriculture and Sea Fisheries Agency"
 
 # License of the data, either
 # 1. a SPDX license identifier (including "dl-de/by-2-0" / "dl-de/zero-2-0"), or
-LICENSE = "No restrictions on public access"
+# LICENSE = "No restrictions on public access"
 # 2. a STAC Link Object with relation type "license"
-# LICENSE = {"title": "CC-BY-4.0", "href": "https://creativecommons.org/licenses/by/4.0/", "type": "text/html", "rel": "license"}
+LICENSE = {"title": "No restrictions on public access", "href": "https://metadata.vlaanderen.be/srv/dut/catalog.search#/metadata/d869db4a-73f4-470e-b5ca-a0f7cd3ab585", "type": "text/html", "rel": "license"}
 
 # Map original column names to fiboa property names
 # You also need to list any column that you may have added in the MIGRATION function (see below).
@@ -55,7 +55,7 @@ COLUMNS = {
 # Add columns with constant values.
 # The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2021-01-01T00:00:00Z"
+    "determination_datetime": "2022-03-15T00:00:00Z" # Initial submission : April 30, 2021, final submission : March 15, 2022
 }
 
 # A list of implemented extension identifiers
