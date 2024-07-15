@@ -49,10 +49,11 @@ COLUMNS = {
     'taotletu_1' : 'requested_land_use',
     'niitmise_t' : 'mowing_detection_status',
     'niitmise_1' : 'mowing_detection_period',
-    'viimase_mu' : 'last_edit',
     'taotletu_2' : 'requested_support',
     'EC_trans_n' : 'EC_trans_n',
     'EC_hcat_n' : 'EC_hcat_n',
+    
+    'viimase_mu' : 'determination_datetime',
     'geometry':'geometry'  # fiboa core field
 }
 
@@ -60,7 +61,7 @@ COLUMNS = {
 # Add columns with constant values.
 # The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2021-01-01T00:00:00Z"
+    # "determination_datetime": "2021-12-31T00:00:00Z"
 }
 
 # A list of implemented extension identifiers

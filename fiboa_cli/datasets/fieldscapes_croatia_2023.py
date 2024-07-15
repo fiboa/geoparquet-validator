@@ -42,9 +42,9 @@ ATTRIBUTION = "The Agency for Payments in Agriculture, Fisheries and Rural Devel
 
 # License of the data, either
 # 1. a SPDX license identifier (including "dl-de/by-2-0" / "dl-de/zero-2-0"), or
-LICENSE = "Open Data"
+# LICENSE = "Open Data"
 # 2. a STAC Link Object with relation type "license"
-# LICENSE = {"title": "CC-BY-4.0", "href": "https://creativecommons.org/licenses/by/4.0/", "type": "text/html", "rel": "license"}
+LICENSE = {"title": "Open Data", "href": "https://www.apprrr.hr/wp-content/uploads/2024/01/Otvoreni-podaci-APPRRR.docx", "type": "text/html", "rel": "license"}
 
 # Map original column names to fiboa property names
 # You also need to list any column that you may have added in the MIGRATION function (see below).
@@ -71,7 +71,7 @@ COLUMNS = {
 # Add columns with constant values.
 # The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2023-01-01T00:00:00Z"
+    "determination_datetime": "2023-09-01T00:00:00Z" # data was downloaded on 7th Sept. 2023 and according to the original inventory for current yar field are updated every 2 weeks thus choosing template date 
 }
 
 # A list of implemented extension identifiers
