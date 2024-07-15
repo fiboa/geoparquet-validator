@@ -43,10 +43,10 @@ ATTRIBUTION = "The Swedish Agency for Agriculture"
 # 1. a SPDX license identifier (including "dl-de/by-2-0" / "dl-de/zero-2-0"), or
 
 # Invalid License Identifier as of now. Link : https://www.geodata.se/geodataportalen/srv/swe/catalog.search;jsessionid=6C2D281619D69AC2356E1BD4C1923A3A#/metadata/df439ba5-014e-44ec-86cb-ddb9e5ba306c
-LICENSE = "No restrictions on public access" # TODO : how to add such identifiers?
+# LICENSE = "No restrictions on public access" # TODO : how to add such identifiers?
  
 # 2. a STAC Link Object with relation type "license"
-# LICENSE = {"title": "CC-BY-4.0", "href": "https://creativecommons.org/licenses/by/4.0/", "type": "text/html", "rel": "license"}
+LICENSE = {"title": "No restrictions on public access", "href": "https://www.geodata.se/geodataportalen/srv/swe/catalog.search;jsessionid=6C2D281619D69AC2356E1BD4C1923A3A#/metadata/df439ba5-014e-44ec-86cb-ddb9e5ba306c", "type": "text/html", "rel": "license"}
 
 # Map original column names to fiboa property names
 # You also need to list any column that you may have added in the MIGRATION function (see below).
@@ -90,6 +90,9 @@ COLUMN_FILTERS = {
 #   func(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame
 MIGRATION = None
 
+
+FILE_MIGRATION = None
+
 # Schemas for the fields that are not defined in fiboa
 # Keys must be the values from the COLUMNS dict, not the keys
 MISSING_SCHEMAS = {
@@ -117,15 +120,18 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         ID,
         TITLE,
         DESCRIPTION,
+        bbox = BBOX,
         input_files=input_files,
         provider_name=PROVIDER_NAME,
         provider_url=PROVIDER_URL,
         source_coop_url=source_coop_url,
         extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
+        column_additions=ADD_COLUMNS,
         column_migrations=COLUMN_MIGRATIONS,
         column_filters=COLUMN_FILTERS,
         migration=MIGRATION,
+        file_migration=FILE_MIGRATION,
         attribution=ATTRIBUTION,
         store_collection=collection,
         license=LICENSE,

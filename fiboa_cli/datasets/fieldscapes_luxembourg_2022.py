@@ -17,7 +17,7 @@ import pandas as pd
 SOURCES = "/mnt/c/Snehal/Kerner Lab/tge-fiboa/luxembourg/all_parcels.gpkg"  # data subset for FieldScapes
 
 # Unique identifier for the collection
-ID = "fieldscapes_luxembourg_2023"
+ID = "fieldscapes_luxembourg_2022"
 # Title of the collection
 TITLE = "Field boundaries for Luxembourg (FieldScapes)"
 # Description of the collection. Can be multiline and include CommonMark.
@@ -55,7 +55,7 @@ COLUMNS = {
 # Add columns with constant values.
 # The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2023-01-01T00:00:00Z"  # fiboa core field
+    "determination_datetime": "2022-12-31T00:00:00Z"  # fiboa core field
 }
 
 # A list of implemented extension identifiers
@@ -99,11 +99,10 @@ FILE_MIGRATION = None
 # Schemas for the fields that are not defined in fiboa
 # Keys must be the values from the COLUMNS dict, not the keys
 MISSING_SCHEMAS = {
-    # "required": ["id", "area", "geometry", "determination_datetime"], # i.e. non-nullable properties
     'properties': {
         'category': {
             'type': 'string',
-            # 'enum' : ['Agricultural Parcel', 'Vineyard parcel', 'Ineligible parcel', 'Non-payable objects']
+            'enum' : ['Agricultural Parcel', 'Vineyard parcel', 'Ineligible parcel', 'Non-payable objects']
         },
         'commune_code': {
             'type': 'string'
