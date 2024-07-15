@@ -38,7 +38,7 @@ ATTRIBUTION = "National Paying Agency under the Ministry of Agriculture"
 # https://www.geoportal.lt/metadata-catalog/catalog/search/resource/details.page?uuid=%7B7AF3F5B2-DC58-4EC5-916C-813E994B2DCF%7D
 LICENSE = "Non-commercial use only" # how to add nor-commercial licence.
 # 2. a STAC Link Object with relation type "license"
-# LICENSE = {"title": "CC-BY-4.0", "href": "https://creativecommons.org/licenses/by/4.0/", "type": "text/html", "rel": "license"}
+LICENSE = {"title": "Non-commercial use only", "href": "https://www.geoportal.lt/metadata-catalog/catalog/search/resource/details.page?uuid=%7B7AF3F5B2-DC58-4EC5-916C-813E994B2DCF%7D", "type": "text/html", "rel": "license"}
 
 # Map original column names to fiboa property names
 # You also need to list any column that you may have added in the MIGRATION function (see below).
@@ -55,7 +55,7 @@ COLUMNS = {
 # Add columns with constant values.
 # The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2021-01-01T00:00:00Z"
+    "determination_datetime": "2021-10-08T00:00:00Z"
 }
 
 # A list of implemented extension identifiers
@@ -69,20 +69,13 @@ EXTENSIONS = []
 
 COLUMN_MIGRATIONS = {
     'Shape_Area': lambda column: column * 0.0001,
-    'GRUPE': lambda column: column.map({'Ganyklos-pievos virð 5m.':'Pastures-meadows over 5 years', 'Darþovës':'Vegetables', 'Ganyklos-pievos iki 5m.':'Pastures-meadows up to 5 years',
-       'Grikiai':'Buckwheat', 'Ankðtiniai javai':'Early cereals', 'Aviþos':'Oats', 'Þieminiai javai':'Winter cereals','Vasariniai javai': 'Spring crops', 
-       'Kita ariama þemë':'Other arable þemë', 'Rapsai':'Canola', 'Sodai':'Orchards',
-       'Pûdymas':'Pûdymas', 'Daugiametës þolës':'Perennial grasses', 'Miðkai':'Woods', 'Cukriniai runkeliai':'Sugar beets',
-       'Ðlapynës':'Leaves', 'Uogynai':'Berries', 'Kukurûzai':'Corn', 'Pluoðtinës kanapës':'Fiber hemp','Kiti sodiniai':'Other plantations',
-        'Grioviai':'Ditches', 'Linai': 'Flax', 'Aromatinai augalai':'Aromatic plants', 'Grybai': 'Mushrooms'
-       })
 }
 
 # Filter columns to only include the ones that are relevant for the collection,
 # e.g. only rows that contain the word "agriculture" but not "forest" in the column "land_cover_type".
 # Lamda function accepts a Pandas Series and returns a Series or a Tuple with a Series and True to inverse the mask.
 COLUMN_FILTERS = {
-    "GRUPE": lambda col: (col.isin(['Vegetables', 'Buckwheat', 'Early Cereals', 'Oats', 'Winter cereals', 'Summer Cereals', 'Sugar beet', 'Berries', 'Corn']), True)
+    # "GRUPE": lambda col: (col.isin(['Darþovës', 'Grikiai', 'Ankðtiniai javai', 'Aviþos', 'Þieminiai javai', 'Summer Cereals', 'Cukriniai runkeliai', 'Uogynai', 'Kukurûzai']), True)
 }
 
 # Custom function to migrate the GeoDataFrame if the other options are not sufficient
