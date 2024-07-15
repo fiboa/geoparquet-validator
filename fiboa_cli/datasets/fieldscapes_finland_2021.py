@@ -49,8 +49,7 @@ LICENSE = "CC-BY-4.0"
 # Map original column names to fiboa property names
 # You also need to list any column that you may have added in the MIGRATION function (see below).
 COLUMNS = {
-    'id' : 'id', # fiboa core field , TODO MARKBLOKNR-id conversion is needed.   
-    'area' : 'area',  # fiboa core field
+    'id' : 'id', # fiboa core field , TODO MARKBLOKNR-id conversion is needed.  
     'MAANKAYTTOLAJI' : 'land_use',#fiboa custom field 
     'geometry':'geometry'# fiboa core field
 }
@@ -58,7 +57,7 @@ COLUMNS = {
 # Add columns with constant values.
 # The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2021-01-01T00:00:00Z"
+    "determination_datetime": "2021-12-31T00:00:00Z"
 }
 
 # A list of implemented extension identifiers
@@ -85,10 +84,7 @@ COLUMN_FILTERS = {
 # Function signature:
 #   func(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame
 def migrate(gdf):
-    gdf = gdf.to_crs(epsg=3067)  # Convert to a projected CRS (e.g., EPSG:3067 for Finland)
-    gdf['area'] = gdf['geometry'].area * 0.0001
     gdf['id'] = range(1, len(gdf) + 1) # auto incremented id
-    gdf = gdf.to_crs(epsg=4326)
     return gdf
 
 MIGRATION = migrate

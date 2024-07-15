@@ -43,7 +43,6 @@ LICENSE = "CC0-1.0"
 # You also need to list any column that you may have added in the MIGRATION function (see below).
 COLUMNS = {
     'id' : 'id', # fiboa core field 
-    'area' : 'area', # fiboa core field 
     'category':'crop_category',
     'gewas':'crop_type',
     'status':'status',    
@@ -54,7 +53,7 @@ COLUMNS = {
 # Add columns with constant values.
 # The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2022-01-01T00:00:00Z" # fiboa core field 
+    "determination_datetime": "2022-05-15T00:00:00Z" # fiboa core field 
 }
 
 # A list of implemented extension identifiers
@@ -83,10 +82,7 @@ COLUMN_FILTERS = {
 #   func(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame
 
 def migrate(gdf):
-    gdf = gdf.to_crs(epsg=28992)  # Convert to a projected CRS
-    gdf['area'] = gdf['geometry'].area * 0.0001
     gdf['id'] = range(1, len(gdf) + 1)
-    gdf = gdf.to_crs(epsg=4326) 
     return gdf
 
 MIGRATION = migrate
