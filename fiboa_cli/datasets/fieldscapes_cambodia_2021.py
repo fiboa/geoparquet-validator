@@ -42,14 +42,13 @@ LICENSE = "CC-BY-4.0"
 COLUMNS = {
     'id' : 'id',
     '_predicate' : '_predicate', 
-    'area' : 'area',
     'geometry' : 'geometry'
 }
 
 # Add columns with constant values.
 # The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2021-01-01T00:00:00Z"
+    "determination_datetime": "2021-08-01T00:00:00Z"
 }
 
 # A list of implemented extension identifiers
@@ -74,10 +73,7 @@ COLUMN_FILTERS = {
 # Function signature:
 #   func(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame
 def migrate(gdf):
-    gdf = gdf.to_crs(epsg=32648)  # Convert to a projected CRS
-    gdf['area'] = gdf['geometry'].area * 0.0001
     gdf['id'] = range(1, len(gdf) + 1) # auto incremented id
-    gdf = gdf.to_crs(epsg=4326)
     return gdf
 
 MIGRATION = migrate
