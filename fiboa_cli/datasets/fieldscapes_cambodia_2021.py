@@ -11,7 +11,12 @@ import pandas as pd
 # File to read the data from
 # Can read any tabular data format that GeoPandas can read through read_file()
 # Supported protcols: HTTP(S), GCS, S3, or the local file system
-SOURCES = "/mnt/c/Snehal/Kerner Lab/tge-fiboa/cambodia/all_parcels.gpkg"
+# SOURCES = "/mnt/c/Snehal/Kerner Lab/tge-fiboa/cambodia/all_parcels.gpkg"
+
+SOURCES = {
+   "https://phys-techsciences.datastations.nl/api/access/datafile/100006?gbrecs=true": "15_cambodia_areas.gpkg",
+   "https://phys-techsciences.datastations.nl/api/access/datafile/100248?gbrecs=true": "16_cambodia_areas.gpkg"
+}
 
 # Unique identifier for the collection
 ID = "fieldscapes_cambodia_2021"
