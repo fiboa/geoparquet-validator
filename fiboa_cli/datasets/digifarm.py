@@ -65,10 +65,12 @@ LICENSE = {"title": "Proprietary", "href": "https://digifarm.io/legal/tc", "type
 # Map original column names to fiboa property names
 # You also need to list any column that you may have added in the MIGRATION function (see below).
 COLUMNS = {
-    "area_ha": "area",
+    # This is using shapefile input, and seems to get capitalized somehow, but geopandas didn't 
+    # recognize it as 'area'. Wondering if we could make it case insensitive?
+    "AREA": "area",
     "id": "id",
     "geometry": "geometry",
-    "area": "area_sq_m",
+    "area_ha": "area_sq_m",
     "area_acres": "area_acres"
 }
 
@@ -80,6 +82,13 @@ ADD_COLUMNS = {
 
 # A list of implemented extension identifiers
 EXTENSIONS = []
+
+COLUMN_MIGRATIONS = {
+    # This seems a bit goofy to swap the columns, but 'area' is always present in digifarm
+    # responses, while area_ha is sometimes not present - particularly in bulk files.
+    "AREA": lambda column: column * 0.0001,
+    "area_ha": lambda column: column * 10000
+}
 
 # Schemas for the fields that are not defined in fiboa
 # Keys must be the values from the COLUMNS dict, not the keys
@@ -136,6 +145,7 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         providers=PROVIDERS,
         source_coop_url=source_coop_url,
         extensions=EXTENSIONS,
+        column_migrations=COLUMN_MIGRATIONS,
         missing_schemas=MISSING_SCHEMAS,
         column_additions=ADD_COLUMNS,
         layer_filter=LAYER_FILTER,
