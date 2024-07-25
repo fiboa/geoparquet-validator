@@ -1,9 +1,3 @@
-# TEMPLATE FOR A FIBOA CONVERTER
-#
-# Copy this file and rename it to something sensible.
-# The name of the file will be the name of the converter in the cli.
-# If you name it 'de_abc' you'll be able to run `fiboa convert de_abc` in the cli.
-
 from ..convert_utils import convert as convert_
 import re
 import pandas as pd
@@ -13,6 +7,7 @@ import pandas as pd
 # Supported protcols: HTTP(S), GCS, S3, or the local file system
 # SOURCES = "/mnt/c/Snehal/Kerner Lab/tge-fiboa/cambodia/all_parcels.gpkg"
 
+# TODO: Many more to add here.
 SOURCES = {
    "https://phys-techsciences.datastations.nl/api/access/datafile/100006?gbrecs=true": "15_cambodia_areas.gpkg",
    "https://phys-techsciences.datastations.nl/api/access/datafile/100248?gbrecs=true": "16_cambodia_areas.gpkg"
