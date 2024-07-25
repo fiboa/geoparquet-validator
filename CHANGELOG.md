@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for Planet's Automated Field Boundary (`planet_afb`)
 - Converter for Portugal (`pt`)
 - Converter for DigiFarm (`digifarm`)
+- Converter for AI4SmallFarms in Cambodia and Vietnam (`ai4sf`)
 - Further tests
 
 ### Changed
