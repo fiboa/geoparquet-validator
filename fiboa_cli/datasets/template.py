@@ -62,6 +62,7 @@ LICENSE = "CC-BY-4.0"
 
 # Map original column names to fiboa property names
 # You also need to list any column that you may have added in the MIGRATION function (see below).
+# GeoJSON: Nested objects can be accessed using a dot, e.g. "area.value" for {"area": {"value": 123}}
 COLUMNS = {
     "area_m": "area"
 }

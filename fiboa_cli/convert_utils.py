@@ -15,6 +15,7 @@ import pandas as pd
 import sys
 import zipfile
 import py7zr
+import flatdict
 
 def convert(
         output_file, cache_path,
@@ -57,6 +58,7 @@ def convert(
     for path, uri in paths:
         log(f"Reading {path} into GeoDataFrame(s)")
         is_parquet = path.endswith(".parquet") or path.endswith(".geoparquet")
+        is_json = path.endswith(".json") or path.endswith(".geojson")
         layers = [None]
         # Parquet doesn't support layers
         if not is_parquet:
@@ -73,6 +75,8 @@ def convert(
 
             if is_parquet:
                 data = gpd.read_parquet(path, **kwargs)
+            elif is_json:
+                data = read_geojson(path, **kwargs)
             else:
                 data = gpd.read_file(path, **kwargs)
 
@@ -399,3 +403,28 @@ def stream_file(fs, src_uri, dst_file, chunk_size = 10 * 1024 * 1024):
             if not chunk:
                 break
             dst_file.write(chunk)
+
+
+def normalize_geojson_properties(feature):
+    # Convert properties of type dict to dot notation
+    feature["properties"] = flatdict.FlatDict(feature["properties"], delimiter=".")
+
+    # Preserve id: https://github.com/geopandas/geopandas/issues/1208
+    if "id" not in feature["properties"]:
+        feature["properties"]["id"] = feature["id"]
+
+    return feature
+
+
+def read_geojson(path, **kwargs):
+    with open(path, **kwargs) as f:
+        obj = json.load(f)
+
+    if not isinstance(obj, dict):
+        raise ValueError("JSON file must contain a GeoJSON object")
+    elif obj["type"] != "FeatureCollection":
+        raise ValueError("JSON file must contain a GeoJSON FeatureCollection")
+
+    obj["features"] = list(map(normalize_geojson_properties, obj["features"]))
+
+    return gpd.GeoDataFrame.from_features(obj, crs = "EPSG:4326")

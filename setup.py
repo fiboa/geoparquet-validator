@@ -31,7 +31,8 @@ setup(
         "aiohttp>=3.9",
         "shapely>=2.0",
         "numpy>=1.20.0",
-        "py7zr>=0.21.0"
+        "py7zr>=0.21.0",
+        "flatdict>=4.0",
     ],
     extras_require={
         # Optional dependencies for datasets converters go here
