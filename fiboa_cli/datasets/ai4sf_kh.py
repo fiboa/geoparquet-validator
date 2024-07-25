@@ -1,135 +1,104 @@
 from ..convert_utils import convert as convert_
-import re
-import pandas as pd
 
-# File to read the data from
-# Can read any tabular data format that GeoPandas can read through read_file()
-# Supported protcols: HTTP(S), GCS, S3, or the local file system
-# SOURCES = "/mnt/c/Snehal/Kerner Lab/tge-fiboa/cambodia/all_parcels.gpkg"
-
-# TODO: Many more to add here.
 SOURCES = {
-   "https://phys-techsciences.datastations.nl/api/access/datafile/100006?gbrecs=true": "15_cambodia_areas.gpkg",
-   "https://phys-techsciences.datastations.nl/api/access/datafile/100248?gbrecs=true": "16_cambodia_areas.gpkg"
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100634?gbrecs=true": "2_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100282?gbrecs=true": "3_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100392?gbrecs=true": "4_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100252?gbrecs=true": "5_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100072?gbrecs=true": "6_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100169?gbrecs=true": "7_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100348?gbrecs=true": "8_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100487?gbrecs=true": "9_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100084?gbrecs=true": "10_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100155?gbrecs=true": "11_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100475?gbrecs=true": "12_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100372?gbrecs=true": "13_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100196?gbrecs=true": "14_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100006?gbrecs=true": "15_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100248?gbrecs=true": "16_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100397?gbrecs=true": "17_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100217?gbrecs=true": "18_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100652?gbrecs=true": "19_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100326?gbrecs=true": "20_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100625?gbrecs=true": "21_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100413?gbrecs=true": "33_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100593?gbrecs=true": "34_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100057?gbrecs=true": "35_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100536?gbrecs=true": "36_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100343?gbrecs=true": "37_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100711?gbrecs=true": "38_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100313?gbrecs=true": "39_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100679?gbrecs=true": "57_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100191?gbrecs=true": "58_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100023?gbrecs=true": "59_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100025?gbrecs=true": "60_cambodia_areas.gpkg",
+    "https://phys-techsciences.datastations.nl/api/access/datafile/100543?gbrecs=true": "61_cambodia_areas.gpkg",
 }
 
-# Unique identifier for the collection
-ID = "fieldscapes_cambodia_2021"
-# Title of the collection
-TITLE = "Field boundaries for Cambodia (FieldScapes)"
-# Description of the collection. Can be multiline and include CommonMark.
+ID = "ai4sf_kh"
+SHORT_NAME = "Cambodia (AI4SmallFarms)"
+TITLE = "Field boundaries for Cambodia"
+# from https://research.tudelft.nl/en/publications/ai4smallfarms-a-dataset-for-crop-field-delineation-in-southeast-a
+DESCRIPTION = """
+Agricultural field polygons within smallholder farming systems are essential to facilitate the collection of geo-spatial data useful for farmers, managers, and policymakers.
+However, the limited availability of training labels poses a challenge in developing supervised methods to accurately delineate field boundaries using Earth Observation (EO) data.
+This data set allows researchers to test and benchmark machine learning methods to delineate agricultural field boundaries in polygon format.
+The large-scale data set consists of 439,001 field polygons divided into 62 tiles of approximately 5×5 km distributed across Vietnam and Cambodia, covering a range of fields and diverse landscape types.
+The field polygons have been meticulously digitized from satellite images, following a rigorous multi-step quality control process and topological consistency checks.
+Multi-temporal composites of Sentinel-2 (S2) images are provided to ensure cloud-free data.
+"""
 
-# https://research.tudelft.nl/en/publications/ai4smallfarms-a-dataset-for-crop-field-delineation-in-southeast-a
-DESCRIPTION = """Agricultural field polygons within smallholder farming systems are essential to facilitate the collection of geo-spatial data useful for farmers, managers, and policymakers. However, the limited availability of training labels poses a challenge in developing supervised methods to accurately delineate field boundaries using Earth Observation (EO) data. This data set
-allows researchers to test and benchmark machine learning methods to delineate agricultural field boundaries in polygon format. The large-scale data set consists of 439,001 field polygons divided into 62 tiles of approximately 5×5 km distributed across Vietnam and Cambodia, covering a range of fields and diverse landscape types. The field polygons have been meticulously digitized from satellite images, following a rigorous multi-step quality control process and topological consistency checks. Multi-temporal composites of Sentinel-2 (S2) images are provided to ensure cloud-free data."""
-
-
-# Provider name, can be None if not applicable, must be provided if PROVIDER_URL is provided
-PROVIDER_NAME = "DATA Archiving and Networked Services (DANS)"
-# URL to the homepage of the data or the provider, can be None if not applicable
-PROVIDER_URL = "https://research.tudelft.nl/en/publications/ai4smallfarms-a-dataset-for-crop-field-delineation-in-southeast-a"
-# Attribution, can be None if not applicable
-ATTRIBUTION = "University of Twente Research Information, Department of Earth Observation ScienceDigital Society InstituteFaculty of Geo-Information Science and Earth ObservatioN"
-
-# License of the data, either
-# 1. a SPDX license identifier (including "dl-de/by-2-0" / "dl-de/zero-2-0"), or
+PROVIDERS = [
+    {
+        "name": "DATA Archiving and Networked Services (DANS)",
+        "url": "https://research.tudelft.nl/en/publications/ai4smallfarms-a-dataset-for-crop-field-delineation-in-southeast-a",
+        "roles": ["producer", "licensor"]
+    }
+]
+ATTRIBUTION = "Persello, C., Grift, J., Fan, X., Paris, C., Hansch, R., Koeva, M., & Nelson, A. (2023). AI4SmallFarms: A Dataset for Crop Field Delineation in Southeast Asian Smallholder Farms. IEEE Geoscience and Remote Sensing Letters, 20, 1-5. Article 2505705. https://doi.org/10.1109/LGRS.2023.3323095"
 LICENSE = "CC-BY-4.0"
-# 2. a STAC Link Object with relation type "license"
-# LICENSE = {"title": "CC-BY-4.0", "href": "https://creativecommons.org/licenses/by/4.0/", "type": "text/html", "rel": "license"}
 
-# Map original column names to fiboa property names
-# You also need to list any column that you may have added in the MIGRATION function (see below).
 COLUMNS = {
-    'id' : 'id',
-    '_predicate' : '_predicate', 
-    'geometry' : 'geometry'
+    'fiboa_id': 'id',
+    'id' : 'group',
+    '_predicate' : '_predicate',
+    'country': 'country',
+    'geometry' : 'geometry',
 }
 
-# Add columns with constant values.
-# The key is the column name, the value is a constant value that's used for all rows.
 ADD_COLUMNS = {
-    "determination_datetime": "2021-08-01T00:00:00Z"
+    "determination_datetime": "2021-08-01T00:00:00Z",
+    "determination_method": "auto-imagery"
 }
 
-# A list of implemented extension identifiers
-EXTENSIONS = []
-
-# Functions to migrate data in columns to match the fiboa specification.
-# Example: You have a column area_m in square meters and want to convert
-# to hectares as required for the area field in fiboa.
-# Function signature:
-#   func(column: pd.Series) -> pd.Series
-COLUMN_MIGRATIONS = {
-}
-
-# Filter columns to only include the ones that are relevant for the collection,
-# e.g. only rows that contain the word "agriculture" but not "forest" in the column "land_cover_type".
-# Lamda function accepts a Pandas Series and returns a Series or a Tuple with a Series and True to inverse the mask.
-COLUMN_FILTERS = {
-}
-
-# Custom function to migrate the GeoDataFrame if the other options are not sufficient
-# This should be the last resort!
-# Function signature:
-#   func(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame
 def migrate(gdf):
-    gdf['id'] = range(1, len(gdf) + 1) # auto incremented id
+    gdf['fiboa_id'] = gdf['id'].astype(str) + "_" + gdf.index.astype(str)
     return gdf
 
 MIGRATION = migrate
 
-
-# Custom function to execute actions on the the GeoDataFrame that are loaded from individual file.
-# This is useful if the data is split into multiple files and columns should be added or changed
-# on a per-file basis for example.
-# The path contains the local path to the file that was read.
-# The uri contains the URL that was read.
-# Function signature:
-#   func(gdf: gpd.GeoDataFrame, path: string, uri: string) -> gpd.GeoDataFrame
-FILE_MIGRATION = None
-
-
-# Schemas for the fields that are not defined in fiboa
-# Keys must be the values from the COLUMNS dict, not the keys
 MISSING_SCHEMAS = {
     "properties": {
+        "group": {
+            "type": "uint8"
+        },
+        "group_id": {
+            "type": "uint16"
+        },
         "_predicate": {
-            "type": "string"
+            "type": "string",
+            "enum": ["INTERSECTS"]
+        },
+        "country": {
+            "type": "string",
+            "enum": ["cambodia"]
         }
-
     }
 }
 
 
 # Conversion function, usually no changes required
 def convert(output_file, input_files = None, cache = None, source_coop_url = None, collection = False, compression = None):
-    """
-    Converts the field boundary datasets to fiboa.
-
-    For reference, this is the order in which the conversion steps are applied:
-    0. Read GeoDataFrame from file(s) and run the FILE_MIGRATION function if provided
-    1. Run global migration (if provided through MIGRATION)
-    2. Run filters to remove rows that shall not be in the final data
-       (if provided through COLUMN_FILTERS)
-    3. Add columns with constant values
-    4. Run column migrations (if provided through COLUMN_MIGRATIONS)
-    5. Duplicate columns (if an array is provided as the value in COLUMNS)
-    6. Rename columns (as provided in COLUMNS)
-    7. Remove columns (if column is not present as value in COLUMNS)
-    8. Create the collection
-    9. Change data types of the columns based on the provided schemas
-    (fiboa spec, extensions, and MISSING_SCHEMAS)
-    10. Write the data to the Parquet file
-
-    Parameters:
-    output_file (str): Path where the Parquet file shall be stored.
-    cache (str): Path to a cached folder for the data. Default: None.
-                      Can be used to avoid repetitive downloads from the original data source.
-    source_coop_url (str): URL to the (future) Source Cooperative repository. Default: None
-    collection (bool): Additionally, store the collection separate from Parquet file. Default: False
-    compression (str): Compression method for the Parquet file. Default: zstd
-    kwargs: Additional keyword arguments for GeoPanda's read_file() or read_parquet() function.
-    """
     convert_(
         output_file,
         cache,
@@ -139,16 +108,11 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         TITLE,
         DESCRIPTION,
         input_files=input_files,
-        provider_name=PROVIDER_NAME,
-        provider_url=PROVIDER_URL,
+        providers=PROVIDERS,
         source_coop_url=source_coop_url,
-        extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
         column_additions=ADD_COLUMNS,
-        column_migrations=COLUMN_MIGRATIONS,
-        column_filters=COLUMN_FILTERS,
         migration=MIGRATION,
-        file_migration=FILE_MIGRATION,
         attribution=ATTRIBUTION,
         store_collection=collection,
         license=LICENSE,
