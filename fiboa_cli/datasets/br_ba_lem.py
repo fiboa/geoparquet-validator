@@ -6,8 +6,8 @@ SOURCES = {
     ]
 }
 
-ID = "lem_br_ba"
-SHORT_NAME = "West of Bahia, Brazil"
+ID = "br_ba_lem"
+SHORT_NAME = "West Bahia, Brazil"
 TITLE = "Field boundaries for the west of Bahia state, Brazil"
 DESCRIPTION = """
 This dataset is the supplementary data of a paper published in the Data in Brief Journal.
