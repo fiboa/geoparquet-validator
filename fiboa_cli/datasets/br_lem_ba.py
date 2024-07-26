@@ -1,13 +1,13 @@
 from ..convert_utils import convert as convert_
-import re
-import pandas as pd
 
 # Please REMOVE the comment after review: 
 # I was actually using this link "https://prod-dcd-datasets-cache-zipfiles.s3.eu-west-1.amazonaws.com/vz6d7tw87f-1.zip" which is copied from the 
 # "Download All" button from the website (https://data.mendeley.com/datasets/vz6d7tw87f/1). 
 # But output an error saying """/vsizip//tmp/tmp7puy6g90/vz6d7tw87f-1.zip' not recognized as a supported file format. 
 # It might help to specify the correct driver explicitly by prefixing the file path with '<DRIVER>:', e.g. 'CSV:path'""""
-SOURCES = "https://github.com/fiboa/data/files/15438544/LEM_dataset.zip"
+SOURCES = {
+    "https://prod-dcd-datasets-cache-zipfiles.s3.eu-west-1.amazonaws.com/vz6d7tw87f-1.zip": "LEM_dataset.shp"
+}
 
 
 ID = "br"
@@ -33,32 +33,25 @@ PROVIDERS = [
 ATTRIBUTION = "Copyright © 2024 Elsevier inc, its licensors, and contributors."
 LICENSE = "CC-BY-4.0"
 
-# Please REMOVE the comment after review: 
-# The commented variables are my proposed columns attributes, but it doesn't seem 
-# logical to me to have months and years as the data's attributes. What do you think?
 COLUMNS = {
     'geometry': 'geometry',
     'id': 'id',
-    # 'OCT_2019': 'oct_2019',
-    # 'NOV_2019': 'nov_2019',
-    # 'DEC_2019': 'dec_2019',
-    # 'JAN_2020': 'jan_2020',
-    # 'FEB_2020': 'feb_2020',
-    # 'MAR_2020': 'mar_2020',
-    # 'APR_2020': 'apr_2020',
-    # 'MAY_2020': 'may_2020',
-    # 'JUN_2020': 'jun_2020',
-    # 'JUL_2020': 'jul_2020',
-    # 'AUG_2020': 'aug_2020',
-    # 'SEP_2020': 'sep_2020',
-    # 'NOTE': 'note'
+    'OCT_2019': '2019-10',
+    'NOV_2019': '2019-11',
+    'DEC_2019': '2019-12',
+    'JAN_2020': '2020-01',
+    'FEB_2020': '2020-02',
+    'MAR_2020': '2020-03',
+    'APR_2020': '2020-04',
+    'MAY_2020': '2020-05',
+    'JUN_2020': '2020-06',
+    'JUL_2020': '2020-07',
+    'AUG_2020': '2020-08',
+    'SEP_2020': '2020-09',
+    'NOTE': 'note'
 }
 
-# Please REMOVE the comment after review: 
-# I do think it is safe to assume the determination date is the last date of September in 2020 as the dataset
-# has SEP_2020 (which is the latests time) as one of its column attributes.
 ADD_COLUMNS = {
-    "determination_datetime": "2020-09-30T00:00:00Z"
 }
 
 EXTENSIONS = []
@@ -73,82 +66,43 @@ MIGRATION = None
 
 FILE_MIGRATION = None
 
-# Please REMOVE the comment after review: 
-# There is one field that I omitted, which is the `NOTE` field in the dataset.
-# This is because it is nullable.
+TYPE_SCHEMA = {
+    "type": "string",
+    "enum": [
+        "Beans",
+        "Brachiaria",
+        "Cerrado",
+        "Coffee",
+        "Conversion area",
+        "Corn",
+        "Cotton",
+        "Crotalaria",
+        "Eucalyptus",
+        "Hay",
+        "Millet",
+        "Not identified",
+        "Pasture",
+        "Sorghum",
+        "Soybean",
+        "Uncultivated soil",
+    ]
+}
 MISSING_SCHEMAS = {
-    # "required": ["oct_2019"],
-    # "properties": {
-    #     "oct_2019": {
-    #         "type": "string"
-    #     }
-    # },
-    # "required": ["nov_2019"], 
-    # "properties": {
-    #     "nov_2019": {
-    #         "type": "string"
-    #     }
-    # },
-    # "required": ["dec_2019"], 
-    # "properties": {
-    #     "dec_2019": {
-    #         "type": "string"
-    #     }
-    # },
-    # "required": ["jan_2020"],
-    # "properties": {
-    #     "jan_2020": {
-    #         "type": "string"
-    #     }
-    # },
-    # "required": ["feb_2020"],
-    # "properties": {
-    #     "feb_2020": {
-    #         "type": "string"
-    #     }
-    # },
-    # "required": ["mar_2020"],
-    # "properties": {
-    #     "mar_2020": {
-    #         "type": "string"
-    #     }
-    # },
-    # "required": ["apr_2020"],
-    # "properties": {
-    #     "apr_2020": {
-    #         "type": "string"
-    #     }
-    # },
-    # "required": ["may_2020"],
-    # "properties": {
-    #     "may_2020": {
-    #         "type": "string"
-    #     }
-    # },
-    # "required": ["jun_2020"],
-    # "properties": {
-    #     "jun_2020": {
-    #         "type": "string"
-    #     }
-    # },
-    # "required": ["jul_2020"],
-    # "properties": {
-    #     "jun_2020": {
-    #         "type": "string"
-    #     }
-    # },
-    # "required": ["aug_2020"],
-    # "properties": {
-    #     "aug_2020": {
-    #         "type": "string"
-    #     }
-    # },
-    # "required": ["sep_2020"],
-    # "properties": {
-    #     "sep_2020": {
-    #         "type": "string"
-    #     }
-    # },
+    "required": ["2019-10", "2019-11", "2019-12", "2020-01", "2020-02", "2020-03", "2020-04", "2020-05", "2020-06", "2020-07", "2020-08", "2020-09"],
+    "properties": {
+        "2019-10": TYPE_SCHEMA,
+        "2019-11": TYPE_SCHEMA,
+        "2019-12": TYPE_SCHEMA,
+        "2020-01": TYPE_SCHEMA,
+        "2020-02": TYPE_SCHEMA,
+        "2020-03": TYPE_SCHEMA,
+        "2020-04": TYPE_SCHEMA,
+        "2020-05": TYPE_SCHEMA,
+        "2020-06": TYPE_SCHEMA,
+        "2020-07": TYPE_SCHEMA,
+        "2020-08": TYPE_SCHEMA,
+        "2020-09": TYPE_SCHEMA,
+    },
 }
 
 
