@@ -1,119 +1,151 @@
-# TEMPLATE FOR A FIBOA CONVERTER
-#
-# Copy this file and rename it to something sensible.
-# The name of the file will be the name of the converter in the cli.
-# If you name it 'de_abc' you'll be able to run `fiboa convert de_abc` in the cli.
-
 from ..convert_utils import convert as convert_
 
-# File(s) to read the data from, usually publicly accessible URLs.
-# Can read any (zipped) tabular data format that GeoPandas can read through read_file() or read_parquet().
-# Supported protocols: HTTP(S), GCS, S3, or the local file system
-#
-# Multiple options are possible:
-# 1. a single URL (filename must be in the URL). The file is read as is.
-SOURCES = "https://fiboa.example/file.xyz"
-# 2. a dictionary with a mapping of URLs (where the filename can't necessarily be determined from the URL) to filenames.
-# SOURCES = {
-#   "https://fiboa.example/archive/758?download=1": "us.gpkg"
-#   "https://fiboa.example/archive/355?download=1": "canada.gpkg"
-# }
-# 3. a dictionary with a mapping of URLs to a list of filenames in ZIP ot 7Z files to read from.
-# SOURCES = {
-#   "https://fiboa.example/north_america.zip": ["us.gpkg", "canaga.gpkg"]
-# }
+SOURCES = "https://www.apprrr.hr/wp-content/uploads/nipp/land_parcels.gpkg"
 
-# A filter function for the layer in the file(s) to read.
-# Set to None if the file contains only one layer or all layers should be read.
-# Function signature:
-#   func(layer: str, path: str) -> bool
 LAYER_FILTER = None
 
-# Unique identifier for the collection
-ID = "abc"
-# Geonames for the data (e.g. Country, Region, Source, Year)
-SHORT_NAME = "Country, Region, etc."
-# Title of the collection
-TITLE = "Field boundaries for Country, Region, etc."
-# Description of the collection. Can be multiline and include CommonMark.
-DESCRIPTION = """Describe the dataset here."""
 
-# A list of providers that contributed to the data.
-# This should be an array of Provider Objects:
-# https://github.com/radiantearth/stac-spec/blob/master/collection-spec/collection-spec.md#provider-object
+ID = "hr"
+SHORT_NAME = "Republic of Croatia"
+TITLE = "Croatian Agricultural Spatial Data"
+DESCRIPTION = """
+This dataset contains spatial data related to agricultural land use in Croatia, including ARKOD parcel information, 
+environmentally sensitive areas, High Nature Value Grasslands, protective buffer strips around watercourses, and vineyard 
+classifications. The data is crucial for managing agricultural activities, ensuring compliance with environmental regulations, 
+and supporting sustainable land use practices.
+"""
+
 PROVIDERS = [
     {
-        "name": "ABC Corp",
-        "url": "https://abc.example",
+        "name": "Agencija za plaćanja u poljoprivredi, ribarstvu i ruralnom razvoju",
+        "url": "https://www.apprrr.hr/prostorni-podaci-servisi/",
         "roles": ["producer", "licensor"]
     }
 ]
 
-# Attribution (e.g. copyright or citation statement as requested by provider).
-# The attribution is usually shown on the map, in the lower right corner.
-# Can be None if not applicable
-ATTRIBUTION = "© 2024 ABC Corp."
+ATTRIBUTION = "copyright © 2024. Agencija za plaćanja u poljoprivredi, ribarstvu i ruralnom razvoju"
 
-# License of the data, either
-# 1. a SPDX license identifier (including "dl-de/by-2-0" / "dl-de/zero-2-0"), or
-LICENSE = "CC-BY-4.0"
-# 2. a STAC Link Object with relation type "license"
-# LICENSE = {"title": "CC-BY-4.0", "href": "https://creativecommons.org/licenses/by/4.0/", "type": "text/html", "rel": "license"}
+#TODO: I could not find information about the license. 
+LICENSE = ""
 
-# Map original column names to fiboa property names
-# You also need to list any column that you may have added in the MIGRATION function (see below).
-# GeoJSON: Nested objects can be accessed using a dot, e.g. "area.value" for {"area": {"value": 123}}
+
+# {'properties': {'land_use_id': 'float', 'home_name': 'str:60', 'area': 'float', 'perim': 'float',
+#                 'slope': 'float', 'z_avg': 'float', 'eligibility_coef': 'float', 'mines_status': 'str:1',
+#                 'mines_year_removed': 'int', 'water_protect_zone': 'str:10', 'natura2000': 'float', 
+#                 'natura2000_ok': 'str:20', 'natura2000_pop': 'float', 'natura2000_povs': 'float', 'anc': 'int', 'anc_area': 'float',
+#                 'rp': 'int', 'sanitary_protection_zone': 'str:25', 'tvpv': 'int', 'ot_nat': 'int', 'ot_nat_area': 'float', 
+#                 'irrigation': 'int', 'irrigation_source': 'int', 'irrigation_type': 'int', 'jpaid': 'str:13'}, 
+#                 'geometry': 'Unknown'}
 COLUMNS = {
-    "area_m": "area"
+    'land_use_id': 'id',
+    'home_name': 'home_name',
+    'area': 'area',
+    'perim': 'perimeter',
+    'slope': 'slope',
+    'z_avg': 'z_avg',
+    'eligibility_coef': 'eligibility_coef',
+    'mines_status': 'mines_status', 
+    'mines_year_removed': 'mines_year_removed', 
+    'water_protect_zone': 'water_protect_zone', 
+    'natura2000': 'natura2000', 
+    'natura2000_ok': 'natura2000_ok', 
+    'natura2000_pop': 'natura2000_pop', 
+    'natura2000_povs': 'natura2000_povs', 
+    'anc': 'anc', 
+    'anc_area': 'anc_area', 
+    'rp': 'rp', 
+    'sanitary_protection_zone': 'sanitary_protection_zone', 
+    'tvpv': 'tvpv', 
+    'ot_nat': 'ot_nat', 
+    'ot_nat_area': 'ot_nat_area', 
+    'irrigation': 'irrigation', 
+    'irrigation_source': 'irrigation_source', 
+    'irrigation_type': 'irrigation_type', 
+    'jpaid': 'jpaid',
+    'geometry': 'geometry',
+
+
 }
 
-# Add columns with constant values.
-# The key is the column name, the value is a constant value that's used for all rows.
-ADD_COLUMNS = {
-}
-
-# A list of implemented extension identifiers
-EXTENSIONS = []
-
-# Functions to migrate data in columns to match the fiboa specification.
-# Example: You have a column area_m in square meters and want to convert
-# to hectares as required for the area field in fiboa.
-# Function signature:
-#   func(column: pd.Series) -> pd.Series
+# Fiboa's id is in string but "land_use_id" from the data is in float.
 COLUMN_MIGRATIONS = {
-    "area_m": lambda column: column * 0.0001
+    "land_use_id": lambda column: str(column)
 }
 
-# Filter columns to only include the ones that are relevant for the collection,
-# e.g. only rows that contain the word "agriculture" but not "forest" in the column "land_cover_type".
-# Lamda function accepts a Pandas Series and returns a Series or a Tuple with a Series and True to inverse the mask.
-COLUMN_FILTERS = {
-    "land_cover_type": lambda col: (col.isin(["agrictulture"]), True)
-}
-
-# Custom function to migrate the full GeoDataFrame if the other options are not sufficient
-# This should be the last resort!
-# Function signature:
-#   func(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame
 MIGRATION = None
 
-# Custom function to execute actions on the the GeoDataFrame that are loaded from individual file or layers.
-# This is useful if the data is split into multiple files/layers and columns should be added or changed
-# on a per-file/layer basis for example.
-# The path contains the local path to the file that was read.
-# The uri contains the URL that was read.
-# The layer may contain the layer name.
-# Function signature:
-#   func(gdf: gpd.GeoDataFrame, path: str, uri: str, layer: str = None) -> gpd.GeoDataFrame
 FILE_MIGRATION = None
 
-# Schemas for the fields that are not defined in fiboa
-# Keys must be the values from the COLUMNS dict, not the keys
 MISSING_SCHEMAS = {
-    "required": ["my_id"], # i.e. non-nullable properties
-    "properties": {
-        "my_id": {
-            "type": "string"
+    'required': ['home_name', 'slope', 'z_avg', 'eligibility_coef', 'mines_status', 'mines_year_removed', 'water_protect_zone',
+                'natura2000', 'natura2000_ok', 'natura2000_pop', 'natura2000_povs', 'anc', 'anc_area', 'rp', 'sanitary_protection_zone',
+                'tvpv', 'ot_nat', 'ot_nat_area', 'irrigation', 'irrigation_source', 'irrigation_type', 'jpaid'],
+    'properties': {
+        'home_name': {
+            'type': 'string:60'  # String with max length of 60 characters
+        },
+        'slope': {
+            'type': 'float'
+        },
+        'z_avg': {
+            'type': 'float'
+        },
+        'eligibility_coef': {
+            'type': 'float'
+        },
+        'mines_status': {
+            'type': 'string:1'  # String with max length of 1 character
+        },
+        'mines_year_removed': {
+            'type': 'int'
+        },
+        'water_protect_zone': {
+            'type': 'string:10'  # String with max length of 10 characters
+        },
+        'natura2000': {
+            'type': 'float'
+        },
+        'natura2000_ok': {
+            'type': 'string:20'  # String with max length of 20 characters
+        },
+        'natura2000_pop': {
+            'type': 'float'
+        },
+        'natura2000_povs': {
+            'type': 'float'
+        },
+        'anc': {
+            'type': 'int'
+        },
+        'anc_area': {
+            'type': 'float'
+        },
+        'rp': {
+            'type': 'int'
+        },
+        'sanitary_protection_zone': {
+            'type': 'string:25'  # String with max length of 25 characters
+        },
+        'tvpv': {
+            'type': 'int'
+        },
+        'ot_nat': {
+            'type': 'int'
+        },
+        'ot_nat_area': {
+            'type': 'float'
+        },
+        'irrigation': {
+            'type': 'int'
+        },
+        'irrigation_source': {
+            'type': 'int'
+        },
+        'irrigation_type': {
+            'type': 'int'
+        },
+        'jpaid': {
+            'type': 'string:13'  # String with max length of 13 characters
         }
     }
 }
@@ -159,11 +191,8 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         input_files=input_files,
         providers=PROVIDERS,
         source_coop_url=source_coop_url,
-        extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
-        column_additions=ADD_COLUMNS,
         column_migrations=COLUMN_MIGRATIONS,
-        column_filters=COLUMN_FILTERS,
         layer_filter=LAYER_FILTER,
         migration=MIGRATION,
         file_migration=FILE_MIGRATION,
