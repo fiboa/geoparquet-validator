@@ -3,10 +3,9 @@ from ..convert_utils import convert as convert_
 SOURCES = "https://landbrugsgeodata.fvm.dk/Download/Marker/Marker_2023.zip"
 LAYER_FILTER = None
 ID = "dk"
-SHORT_NAME = "DK Marker"
+SHORT_NAME = "Denmark"
 TITLE = "Denmark Crop Fields (Marker)"
-DESCRIPTION = """The Danish Ministry of Food, Agriculture and Fisheries publishes
-Crop Fields (Marker) for each year."""
+DESCRIPTION = """The Danish Ministry of Food, Agriculture and Fisheries publishes Crop Fields (Marker) for each year."""
 
 PROVIDERS = [
     {
