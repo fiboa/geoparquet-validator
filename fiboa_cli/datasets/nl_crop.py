@@ -32,8 +32,6 @@ ATTRIBUTION = None
 # Both http://creativecommons.org/publicdomain/zero/1.0/deed.nl and http://creativecommons.org/publicdomain/mark/1.0/
 LICENSE = "CC0-1.0"
 
-EXTENSIONS = []
-COLUMN_MIGRATIONS = {}
 COLUMNS = {
     'geometry': 'geometry',
     'id': 'id',
@@ -77,7 +75,7 @@ MISSING_SCHEMAS = {
 }
 
 
-def convert(output_file, input_files = None, cache = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, **kwargs):
     convert_(
         output_file,
         cache,
@@ -86,16 +84,11 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         ID,
         TITLE,
         DESCRIPTION,
-        input_files=input_files,
         providers=PROVIDERS,
-        source_coop_url=source_coop_url,
-        extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
-        column_migrations=COLUMN_MIGRATIONS,
         column_filters=COLUMN_FILTERS,
         migration=MIGRATION,
         attribution=ATTRIBUTION,
-        store_collection=collection,
         license=LICENSE,
-        compression=compression,
+        **kwargs
     )

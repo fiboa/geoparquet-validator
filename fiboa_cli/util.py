@@ -12,14 +12,14 @@ from urllib.parse import urlparse
 from fsspec import AbstractFileSystem
 from fsspec.implementations.http import HTTPFileSystem
 from fsspec.implementations.local import LocalFileSystem
-from jsonschema.validators import Draft202012Validator
+from geopandas.io.arrow import _arrow_to_geopandas
+from jsonschema.validators import Draft202012Validator, Draft7Validator
 from pyarrow import NativeFile
 from pyarrow.fs import FSSpecHandler, PyFileSystem
 from typing import Union
 from urllib.request import Request, urlopen
 
 from .const import LOG_STATUS_COLOR, SUPPORTED_PROTOCOLS, STAC_COLLECTION_SCHEMA, GEOPARQUET_SCHEMA
-from .geopandas import decode_metadata, arrow_to_geopandas
 
 file_cache = {}
 
@@ -78,7 +78,10 @@ def load_parquet_data(uri: str, nrows = None, columns = None) -> pd.DataFrame:
         rows = next(pf.iter_batches(batch_size = nrows, columns = columns))
         table = pa.Table.from_batches([rows])
 
-    return arrow_to_geopandas(table, allow_non_geo = True)
+    if table.schema.metadata is not None and b"geo" in table.schema.metadata:
+        return _arrow_to_geopandas(table)
+    else:
+        return table.to_pandas()
 
 
 def load_fiboa_schema(config):
@@ -259,7 +262,7 @@ def migrate_schema(schema):
 
 def parse_metadata(schema, key):
     if key in schema.metadata:
-        return decode_metadata(schema.metadata[key])
+        return json.loads(schema.metadata[key].decode("utf-8"))
     else:
         str_key = key.decode("utf-8")
         log(f"Parquet file schema does not have a '{str_key}' key", "warning")
@@ -301,9 +304,14 @@ def log_extensions(collection, logger):
 
 
 def create_validator(schema):
-    return Draft202012Validator(
+    if schema["$schema"] == "http://json-schema.org/draft-07/schema#":
+        instance = Draft7Validator
+    else:
+        instance = Draft202012Validator
+
+    return instance(
         schema,
-        format_checker = Draft202012Validator.FORMAT_CHECKER,
+        format_checker = instance.FORMAT_CHECKER,
         registry = referencing.Registry(retrieve = retrieve_remote_schema)
     )
 

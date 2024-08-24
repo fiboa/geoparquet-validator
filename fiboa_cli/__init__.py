@@ -370,13 +370,20 @@ def jsonschema(schema, out, fiboa_version, id_):
     help='Compression method for the Parquet file. Defaults to zstd.',
     default="zstd"
 )
-def convert(dataset, out, input, cache, source_coop, collection, compression):
+@click.option(
+    '--geoparquet1', '-gp1',
+    is_flag=True,
+    type=click.BOOL,
+    help='Enforces generating a GeoParquet 1.0 file bounding box. Defaults to GeoParquet 1.1 with bounding box.',
+    default=False
+)
+def convert(dataset, out, input, cache, source_coop, collection, compression, geoparquet1):
     """
     Converts existing field boundary datasets to fiboa.
     """
     log(f"fiboa CLI {__version__} - Convert '{dataset}'\n", "success")
     try:
-        convert_(dataset, out, input, cache, source_coop, collection, compression)
+        convert_(dataset, out, input, cache, source_coop, collection, compression, geoparquet1)
     except Exception as e:
         log(e, "error")
         sys.exit(1)

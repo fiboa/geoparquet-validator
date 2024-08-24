@@ -7,7 +7,7 @@ SOURCES = {
 }
 
 ID = "ec_lv"
-SHORT_NAME = "Latvia (Eurocrops, 2021)"
+SHORT_NAME = "Latvia - Eurocrops, 2021"
 TITLE = "Field boundaries for Latvia from EuroCrops (2021)"
 DESCRIPTION = """
 This dataset contains the field boundaries for all of Latvia in 2021. The data was collected by the Latvian government and harmonized
@@ -62,12 +62,12 @@ COLUMN_MIGRATIONS = {
 
 MISSING_SCHEMAS = {
     'required': [
-        'year', 
-        'parcel_id', 
+        'year',
+        'parcel_id',
         'crop_id',
-        'subsidy_type', 
-        'EC_NUTS3', 
-        # 'PRODUCT_DE', 
+        'subsidy_type',
+        'EC_NUTS3',
+        # 'PRODUCT_DE',
     ],
     'properties': {
         'year': {
@@ -101,7 +101,7 @@ MISSING_SCHEMAS = {
 }
 
 
-def convert(output_file, input_files = None, cache = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, **kwargs):
     convert_(
         output_file,
         cache,
@@ -110,14 +110,11 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         ID,
         TITLE,
         DESCRIPTION,
-        input_files=input_files,
         column_migrations=COLUMN_MIGRATIONS,
         providers=PROVIDERS,
-        source_coop_url=source_coop_url,
         extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
         attribution=ATTRIBUTION,
-        store_collection=collection,
         license=LICENSE,
-        compression=compression,
+        **kwargs
     )

@@ -5,9 +5,9 @@ SOURCES = "https://www.ifap.pt/isip/ows/resources/2023/Continente.gpkg"
 LAYER_FILTER = lambda layer, uri: layer.startswith("Culturas_")
 
 ID = "pt"
-TITLE = "Field boundaries for Portugal (identificação de parcelas)"
+TITLE = "Field boundaries for Portugal"
 SHORT_NAME = "Portugal"
-DESCRIPTION = "Open field boundaries from Portugal"
+DESCRIPTION = "Open field boundaries (identificação de parcelas) from Portugal"
 PROVIDERS = [
     {
         "name": "IPAP - Instituto de Financiamento da Agricultura e Pescas",
@@ -53,7 +53,7 @@ MISSING_SCHEMAS = {
 }
 
 
-def convert(output_file, input_files = None, cache = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, **kwargs):
     convert_(
         output_file,
         cache,
@@ -62,14 +62,11 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         ID,
         TITLE,
         DESCRIPTION,
-        input_files=input_files,
         providers=PROVIDERS,
-        source_coop_url=source_coop_url,
         missing_schemas=MISSING_SCHEMAS,
         column_migrations=COLUMN_MIGRATIONS,
         attribution=ATTRIBUTION,
-        store_collection=collection,
         license=LICENSE,
-        compression=compression,
-        layer_filter=LAYER_FILTER
+        layer_filter=LAYER_FILTER,
+        **kwargs
     )

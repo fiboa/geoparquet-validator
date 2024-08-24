@@ -7,8 +7,9 @@ from .util import load_parquet_data, load_parquet_schema, parse_metadata, to_iso
 
 
 def create_geojson(file, out, split = False, num = None, indent = None):
-    if not os.path.exists(out):
-        os.makedirs(out)
+    dir = os.path.dirname(out)
+    if dir:
+        os.makedirs(dir, exist_ok=True)
 
     schema = load_parquet_schema(file)
     collection = parse_metadata(schema, b"fiboa")
@@ -55,8 +56,9 @@ def create_geojson(file, out, split = False, num = None, indent = None):
         del obj["bbox"]
         obj["features"] = list(map(fix_geojson, obj["features"]))
         obj["fiboa"] = collection
-        path = os.path.join(out, "features.json")
-        write_json(obj, path, indent)
+        if os.path.isdir(out):
+            out = os.path.join(out, "features.json")
+        write_json(obj, out, indent)
 
 
 def write_json(obj, path, indent = None):

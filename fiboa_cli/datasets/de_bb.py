@@ -56,20 +56,17 @@ MISSING_SCHEMAS = {
     }
 }
 
-def convert(output_file, input_files = None, cache = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, **kwargs):
     """
     Converts the Berlin/Brandenburg (Germany) field boundary datasets to fiboa.
     """
     convert_(
         output_file, cache,
         SOURCES, COLUMNS, ID, TITLE, DESCRIPTION,
-        input_files=input_files,
         license=LICENSE,
         extensions=EXTENSIONS,
         missing_schemas=MISSING_SCHEMAS,
-        source_coop_url=source_coop_url,
         providers=PROVIDERS,
-        store_collection=collection,
         layer = "DFBK_FB",
-        compression=compression,
+        **kwargs
     )

@@ -5,7 +5,7 @@ SOURCES = {
 }
 
 ID = "ec_si"
-SHORT_NAME = "Slovenia (Eurocrops, 2021)"
+SHORT_NAME = "Slovenia - Eurocrops, 2021"
 TITLE = "Field boundaries for Slovenia from EuroCrops (2021)"
 DESCRIPTION = """
 This dataset contains the field boundaries for all of Slovenia in 2021. The data was collected by the Slovenian government and harmonized
@@ -89,7 +89,7 @@ MISSING_SCHEMAS = {
 }
 
 
-def convert(output_file, input_files = None, cache = None, source_coop_url = None, collection = False, compression = None):
+def convert(output_file, cache = None, **kwargs):
     convert_(
         output_file,
         cache,
@@ -99,14 +99,11 @@ def convert(output_file, input_files = None, cache = None, source_coop_url = Non
         TITLE,
         DESCRIPTION,
         extensions=EXTENSIONS,
-        input_files=input_files,
         providers=PROVIDERS,
-        source_coop_url=source_coop_url,
         missing_schemas=MISSING_SCHEMAS,
         column_migrations=COLUMN_MIGRATIONS,
         column_additions=ADD_COLUMNS,
         attribution=ATTRIBUTION,
-        store_collection=collection,
         license=LICENSE,
-        compression=compression,
+        **kwargs
     )
