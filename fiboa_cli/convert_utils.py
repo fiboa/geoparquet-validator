@@ -37,6 +37,7 @@ def convert(
         store_collection = False,
         license = None,
         compression = None,
+        geoparquet1 = False,
         explode_multipolygon = False,
         **kwargs):
     """
@@ -164,14 +165,15 @@ def convert(
     # 5. Duplicate columns if needed
     actual_columns = {}
     for old_key, new_key in columns.items():
-        # If new keys are a list, duplicate the column
-        if isinstance(new_key, list):
-            for key in new_key:
-                gdf[key] = gdf.loc[:, old_key]
-                actual_columns[key] = key
-        # If new key is a string, plan to rename the column
-        elif old_key in gdf.columns:
-            actual_columns[old_key] = new_key
+        if old_key in gdf.columns:
+            # If the new keys are a list, duplicate the column
+            if isinstance(new_key, list):
+                for key in new_key:
+                    gdf[key] = gdf.loc[:, old_key]
+                    actual_columns[key] = key
+            # If the new key is a string, plan to rename the column
+            elif old_key in gdf.columns:
+                actual_columns[old_key] = new_key
         # If old key is not found, remove from the schema and warn
         else:
             log(f"Column '{old_key}' not found in dataset, removing from schema", "warning")
@@ -201,7 +203,7 @@ def convert(
         "fiboa_version": fiboa_version,
     }
     columns = list(actual_columns.values())
-    pq_fields = create_parquet(gdf, columns, collection, output_file, config, missing_schemas, compression)
+    pq_fields = create_parquet(gdf, columns, collection, output_file, config, missing_schemas, compression, geoparquet1)
 
     if store_collection:
         external_collection = add_asset_to_collection(collection, output_file, rows = len(gdf), columns = pq_fields)
