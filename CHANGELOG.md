@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Converter for Croatia (`hr`)
+
 ## [v0.7.0] - 2024-08-24
 
 ### Added
