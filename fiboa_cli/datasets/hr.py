@@ -1,5 +1,6 @@
 from ..convert_utils import convert as convert_
 
+
 SOURCES = "https://www.apprrr.hr/wp-content/uploads/nipp/land_parcels.gpkg"
 
 LAYER_FILTER = None
@@ -69,7 +70,14 @@ COLUMNS = {
 
 # Fiboa's id is in string but "land_use_id" from the data is in float.
 COLUMN_MIGRATIONS = {
-    "land_use_id": lambda column: str(column)
+    "land_use_id": lambda column: str(column),
+    "mines_year_removed": lambda column: column.fillna(0).astype('uint64'),
+    "anc": lambda column: column.fillna(0).astype('uint64'),
+    "rp": lambda column: column.fillna(0).astype('uint64'),
+    "tvpv": lambda column: column.fillna(0).astype('uint64'),
+    "ot_nat": lambda column: column.fillna(0).astype('uint64'),
+    "irrigation_source": lambda column: column.fillna(0).astype('uint64'),
+    "irrigation_type": lambda column: column.fillna(0).astype('uint64')
 }
 
 MIGRATION = None
@@ -82,7 +90,7 @@ MISSING_SCHEMAS = {
                 'tvpv', 'ot_nat', 'ot_nat_area', 'irrigation', 'irrigation_source', 'irrigation_type', 'jpaid'],
     'properties': {
         'home_name': {
-            'type': 'string:60'  # String with max length of 60 characters
+            'type': 'string'
         },
         'slope': {
             'type': 'float'
@@ -94,19 +102,19 @@ MISSING_SCHEMAS = {
             'type': 'float'
         },
         'mines_status': {
-            'type': 'string:1'  # String with max length of 1 character
+            'type': 'string' 
         },
         'mines_year_removed': {
-            'type': 'int'
+            'type': 'uint64'
         },
         'water_protect_zone': {
-            'type': 'string:10'  # String with max length of 10 characters
+            'type': 'string' 
         },
         'natura2000': {
             'type': 'float'
         },
         'natura2000_ok': {
-            'type': 'string:20'  # String with max length of 20 characters
+            'type': 'string' 
         },
         'natura2000_pop': {
             'type': 'float'
@@ -115,37 +123,37 @@ MISSING_SCHEMAS = {
             'type': 'float'
         },
         'anc': {
-            'type': 'int'
+            'type': 'uint64'
         },
         'anc_area': {
             'type': 'float'
         },
         'rp': {
-            'type': 'int'
+            'type': 'uint64'
         },
         'sanitary_protection_zone': {
-            'type': 'string:25'  # String with max length of 25 characters
+            'type': 'string' 
         },
         'tvpv': {
-            'type': 'int'
+            'type': 'uint64'
         },
         'ot_nat': {
-            'type': 'int'
+            'type': 'uint64'
         },
         'ot_nat_area': {
             'type': 'float'
         },
         'irrigation': {
-            'type': 'int'
+            'type': 'uint64'
         },
         'irrigation_source': {
-            'type': 'int'
+            'type': 'uint64'
         },
         'irrigation_type': {
-            'type': 'int'
+            'type': 'uint64'
         },
         'jpaid': {
-            'type': 'string:13'  # String with max length of 13 characters
+            'type': 'string' 
         }
     }
 }
