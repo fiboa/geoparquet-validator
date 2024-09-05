@@ -54,6 +54,9 @@ COLUMNS = {
     'jpaid': 'jpaid',
     'geometry': 'geometry'
 }
+COLUMN_MIGRATIONS = {
+    'area': lambda column: column / 10000
+}
 
 def migrate(gdf):
     gdf['id'] = gdf.index
@@ -157,6 +160,7 @@ def convert(output_file, cache = None, **kwargs):
         ID,
         TITLE,
         DESCRIPTION,
+        column_migrations=COLUMN_MIGRATIONS,
         providers=PROVIDERS,
         missing_schemas=MISSING_SCHEMAS,
         migration=migrate,

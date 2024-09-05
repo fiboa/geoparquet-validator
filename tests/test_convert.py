@@ -14,7 +14,7 @@ def out_file():
         yield out
 
 
-@mark.parametrize('converter', ['at', 'be_vlg', 'br_ba_lem', 'de_sh', 'ec_lv', 'ec_si', 'fi', 'fr', 'nl', 'nl_crop', 'pt', 'dk'])
+@mark.parametrize('converter', ['at', 'be_vlg', 'br_ba_lem', 'de_sh', 'ec_lv', 'ec_si', 'fi', 'fr', 'hr', 'nl', 'nl_crop', 'pt', 'dk'])
 def test_converter(out_file, converter):
     path = f"tests/data-files/convert/{converter}"
     runner = CliRunner()
