@@ -50,7 +50,7 @@ LICENSES = {
     "rwanda": "CC-BY-4.0",
     "slovakia": "CC0-1.0",
     "slovenia": "CC-BY-4.0",
-    "south_africa": "CC-BY-NC-SA-4.0",
+    "southafrica": "CC-BY-NC-SA-4.0",
     "spain": "CC-BY-4.0",
     "sweden": "https://www.geodata.se/geodataportalen/srv/swe/catalog.search;jsessionid=6C2D281619D69AC2356E1BD4C1923A3A#/metadata/df439ba5-014e-44ec-86cb-ddb9e5ba306c",
     "vietnam": "CC-BY-4.0",
@@ -84,7 +84,10 @@ COLUMNS = {
 def FILE_MIGRATION(gdf, path: str, uri: str, layer: str = None):
     dataset = uri.replace("https://data.source.coop/kerner-lab/fields-of-the-world-", "").split("/")[0]
     gdf["dataset"] = dataset
-    gdf["license"] = LICENSES.get(dataset, None)
+    license = LICENSES.get(dataset, None)
+    if license is None:
+        print(f"WARNING: License for {dataset} not found")
+    gdf["license"] = license
     return gdf
 
 MISSING_SCHEMAS = {
