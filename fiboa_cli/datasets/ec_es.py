@@ -38,7 +38,7 @@ SHORT_NAME = "Estonia"
 # Title of the collection
 TITLE = "Field boundaries for Estonia"
 # Description of the collection. Can be multiline and include CommonMark.
-DESCRIPTION = """Describe the dataset here."""
+DESCRIPTION = "Geospatial Aid Application Estonia Agricultural parcels. The original dataset is provided by ARIB and obtained from the INSPIRE theme GSAA (specifically Geospatial Aid Application Estonia Agricultural parcels) through which the data layer Fields and Eco Areas (GSAA) is made available. The data comes from ARIB's database of agricultural parcels."
 
 # A list of providers that contributed to the data.
 # This should be an array of Provider Objects:
@@ -58,7 +58,7 @@ ATTRIBUTION = "© Põllumajanduse Registrite ja Informatsiooni Amet"
 
 # License of the data, either
 # 1. a SPDX license identifier (including "dl-de/by-2-0" / "dl-de/zero-2-0"), or
-LICENSE = "EC-ES-2.0"
+LICENSE = "CC BY-SA-3.0"
 # 2. a STAC Link Object with relation type "license"
 # LICENSE = {"title": "CC-BY-4.0", "href": "https://creativecommons.org/licenses/by/4.0/", "type": "text/html", "rel": "license"}
 
@@ -69,14 +69,14 @@ COLUMNS = {
     'taotlusaas' : 'Year', #Custom field
     'pollu_id' : 'pollu_id', #Fiboa core field
     'pindala_ha' : 'Area (in ha)', #Fiboa core field
-    'taotletud_' : 'Requested crop culture', #Custom field
-    'taotletu_1' : 'Requested land use', #Custom field
-    'niitmise_t' : 'Mowing detection status', #Custom field
-    'niitmise_1' : 'Mowing detection period', #Custom field
-    'viimase_mu' : 'Last edit time', #Custom field
-    'taotletu_2' : 'Requested support', #Custom field
-    'taotleja_n' : 'Name of applicant', #Custom field
-    'taotleja_r' : 'Applicants registration code', #Custom field
+    'taotletud_' : 'taotletud_', #Custom field
+    'taotletu_1' : 'taotletu_1', #Custom field
+    'niitmise_t' : 'niitmise_t', #Custom field
+    'niitmise_1' : 'niitmise_1', #Custom field
+    'viimase_mu' : 'viimase_mu', #Custom field
+    'taotletu_2' : 'taotletu_2', #Custom field
+    'taotleja_n' : 'taotleja_n', #Custom field
+    'taotleja_r' : 'taotleja_r', #Custom field
     'EC_trans_n' : 'ec:translated_name', #Hcat extension
     'EC_hcat_n' : 'ec:hcat_name', #Hcat extension
     'EC_hcat_c' : 'ec:hcat_code', #Hcat extension
@@ -124,12 +124,11 @@ FILE_MIGRATION = None
 # Schemas for the fields that are not defined in fiboa
 # Keys must be the values from the COLUMNS dict, not the keys
 MISSING_SCHEMAS = {
-    'required': ['Year', 'pollu_id', 'Area (in ha)', 
-                 'Requested crop culture', 'Requested land use', 
-                 'Mowing detection status', 'Mowing detection period', 
-                 'Last edit time', 'Requested support',
-                 'Name of applicant', 'Applicants registration code',
-                 'Area (in ha)'], # i.e. non-nullable properties
+    'required': [
+        'Year', 'pollu_id', 'Area (in ha)', 
+        'taotletud_', 'taotletu_1', 'niitmise_t', 
+        'niitmise_1', 'viimase_mu', 'taotletu_2', 
+        'taotleja_n', 'taotleja_r', 'Area (in ha)'], # i.e. non-nullable properties
     'properties': {
         'Area (in ha)': {
             'type': 'float',
@@ -142,28 +141,28 @@ MISSING_SCHEMAS = {
         'pollu_id': {
         'type': 'int64'
         },
-        'Requested crop culture': {
+        'taotletud_': {
         'type': 'string'
         },
-        'Requested land use': {
+        'taotletu_1': {
         'type': 'string'
         },
-        'Mowing detection status': {
+        'niitmise_t': {
         'type': 'string'
         },
-        'Mowing detection period': {
+        'niitmise_1': {
         'type': 'string'
         },
-        'Last edit time': {
+        'viimase_mu': {
         'type': 'string'
         },
-        'Requested support': {
+        'taotletu_2': {
         'type': 'string'
         },
-        'Name of applicant': {
+        'taotleja_n': {
         'type': 'string'
         },
-        'Applicants registration code': {
+        'taotleja_r': {
         'type': 'string'
         }
 
