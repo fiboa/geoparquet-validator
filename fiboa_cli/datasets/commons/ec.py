@@ -1,5 +1,10 @@
 def add_eurocrops(base, year = None):
-    ID = "ec" + base.ID
+    if isinstance(base, dict):
+        base = DictObject(base)
+
+    ID = base.ID
+    if not base.ID.startswith("ec_"):
+        ID = "ec_" + ID
 
     SUFFIX = " - Eurocrops"
     if year is not None:
@@ -40,6 +45,10 @@ In the data you'll find this as additional attributes:
         'EC_hcat_c': 'ec:hcat_code'
     }
 
-    LICENSE = "CC-BY-4.0"
+    LICENSE = "CC-BY-SA-4.0"
 
     return ID, SHORT_NAME, TITLE, DESCRIPTION, PROVIDERS, EXTENSIONS, COLUMNS, LICENSE
+
+class DictObject(object):
+    def __init__(self, dict_):
+        self.__dict__.update(dict_)
