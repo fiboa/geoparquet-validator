@@ -49,7 +49,7 @@ def publish(dataset, directory, cache, source_coop_extension):
     parquet_file = os.path.join(directory, f"{file_name}.parquet")
     source_coop_url = f"https://beta.source.coop/fiboa/{source_coop_extension}/"
 
-    assert requests.get(f"https://api.source.coop/repositories/fiboa/{source_coop_extension}").status_code == 200, \
+    assert requests.get(f"https://source.coop/api/v1/repositories/fiboa/{source_coop_extension}").status_code == 200, \
         f"Missing repo at {source_coop_url}"
 
     collection_file = os.path.join(directory, "collection.json")
@@ -106,13 +106,14 @@ def publish(dataset, directory, cache, source_coop_extension):
         os.remove("geo.json")
 
     log(f"Uploading to aws", "info")
-    if not os.environ.get("AWS_SESSION_TOKEN"):
-        log(f"Get your credentials at {source_coop_url}download/", "info")
-        log("  Then press 'ACCESS DATA',\n  and click 'GENERATE CREDENTIALS',", "info")
-        log("  Under 'Usage example' there's a code block with EXPORT commands,\n"
-            "  copy-paste this block in this terminal and re-run this command)", "info")
-
+    if not os.environ.get("AWS_SECRET_ACCESS_KEY"):
+        log(f"Get your credentials at {source_coop_url}manage/", "info")
+        log("  Then press 'ACCESS DATA',\n  and click 'Create API Key',", "info")
+        log("  Run export AWS_DEFAULT_REGION=us-west-2 AWS_ACCESS_KEY_ID=<> AWS_SECRET_ACCESS_KEY=<>\n"
+            "  where you copy-past the access key and secret", "info")
         log("Please set AWS_ env vars from source_coop", "error")
         sys.exit(1)
+
+    assert os.environ.get("AWS_ENDPOINT_URL") == "https://data.source.coop", "Missing AWS_ENDPOINT_URL env var"
     check_command("aws")
-    exc(f"aws s3 sync {directory} s3://us-west-2.opendata.source.coop/fiboa/{source_coop_extension}/")
+    exc(f"aws s3 sync {directory} s3://fiboa/{source_coop_extension}/")
