@@ -386,8 +386,15 @@ def download_files(uris, cache_folder = None):
 
         if must_extract:
             if zipfile.is_zipfile(cache_file):
-                with zipfile.ZipFile(cache_file, 'r') as zip_file:
-                    zip_file.extractall(zip_folder)
+                try:
+                    with zipfile.ZipFile(cache_file, 'r') as zip_file:
+                        zip_file.extractall(zip_folder)
+                except NotImplementedError as e:
+                    if str(e) != "That compression method is not supported":
+                        raise
+                    import zipfile_deflate64
+                    with zipfile_deflate64.ZipFile(cache_file, 'r') as zip_file:
+                        zip_file.extractall(zip_folder)
             elif py7zr.is_7zfile(cache_file):
                 with py7zr.SevenZipFile(cache_file, 'r') as sz_file:
                     sz_file.extractall(zip_folder)

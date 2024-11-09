@@ -1,6 +1,4 @@
-import os
-from ..util import log
-import geopandas
+from ..convert_gml import gml_assure_columns
 
 from ..convert_utils import convert as convert_
 
@@ -72,27 +70,9 @@ def migration(gdf):
 
 def convert(output_file, cache = None, **kwargs):
     def file_migration(data, path, uri, layer):
-        # crop_name is modeled as an attribute, and not automatically detected by the GML driver
-        # Here we patch the GFS file, a more elegant solution is preferred
-        if "crop_name" not in data.columns:
-            log("Patching generated GFS file", "info")
-            assert path.endswith(".gml"), "Expected a gml file"
-            gfs_file = path[:-4] + ".gfs"
-            assert os.path.exists(gfs_file), "Expected a local, generated GFS file by OGR-GML driver"
-            # Fix GFS template file
-            with open(gfs_file, mode='r') as file:
-                gfs_xml = file.read()
-
-            assert "crop_name" not in gfs_xml, "Expected unpatched gfs file"
-            lines = gfs_xml.splitlines()
-            lines.insert(-2, "<PropertyDefn><Name>crop_name</Name><ElementPath>specificLandUse@title</ElementPath><Type>String</Type><Width>255</Width></PropertyDefn>")
-            lines.insert(-2, "<PropertyDefn><Name>crop_code</Name><ElementPath>specificLandUse@href</ElementPath><Type>String</Type><Width>255</Width></PropertyDefn>")
-
-            with open(gfs_file, mode='w') as file:
-                file.write("\n".join(lines))
-
-            data = geopandas.read_file(path, layer=layer)
-        return data
+        return gml_assure_columns(data, path, uri, layer,
+                                  crop_name={"ElementPath": "specificLandUse@title", "Type": "String", "Width": 255},
+                                  crop_code={"ElementPath": "specificLandUse@href", "Type": "String", "Width": 255})
 
     convert_(
         output_file,
