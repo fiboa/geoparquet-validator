@@ -1,11 +1,15 @@
+from datetime import date
 import os
 import sys
 import json
+from functools import cache
+
 import requests
+import re
 
 from .util import log
-from fiboa_cli import list_all_converter_ids
-from fiboa_cli.convert import convert
+from fiboa_cli import list_all_converter_ids, version
+from fiboa_cli.convert import convert, read_converter
 from fiboa_cli.validate import validate
 
 STAC_EXTENSION = "https://stac-extensions.github.io/web-map-links/v1.2.0/schema.json"
@@ -21,6 +25,71 @@ def check_command(cmd, name=None):
         sys.exit(1)
 
 
+@cache
+def get_data_survey(dataset):
+    base = dataset.replace("_", "-").upper()
+    data_survey = f"https://raw.githubusercontent.com/fiboa/data-survey/refs/heads/main/data/{base}.md"
+    data = requests.get(data_survey).text
+    return dict(re.findall(r"- \*\*(.+?):\*\* (.+?)\n", data))
+
+
+def readme_attribute_table(stac_data):
+    cols = (
+        [["Property", "**Data Type**", "Description"]] +
+        [[s['name'], re.search(r"\w+", s["type"])[0], ""] for s in stac_data["assets"]["data"]["table:columns"] if s['name'] != 'geometry']
+    )
+    widths = [max(len(c[i]) for c in cols) for i in range(3)]
+    aligned_cols = [[f" {c:<{w}} " for c, w in zip(row, widths)] for row in cols]
+    aligned_cols.insert(1, ["-" * (w+2) for w in widths])
+    return "\n".join(["|" + "|".join(cols) + "|" for cols in aligned_cols])
+
+
+def make_license(dataset):
+    props = get_data_survey(dataset)
+    text = ""
+    if "license" in props:
+        text += props["license"] + "\n\n"
+    converter = read_converter(dataset)
+    if hasattr(converter, "LICENSE"):
+        text += converter.LICENSE["title"]
+    return text
+
+
+def make_readme(dataset, source_coop_url, file_name, stac):
+    converter = read_converter(dataset)
+    stac_data = json.load(open(stac))
+    count = stac_data["assets"]["data"]["table:row_count"]
+    columns = readme_attribute_table(stac_data)
+    props = get_data_survey(dataset)
+
+    return f"""# Field boundaries for {converter.SHORT_NAME}
+
+Provides {count} official field boundaries from {converter.SHORT_NAME}.
+It has been converted to a fiboa GeoParquet file from data obtained from {props['Data Provider (Legal Entity)']}.
+
+- **Source Data Provider:** [{props['Data Provider (Legal Entity)']}]({props['Homepage']})
+- **Converted by:** {props['Submitter (Affiliation)']}
+- **License:** {props['License']}
+- **Projection:** {props['Projection']}
+
+---
+
+- **[Download the data as fiboa GeoParquet]({source_coop_url}/{file_name}.parquet)
+- [STAC Browser](https://radiantearth.github.io/stac-browser/#/external/data.source.coop/{dataset}/stac/collection.json)
+- [STAC Collection](https://data.source.coop/fiboa/{dataset}/stac/collection.json)
+- [PMTiles](https://data.source.coop/fiboa/{source_coop_url}/{file_name}.pmtiles)
+
+## Columns
+
+{columns}
+
+## Lineage
+
+- Data downloaded on {date.today()} from {next(iter(converter.SOURCES))} .
+- Converted to GeoParquet using [fiboa-cli](https://github.com/fiboa/cli), version {version.__version__}
+"""
+
+
 def publish(dataset, directory, cache, source_coop_extension):
     """
     Implement https://github.com/fiboa/data/blob/main/HOWTO.md#each-time-you-update-the-dataset
@@ -32,11 +101,6 @@ def publish(dataset, directory, cache, source_coop_extension):
     """
     assert dataset in list_all_converter_ids()
     os.makedirs(directory, exist_ok=True)
-
-    for key in ("README.md", "LICENSE.txt"):
-        path = os.path.join(directory, key)
-        if not os.path.exists(path):
-            raise FileNotFoundError(f"Please create {path}")
 
     parent = os.path.dirname(directory)
     os.chdir(parent)
@@ -92,6 +156,20 @@ def publish(dataset, directory, cache, source_coop_extension):
         with open(stac_target, "w", encoding="utf-8") as f:
             json.dump(data, f)
         os.remove(collection_file)
+
+    for required in ("README.md", "LICENSE.txt"):
+        path = os.path.join(directory, required)
+        if not os.path.exists(path):
+            log(f"Missing {required}. Generating at {path}", "warning")
+            if required == "README.md":
+                text = make_readme(dataset, source_coop_url=source_coop_url, file_name=file_name, stac=stac_target)
+            else:
+                text = make_license(dataset, source_coop_url=source_coop_url, file_name=file_name, stac=stac_target)
+            with open(path, "w") as f:
+                f.write(text)
+            log(f"Please complete the {path} before continuing", "warning")
+            sys.exit(1)
+
 
     pm_file = os.path.join(directory, f"{file_name}.pmtiles")
     if not os.path.exists(pm_file):
