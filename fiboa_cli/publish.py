@@ -29,8 +29,9 @@ def check_command(cmd, name=None):
 def get_data_survey(dataset):
     base = dataset.replace("_", "-").upper()
     data_survey = f"https://raw.githubusercontent.com/fiboa/data-survey/refs/heads/main/data/{base}.md"
-    data = requests.get(data_survey).text
-    return dict(re.findall(r"- \*\*(.+?):\*\* (.+?)\n", data))
+    response = requests.get(data_survey)
+    assert response.ok, f"Missing data survey {base}.md at {data_survey}. Can not auto-generate file"
+    return dict(re.findall(r"- \*\*(.+?):\*\* (.+?)\n", response.text))
 
 
 def readme_attribute_table(stac_data):
@@ -44,7 +45,7 @@ def readme_attribute_table(stac_data):
     return "\n".join(["|" + "|".join(cols) + "|" for cols in aligned_cols])
 
 
-def make_license(dataset):
+def make_license(dataset, **kwargs):
     props = get_data_survey(dataset)
     text = ""
     if "license" in props:
