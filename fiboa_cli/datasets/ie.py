@@ -23,12 +23,12 @@ PROVIDERS = [
     {
         "name": "Ireland Department of Agriculture, Food and the Marine",
         "url": "https://inspire.geohive.ie/geoportal/",
-        "roles": ["licensor", "distributor"]
+        "roles": ['producer', 'licensor']
     }
 ]
 ATTRIBUTION = "Ireland Department of Agriculture, Food and the Marine"
 LICENSE = {
-    "title": "This layer is published under the terms of the license Creative Commons Attribution 4.0 International (CC BY 4.0)",
+    "title": "This layer is published under the terms of the license Creative Commons Attribution 4.0 International (CC-BY-4.0)",
     "href": "https://creativecommons.org/licenses/by/4.0/",
     "type": "text/html",
     "rel": "license"
