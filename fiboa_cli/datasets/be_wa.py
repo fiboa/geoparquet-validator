@@ -60,15 +60,16 @@ MISSING_SCHEMAS = {
     }
 }
 
-def migration(gdf):
+ADD_COLUMNS = {
+    "determination_datetime": "2022-01-01T00:00:00Z"
+}
+
+COLUMN_MIGRATIONS = {
     # Extract last digits from crop_code, example crop_code is:
     # http://geoservices.wallonie.be/inspire/atom/LU_LandUseClassification_LPIS.xml?code=#LandUseClass.lpis.cropCategory.6
-    gdf['crop_code'] = gdf['crop_code'].str.extract(r'\.(\d+)$', expand=False)
-    gdf['crop_name'] = gdf['crop_name'].str.strip()  # .str.replace("  ", " ").str.replace("( ", "(")
-    gdf["determination_datetime"] = "2022-01-01T00:00:00Z"
-    gdf["id"] = gdf.index
-    return gdf
-
+    "crop_code": lambda col: col.str.extract(r'\.(\d+)$', expand=False),
+    "crop_name": lambda col: col.str.strip()  # .str.replace("  ", " ").str.replace("( ", "(")
+}
 
 def convert(output_file, cache = None, **kwargs):
     def file_migration(data, path, uri, layer):
@@ -104,11 +105,13 @@ def convert(output_file, cache = None, **kwargs):
         DESCRIPTION,
         providers=PROVIDERS,
         missing_schemas=MISSING_SCHEMAS,
-        migration=migration,
         attribution=ATTRIBUTION,
+        column_additions=ADD_COLUMNS,
+        column_migrations=COLUMN_MIGRATIONS,
         license=LICENSE,
         layer_filter=lambda layer, uri: layer == LAYER,
         file_migration=file_migration,
         explode_multipolygon=True,
+        index_as_id=True,
         **kwargs
     )

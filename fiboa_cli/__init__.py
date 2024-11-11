@@ -1,5 +1,3 @@
-import traceback
-
 import click
 import json
 import pandas as pd
@@ -397,7 +395,7 @@ def convert(dataset, out, input, cache, source_coop, collection, compression, ge
     try:
         convert_(dataset, out, input, cache, source_coop, collection, compression, geoparquet1, mapping_file)
     except Exception as e:
-        log(traceback.format_exc(), "error")
+        log(e, "error")
         sys.exit(1)
 
 

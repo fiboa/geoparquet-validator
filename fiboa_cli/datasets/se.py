@@ -30,8 +30,12 @@ COLUMNS = {
     "faststalld": "area",
     "grdkod_mar": "crop_code",
     "crop_name": "crop_name",
+    "arslager": "determination_datetime",
 }
-
+COLUMN_MIGRATIONS = {
+    # Make year (1st january) from column "arslager"
+    "arslager": lambda col: pd.to_datetime(col, format='%Y')
+}
 
 MISSING_SCHEMAS = {
     "properties": {
@@ -50,8 +54,6 @@ def convert(output_file, cache = None, mapping_file=None, **kwargs):
     original_name_mapping = {int(e["original_code"]): e["original_name"] for e in ec_mapping}
 
     def migrate(gdf):
-        # Make year (1st january) from column "arslager"
-        gdf['determination_datetime'] = pd.to_datetime(gdf['arslager'], format='%Y')
         gdf['id'] = gdf['blockid'] + "_" + gdf['skiftesbet']
         gdf['crop_name'] = gdf['grdkod_mar'].map(original_name_mapping)
         return gdf
@@ -66,6 +68,7 @@ def convert(output_file, cache = None, mapping_file=None, **kwargs):
         DESCRIPTION,
         providers=PROVIDERS,
         missing_schemas=MISSING_SCHEMAS,
+        column_migrations=COLUMN_MIGRATIONS,
         migration=migrate,
         attribution=ATTRIBUTION,
         license=LICENSE,

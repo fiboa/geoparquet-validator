@@ -26,15 +26,18 @@ COLUMNS = {
     "PERUSLOHKOTUNNUS": "id",
     "LOHKONUMERO": "block_id",
     "area": "area",
+    "VUOSI": "determination_datetime",
     "KASVIKOODI": "crop_code",
     "KASVIKOODI_SELITE_FI": "crop_name",
 }
-
+COLUMN_MIGRATIONS = {
+    # Make year (1st january) from column "VUOSI"
+    "VUOSI": lambda col: pd.to_datetime(col, format='%Y'),
+    # Todo: generate a generic solution for making geometries valid
+    "geometry": lambda col: col.make_valid()
+}
 
 def migrate(gdf):
-    # Make year (1st january) from column "VUOSI"
-    gdf['determination_datetime'] = pd.to_datetime(gdf['VUOSI'], format='%Y')
-    gdf['geometry'] = gdf["geometry"].make_valid()
     gdf['area'] = np.where(gdf['PINTA_ALA'] == 0, gdf.area / 10000, gdf['PINTA_ALA'])
     return gdf
 
@@ -64,6 +67,7 @@ def convert(output_file, cache = None, **kwargs):
         DESCRIPTION,
         providers=PROVIDERS,
         missing_schemas=MISSING_SCHEMAS,
+        column_migrations=COLUMN_MIGRATIONS,
         migration=migrate,
         attribution=ATTRIBUTION,
         license=LICENSE,

@@ -39,21 +39,24 @@ COLUMNS = {
     'category': 'category',
     'gewascode': 'crop_code',
     'gewas': 'crop_name',
-    'determination_datetime': 'determination_datetime'
+    'jaar': 'determination_datetime'
 }
 
 COLUMN_FILTERS = {
     # category = "Grasland" | "Bouwland" | "Sloot" | "Landschapselement"
-    "category": lambda col: col.isin(["Grasland", "Bouwland"])
+    'category': lambda col: col.isin(["Grasland", "Bouwland"])
+}
+
+COLUMN_MIGRATIONS = {
+    # Add 15th of may to original "year" (jaar) column
+    'jaar': lambda col: pd.to_datetime(col, format='%Y') + pd.DateOffset(months=4, days=14)
 }
 
 
 def migrate(gdf):
     # Projection is in CRS 28992 (RD New), this is the area calculation method of the source organization
+    # todo: remove in favor of generic solution for area calculation
     gdf['area'] = gdf.area / 10000
-    # Add 15th of may to original "year" (jaar) column
-    gdf['determination_datetime'] = pd.to_datetime(gdf['jaar'], format='%Y') + pd.DateOffset(months=4, days=14)
-    gdf['id'] = gdf.index
     return gdf
 
 
@@ -87,8 +90,10 @@ def convert(output_file, cache = None, **kwargs):
         providers=PROVIDERS,
         missing_schemas=MISSING_SCHEMAS,
         column_filters=COLUMN_FILTERS,
+        column_migrations=COLUMN_MIGRATIONS,
         migration=MIGRATION,
         attribution=ATTRIBUTION,
         license=LICENSE,
+        index_as_id=True,
         **kwargs
     )

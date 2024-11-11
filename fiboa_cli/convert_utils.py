@@ -39,6 +39,7 @@ def convert(
         compression = None,
         geoparquet1 = False,
         explode_multipolygon = False,
+        index_as_id = False,
         **kwargs):
     """
     Converts a field boundary datasets to fiboa.
@@ -103,6 +104,9 @@ def convert(
     pd.set_option('display.max_columns', None)
     pd.set_option('display.max_rows', None)
     print(gdf.head())
+
+    if index_as_id:
+        gdf["id"] = gdf.index
 
     # 1. Run global migration
     has_migration = callable(migration)

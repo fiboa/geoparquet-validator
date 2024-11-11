@@ -58,10 +58,6 @@ COLUMN_MIGRATIONS = {
     'area': lambda column: column / 10000
 }
 
-def migrate(gdf):
-    gdf['id'] = gdf.index
-    return gdf
-
 MISSING_SCHEMAS = {
     'required': [
         'mines_status',
@@ -163,8 +159,8 @@ def convert(output_file, cache = None, **kwargs):
         column_migrations=COLUMN_MIGRATIONS,
         providers=PROVIDERS,
         missing_schemas=MISSING_SCHEMAS,
-        migration=migrate,
         attribution=ATTRIBUTION,
         license=LICENSE,
+        index_as_id=True,
         **kwargs
     )

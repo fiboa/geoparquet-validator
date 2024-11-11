@@ -51,8 +51,8 @@ COLUMN_FILTERS = {
 
 def migrate(gdf):
     # Projection is in CRS 28992 (RD New), this is the area calculation method of the source organization
+    # todo: remove in favor of generic solution for area calculation
     gdf['area'] = gdf.area / 10000
-    gdf['id'] = gdf.index
     return gdf
 
 MISSING_SCHEMAS = {
@@ -81,8 +81,6 @@ def convert(output_file, cache = None, **kwargs):
         attribution=ATTRIBUTION,
         license=LICENSE,
         explode_multipolygon=True,
-        # fix_as_index allow us to use the fid column
-        # see https://github.com/geopandas/geopandas/issues/2794
-        fid_as_index=True,
+        index_as_id=True,
         **kwargs
     )

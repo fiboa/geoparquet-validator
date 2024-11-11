@@ -17,7 +17,7 @@ COLUMNS = COLUMNS | {
     "area": "area",
     "objectid": "id"
 }
-del COLUMNS["category"], COLUMNS["id"], COLUMNS["determination_datetime"]
+del COLUMNS["category"], COLUMNS["id"], COLUMNS["jaar"]
 
 COLUMN_MIGRATIONS = {
     "area": lambda col: col / 10000,
