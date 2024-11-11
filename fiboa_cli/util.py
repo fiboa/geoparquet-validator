@@ -20,6 +20,7 @@ from typing import Union
 from urllib.request import Request, urlopen
 
 from .const import LOG_STATUS_COLOR, SUPPORTED_PROTOCOLS, STAC_COLLECTION_SCHEMA, GEOPARQUET_SCHEMA
+from .version import fiboa_version
 
 file_cache = {}
 
@@ -87,7 +88,7 @@ def load_parquet_data(uri: str, nrows = None, columns = None) -> pd.DataFrame:
 def load_fiboa_schema(config):
     """Load fiboa schema"""
     schema_url = config.get('schema')
-    schema_version = config.get('fiboa_version')
+    schema_version = config.get('fiboa_version', fiboa_version)
     if not schema_url:
         schema_url = f"https://fiboa.github.io/specification/v{schema_version}/schema.yaml"
     return load_file(schema_url)

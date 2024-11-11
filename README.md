@@ -41,6 +41,7 @@ fiboa CLI supports various commands to work with the files:
     - [Create fiboa GeoParquet from GeoJSON](#create-fiboa-geoparquet-from-geojson)
     - [Create fiboa GeoJSON from GeoParquet](#create-fiboa-geojson-from-geoparquet)
     - [Inspect fiboa GeoParquet file](#inspect-fiboa-geoparquet-file)
+    - [Merge fiboa GeoParquet files](#merge-fiboa-geoparquet-files)
     - [Create JSON Schema from fiboa Schema](#create-json-schema-from-fiboa-schema)
     - [Validate a fiboa Schema](#validate-a-fiboa-schema)
     - [Update an extension template with new names](#update-an-extension-template-with-new-names)
@@ -95,6 +96,14 @@ To look into a fiboa GeoParquet file to get a rough understanding of the content
 - `fiboa describe example.parquet`
 
 Check `fiboa describe --help` for more details.
+
+### Merge fiboa GeoParquet files
+
+Merges multiple fiboa datasets to a combined fiboa dataset:
+
+- `fiboa merge ec_ee.parquet ec_lv.parquet -o merged.parquet -e https://fiboa.github.io/hcat-extension/v0.1.0/schema.yaml -i ec:hcat_name -i ec:hcat_code -i ec:translated_name`
+
+Check `fiboa merge --help` for more details.
 
 ### Create JSON Schema from fiboa Schema
 

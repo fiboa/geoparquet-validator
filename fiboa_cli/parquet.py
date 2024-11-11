@@ -55,6 +55,9 @@ def create_parquet(data, columns, collection, output_file, config, missing_schem
                 if pa_type is not None:
                     log(f"{name}: No schema defined, converting {pd_type} to nullable {pa_type}", "warning")
                     field = get_pyarrow_field(name, pa_type = pa_type)
+                else:
+                    log(f"{name}: Skipped - pandas type can't be converted to pyarrow type", "warning")
+                    continue
             except Exception as e:
                 log(f"{name}: Skipped - {e}", "warning")
                 continue

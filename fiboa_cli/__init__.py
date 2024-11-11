@@ -1,22 +1,27 @@
-import traceback
-
-import click
 import json
-import pandas as pd
 import os
 import sys
 import time
 
-from .convert import convert as convert_, list_all_converter_ids, list_all_converters
-from .create_geoparquet import create_geoparquet as create_geoparquet_
+import click
+import pandas as pd
+
+from .convert import convert as convert_
+from .convert import list_all_converter_ids, list_all_converters
 from .create_geojson import create_geojson as create_geojson_
+from .create_geoparquet import create_geoparquet as create_geoparquet_
 from .describe import describe as describe_
+from .merge import merge as merge_, DEFAULT_COLUMNS, DEFAULT_CRS
 from .jsonschema import jsonschema as jsonschema_
 from .rename_extension import rename_extension as rename_extension_
+from .util import (check_ext_schema_for_cli, log, parse_converter_input_files,
+                   valid_file_for_cli, valid_file_for_cli_with_ext,
+                   valid_files_folders_for_cli, valid_folder_for_cli)
 from .validate import validate as validate_
 from .validate_schema import validate_schema as validate_schema_
-from .version import __version__, fiboa_version as fiboa_version_
-from .util import log, check_ext_schema_for_cli, parse_converter_input_files, valid_file_for_cli, valid_file_for_cli_with_ext, valid_files_folders_for_cli, valid_folder_for_cli
+from .version import __version__
+from .version import fiboa_version as fiboa_version_
+
 
 @click.group()
 @click.version_option(version=__version__)
@@ -190,7 +195,7 @@ def validate_schema(files, metaschema):
 @click.option(
     '--out', '-o',
     type=click.Path(exists=False),
-    help='File to write the file to.',
+    help='Path to write the file to.',
     required=True
 )
 @click.option(
@@ -296,7 +301,7 @@ def create_geojson(file, out, features = False, num = None, indent = None):
 @click.option(
     '--out', '-o',
     type=click.Path(exists=False),
-    help='File to write the file to. If not provided, prints the file to the STDOUT.',
+    help='Path to write the file to. If not provided, prints the file to the STDOUT.',
     default=None
 )
 @click.option(
@@ -339,7 +344,7 @@ def jsonschema(schema, out, fiboa_version, id_):
 @click.option(
     '--out', '-o',
     type=click.Path(exists=False),
-    help='File to write the GeoParquet file to.',
+    help='Path to write the GeoParquet file to.',
     required=True
 )
 @click.option(
@@ -397,7 +402,7 @@ def convert(dataset, out, input, cache, source_coop, collection, compression, ge
     try:
         convert_(dataset, out, input, cache, source_coop, collection, compression, geoparquet1, mapping_file)
     except Exception as e:
-        log(traceback.format_exc(), "error")
+        log(e, "error")
         sys.exit(1)
 
 
@@ -491,6 +496,74 @@ def rename_extension(folder, title, slug, org = "fiboa", prefix = None):
         sys.exit(1)
 
 
+## MERGE
+@click.command()
+@click.argument('datasets', nargs=-1, type=click.Path(exists=True))
+@click.option(
+    '--out', '-o',
+    type=click.Path(exists=False),
+    help='Path to write the GeoParquet file to.',
+    required=True,
+)
+@click.option(
+    '--crs',
+    type=click.STRING,
+    help='Coordinate Reference System (CRS) to use for the GeoParquet file.',
+    show_default=True,
+    default=DEFAULT_CRS,
+)
+@click.option(
+    '--include', '-i',
+    type=click.STRING,
+    multiple=True,
+    help='Additional column names to include.',
+    show_default=True,
+    default=DEFAULT_COLUMNS,
+)
+@click.option(
+    '--exclude', '-e',
+    type=click.STRING,
+    multiple=True,
+    help='Default column names to exclude.',
+    default=[]
+)
+@click.option(
+    '--extension', '-x',
+    type=click.STRING,
+    multiple=True,
+    help='Extensions to include.',
+    default=[]
+)
+@click.option(
+    '--compression', '-pc',
+    type=click.Choice(["brotli", "gzip", "lz4", "snappy", "zstd", "none"]),
+    help='Compression method for the Parquet file.',
+    show_default=True,
+    default="brotli"
+)
+@click.option(
+    '--geoparquet1', '-gp1',
+    is_flag=True,
+    type=click.BOOL,
+    help='Enforces generating a GeoParquet 1.0 file bounding box. Defaults to GeoParquet 1.1 with bounding box.',
+    default=False
+)
+def merge(datasets, out, crs, include, exclude, extension, compression, geoparquet1):
+    """
+    Merges multiple fiboa datasets to a combined fiboa dataset.
+
+    This simply appends the datasets to each other.
+    It does not check for duplicates or other constraints.
+    It adds a collection column to discriminate the source of the rows.
+    """
+    log(f"fiboa CLI {__version__} - Merge datasets\n", "success")
+    try:
+        merge_(datasets, out, crs, include, exclude, extension, compression, geoparquet1)
+    except Exception as e:
+        log(e, "error")
+        sys.exit(1)
+
+
 cli.add_command(describe)
 cli.add_command(validate)
 cli.add_command(validate_schema)
@@ -500,6 +573,7 @@ cli.add_command(jsonschema)
 cli.add_command(convert)
 cli.add_command(converters)
 cli.add_command(rename_extension)
+cli.add_command(merge)
 
 if __name__ == '__main__':
     cli()
