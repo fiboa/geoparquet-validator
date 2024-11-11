@@ -3,6 +3,7 @@ from geopandas._compat import import_optional_dependency
 from fiboa_cli import merge, validate
 from click.testing import CliRunner
 from glob import glob
+import pyarrow.parquet as pq
 
 """
 Create input files with:
@@ -23,12 +24,9 @@ def test_converter(tmp_file):
     result = runner.invoke(validate, [tmp_file.name, '--data'])
     assert result.exit_code == 0, result.output
 
-    parquet = import_optional_dependency(
-        "pyarrow.parquet", extra="pyarrow is required for Parquet support."
-    )
-    data = parquet.read_table(tmp_file.name)
+    data = pq.read_table(tmp_file.name)
     assert data.num_rows == 112
 
-    fields = {f.name for f in parquet.read_table(tmp_file.name).schema}
+    fields = {f.name for f in pq.read_table(tmp_file.name).schema}
     assert {'area', 'determination_datetime', 'id', 'geometry'}.issubset(fields)
 
