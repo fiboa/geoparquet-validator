@@ -28,16 +28,14 @@ PROVIDERS = [
     }
 ]
 ATTRIBUTION = "Luxembourg ministry of Agriculture"
-LICENSE = {
-    "title": "This layer is published under the terms of the license Creative Commons Attribution 4.0 International (CC BY 4.0)",
-    "href": "https://creativecommons.org/licenses/by/4.0/",
-    "type": "text/html",
-    "rel": "license"
-}
+LICENSE = "CC-BY-4.0"
 
+EXTENSIONS = [
+    "https://fiboa.github.io/flik-extension/v0.1.0/schema.yaml"
+]
 COLUMNS = {
     "geometry": "geometry",
-    "FLIK": "id",
+    'FLIK': ['id', 'flik'], # make flik id a dedicated column to align with NRW etc.
     "determination_datetime": "determination_datetime",
 }
 
@@ -52,6 +50,7 @@ def convert(output_file, cache = None, **kwargs):
         TITLE,
         DESCRIPTION,
         providers=PROVIDERS,
+        extensions=EXTENSIONS,
         attribution=ATTRIBUTION,
         license=LICENSE,
         **kwargs
