@@ -9,15 +9,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Converter for Croatia (`hr`)
+- Merge command: `fiboa merge`
+- Converter for Croatia
 - Converter for Germany, Mecklenburg-Western Pomerania
 - Converter for Germany, Saarland
 - Converter for Germany, Saxony
 - Converter for Estonia (EuroCrops)
+- Converter for Sweden
+- Converter for Luxembourg
+- Converter for Ireland
 
 ### Changed
 
 - `fiboa convert`: Default compression changed from `zstd` to `brotli`
+
+### Fixed
+
+- Datatype conversion from pandas to pyarrow fixed
 
 ## [v0.7.0] - 2024-08-24
 

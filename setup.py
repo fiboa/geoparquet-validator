@@ -39,6 +39,9 @@ setup(
         # 'nl': [
         #     "pyogrio"
         # ]
+        "ie": [
+            "zipfile-deflate64"
+        ]
     },
     packages=find_packages(),
     package_data={

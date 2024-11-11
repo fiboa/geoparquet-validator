@@ -170,9 +170,10 @@ def get_pyarrow_type_for_geopandas(dtype):
     """
     geopandas datatypes to pyarrow datatypes
     """
+    dtype = dtype.lower()
     if dtype == "bool":
         return pa.bool_()
-    elif dtype == "string" or dtype == "|S0" or dtype == "<U0":
+    elif dtype == "string" or dtype == "|s0" or dtype == "<u0":
         return pa.string()
     elif dtype == "float128" or dtype == "record" or dtype == "timedelta64" or dtype.startswith("complex"): # complex128/256/512
         raise Exception(f"Unsupported data type: {dtype}")
