@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- Merge command: `fiboa merge`
 - Converter for Croatia
 - Converter for Germany, Mecklenburg-Western Pomerania
 - Converter for Germany, Saarland
@@ -16,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for Estonia (EuroCrops)
 - Converter for Sweden
 - Converter for Luxembourg
-- Merge command: `fiboa merge`
+- Converter for Ireland
 
 ### Changed
 
