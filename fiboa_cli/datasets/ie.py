@@ -1,9 +1,4 @@
-import os
-
 from ..convert_gml import gml_assure_columns
-from ..util import log
-import geopandas
-
 from ..convert_utils import convert as convert_
 
 SOURCES = {
@@ -27,13 +22,7 @@ PROVIDERS = [
     }
 ]
 ATTRIBUTION = "Ireland Department of Agriculture, Food and the Marine"
-LICENSE = {
-    "title": "This layer is published under the terms of the license Creative Commons Attribution 4.0 International (CC-BY-4.0)",
-    "href": "https://creativecommons.org/licenses/by/4.0/",
-    "type": "text/html",
-    "rel": "license"
-}
-
+LICENSE = "CC-BY-4.0"
 COLUMNS = {
     "geometry": "geometry",
     "crop_name": "crop_name",
@@ -51,8 +40,9 @@ MISSING_SCHEMAS = {
 
 
 def migration(gdf):
+    # crop_name can be multiple: "crop1, crop2, crop3". We only read the main crop (first).
     gdf['crop_name'] = gdf['crop_name'].str.split(', ').str.get(0)
-    gdf = gdf[gdf['crop_name'] != 'Void']
+    gdf = gdf[gdf['crop_name'] != 'Void']  # Exclude non-agriculture fields
     gdf["determination_datetime"] = gdf["observationDate"].str.replace("+01:00", "T00:00:00Z")
     return gdf
 

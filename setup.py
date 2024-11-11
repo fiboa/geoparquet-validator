@@ -40,7 +40,7 @@ setup(
         #     "pyogrio"
         # ]
         "ie": [
-            "zipfile_deflate64"
+            "zipfile-deflate64"
         ]
     },
     packages=find_packages(),
