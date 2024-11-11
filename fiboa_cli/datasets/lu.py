@@ -1,15 +1,8 @@
-import os
-
-from ..convert_gml import gml_assure_columns
-from ..util import log
-import geopandas
-
 from ..convert_utils import convert as convert_
 
 SOURCES = {
     "https://data.public.lu/fr/datasets/r/b4ae6690-7e4c-4454-8b60-9fa33ba6a61b": "lu.zip"
 }
-# SOURCES = "https://download.data.public.lu/resources/referentiel-des-parcelles-flik/20240126-145117/20240111-parcellesreference.zip"
 
 ID = "lu"
 SHORT_NAME = "Luxembourg"
