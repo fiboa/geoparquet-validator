@@ -114,7 +114,7 @@ def publish(dataset, directory, cache, source_coop_extension):
     file_name = source_coop_extension.replace("-", "_")  # not sure if we want this
 
     parquet_file = os.path.join(directory, f"{file_name}.parquet")
-    source_coop_url = f"https://beta.source.coop/fiboa/{source_coop_extension}/"
+    source_coop_url = f"https://source.coop/fiboa/{source_coop_extension}/"
 
     assert requests.get(f"https://source.coop/api/v1/repositories/fiboa/{source_coop_extension}").status_code == 200, \
         f"Missing repo at {source_coop_url}"
