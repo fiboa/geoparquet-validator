@@ -2,7 +2,7 @@ from ..convert_utils import convert as convert_
 
 
 SOURCES = "https://zenodo.org/records/11060871/files/mapped_fields_final.parquet?download=1"
-ID = "lacuna_labels"
+ID = "lacuna"
 SHORT_NAME = "Lacuna Labels"
 TITLE = "A region-wide, multi-year set of crop field boundary labels for Africa"
 DESCRIPTION = """
