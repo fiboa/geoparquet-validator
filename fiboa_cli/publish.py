@@ -77,7 +77,7 @@ It has been converted to a fiboa GeoParquet file from data obtained from {props[
 
 ---
 
-- **[Download the data as fiboa GeoParquet]({source_coop_url}/{file_name}.parquet)
+- [Download the data as fiboa GeoParquet]({source_coop_url}/{file_name}.parquet)
 - [STAC Browser](https://radiantearth.github.io/stac-browser/#/external/data.source.coop/{source_coop_extension}/stac/collection.json)
 - [STAC Collection](https://data.source.coop/fiboa/{source_coop_extension}/stac/collection.json)
 - [PMTiles](https://data.source.coop/fiboa/{source_coop_extension}/{file_name}.pmtiles)
@@ -97,7 +97,7 @@ def publish(dataset, directory, cache, source_coop_extension):
     """
     Implement https://github.com/fiboa/data/blob/main/HOWTO.md#each-time-you-update-the-dataset
 
-    You need GDAL 3.8 or later (for ogr2ogr), tippecanoe, and AWS CLI
+    You need GDAL 3.8 or later (for ogr2ogr) with libgdal-arrow-parquet, tippecanoe, and AWS CLI
     - https://gdal.org/
     - https://github.com/felt/tippecanoe
     - https://aws.amazon.com/cli/
@@ -190,7 +190,7 @@ def publish(dataset, directory, cache, source_coop_extension):
     if not os.environ.get("AWS_SECRET_ACCESS_KEY"):
         log(f"Get your credentials at {source_coop_url}manage/", "info")
         log("  Then press 'ACCESS DATA',\n  and click 'Create API Key',", "info")
-        log("  Run export AWS_DEFAULT_REGION=us-west-2 AWS_ACCESS_KEY_ID=<> AWS_SECRET_ACCESS_KEY=<>\n"
+        log("  Run export AWS_DEFAULT_REGION=https://data.source.coop AWS_ACCESS_KEY_ID=<> AWS_SECRET_ACCESS_KEY=<>\n"
             "  where you copy-past the access key and secret", "info")
         log("Please set AWS_ env vars from source_coop", "error")
         sys.exit(1)
