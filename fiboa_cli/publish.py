@@ -58,7 +58,7 @@ def make_license(dataset, **kwargs):
     return text
 
 
-def make_readme(dataset, source_coop_url, file_name, stac):
+def make_readme(dataset, source_coop_url, file_name, stac, source_coop_extension):
     converter = read_converter(dataset)
     stac_data = json.load(open(stac))
     count = stac_data["assets"]["data"]["table:row_count"]
@@ -78,9 +78,9 @@ It has been converted to a fiboa GeoParquet file from data obtained from {props[
 ---
 
 - **[Download the data as fiboa GeoParquet]({source_coop_url}/{file_name}.parquet)
-- [STAC Browser](https://radiantearth.github.io/stac-browser/#/external/data.source.coop/{dataset}/stac/collection.json)
-- [STAC Collection](https://data.source.coop/fiboa/{dataset}/stac/collection.json)
-- [PMTiles](https://data.source.coop/fiboa/{source_coop_url}/{file_name}.pmtiles)
+- [STAC Browser](https://radiantearth.github.io/stac-browser/#/external/data.source.coop/{source_coop_extension}/stac/collection.json)
+- [STAC Collection](https://data.source.coop/fiboa/{source_coop_extension}/stac/collection.json)
+- [PMTiles](https://data.source.coop/fiboa/{source_coop_extension}/{file_name}.pmtiles)
 
 ## Columns
 
@@ -165,7 +165,7 @@ def publish(dataset, directory, cache, source_coop_extension):
         if not os.path.exists(path):
             log(f"Missing {required}. Generating at {path}", "warning")
             if required == "README.md":
-                text = make_readme(dataset, source_coop_url=source_coop_url, file_name=file_name, stac=stac_target)
+                text = make_readme(dataset, source_coop_url=source_coop_url, file_name=file_name, stac=stac_target, source_coop_extension=source_coop_extension)
             else:
                 text = make_license(dataset, source_coop_url=source_coop_url, file_name=file_name, stac=stac_target)
             with open(path, "w") as f:
