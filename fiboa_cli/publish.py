@@ -190,7 +190,7 @@ def publish(dataset, directory, cache, source_coop_extension):
     if not os.environ.get("AWS_SECRET_ACCESS_KEY"):
         log(f"Get your credentials at {source_coop_url}manage/", "info")
         log("  Then press 'ACCESS DATA',\n  and click 'Create API Key',", "info")
-        log("  Run export AWS_DEFAULT_REGION=https://data.source.coop AWS_ACCESS_KEY_ID=<> AWS_SECRET_ACCESS_KEY=<>\n"
+        log("  Run export AWS_ENDPOINT_URL=https://data.source.coop AWS_ACCESS_KEY_ID=<> AWS_SECRET_ACCESS_KEY=<>\n"
             "  where you copy-past the access key and secret", "info")
         log("Please set AWS_ env vars from source_coop", "error")
         sys.exit(1)
