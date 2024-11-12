@@ -28,7 +28,9 @@ def check_command(cmd, name=None):
 @cache
 def get_data_survey(dataset):
     base = dataset.replace("_", "-").upper()
-    data_survey = f"https://raw.githubusercontent.com/fiboa/data-survey/refs/heads/main/data/{base}.md"
+    # override data survey location with env variable, e.g. for unmerged pull-requests
+    data_survey = os.getenv("FIBOA_DATA_SURVEY") or \
+        f"https://raw.githubusercontent.com/fiboa/data-survey/refs/heads/main/data/{base}.md"
     response = requests.get(data_survey)
     assert response.ok, f"Missing data survey {base}.md at {data_survey}. Can not auto-generate file"
     return dict(re.findall(r"- \*\*(.+?):\*\* (.+?)\n", response.text))
