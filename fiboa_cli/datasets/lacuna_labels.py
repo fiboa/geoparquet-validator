@@ -16,17 +16,15 @@ map agricultural fields over large areas and multiple years.
 The project was funded by the [Lacuna Fund](https://lacunafund.org/),
 and led by [Farmerline](https://farmerline.co/), in collaboration with
 [Spatial Collective](https://spatialcollective.com/) and the
-[Agricultural Impacts Research Group](agroimpacts.info) at [Clark
-University](https://www.clarku.edu/departments/geography/).
+[Agricultural Impacts Research Group](agroimpacts.info) at
+[Clark University](https://www.clarku.edu/departments/geography/).
 
-Please refer to the [technical
-report](docs/report/technical-report.pdf) for more details on the
-methods used to develop the dataset, an analysis of label quality, and
-usage guidelines.
+Please refer to the [technical report](docs/report/technical-report.pdf)
+for more details on the methods used to develop the dataset, an analysis
+of label quality, and usage guidelines.
 
-Data is published at https://zenodo.org/records/11060871 and can be used in accordance
-with Planet’s [participant license agreement for the NICFI
-contract](https://assets.planet.com/docs/Planet_ParticipantLicenseAgreement_NICFI.pdf).
+Data is published at https://zenodo.org/records/11060871 and can be used in accordance with
+[Planet’s participant license agreement for the NICFI contract](https://go.planet.com/nicfi-pla-2024).
 """
 PROVIDERS = [
     {
@@ -35,7 +33,7 @@ PROVIDERS = [
         "roles": ["producer"]
     },
     {
-        "name": "Planet Labs Inc.",
+        "name": "Planet Labs PBC",
         "url": "https://www.planet.com/",
         "roles": ["licensor"]
     }
@@ -43,8 +41,8 @@ PROVIDERS = [
 ATTRIBUTION = "Planet Labs Inc."
 
 LICENSE = {
-    "title": "PLANET NICFI PARTICIPANT LICENSE AGREEMENT",
-    "href": "https://university.planet.com/nicfi-resources/1219786",
+    "title": "Planet NICFI participant license agreement",
+    "href": "https://go.planet.com/nicfi-pla-2024",
     "type": "text/html",
     "rel": "license"
 }
