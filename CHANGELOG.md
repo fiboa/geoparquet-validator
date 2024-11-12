@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - `fiboa convert`: Default compression changed from `zstd` to `brotli`
+- The default row group size of exported parquet files was changed from ~1.000.000 to 25.000
 
 ## [v0.7.0] - 2024-08-24
 
