@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for Sweden
 - Converter for Luxembourg
 - Converter for Ireland
+- Converter for Lacuna Labels (A region-wide, multi-year set of crop field boundary labels for Africa)
 
 ### Changed
 
