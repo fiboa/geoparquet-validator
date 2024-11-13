@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+- Converter for Switzerland
+
 ## [v0.8.0] - 2024-11-12
 
 ### Added
