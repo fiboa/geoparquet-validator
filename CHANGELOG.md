@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Converter for Lithuania (EuroCrops)
+- Converter for Switzerland
+
+### Fixed
+
+- Fix converter for Estland to use the id `ec_ee` instead of `ec_es`
 
 ## [v0.8.0] - 2024-11-12
 
