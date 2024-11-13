@@ -88,12 +88,12 @@ It has been converted to a fiboa GeoParquet file from data obtained from {props[
 
 ## Lineage
 
-- Data downloaded on {date.today()} from {next(iter(converter.SOURCES))} .
+- Data downloaded on {date.today()} from {next(iter(converter.SOURCES or []), "manually downloaded file")} .
 - Converted to GeoParquet using [fiboa-cli](https://github.com/fiboa/cli), version {version.__version__}
 """
 
 
-def publish(dataset, directory, cache, source_coop_extension):
+def publish(dataset, directory, cache, source_coop_extension, input_files=None):
     """
     Implement https://github.com/fiboa/data/blob/main/HOWTO.md#each-time-you-update-the-dataset
 
@@ -127,7 +127,7 @@ def publish(dataset, directory, cache, source_coop_extension):
     if not done_convert:
         # fiboa convert xx_yy -o data/xx-yy.parquet -h https://beta.source.coop/fiboa/xx-yy/ --collection
         log(f"Converting file for {dataset} to {parquet_file}\n", "success")
-        convert(dataset, parquet_file, cache=cache, source_coop_url=source_coop_url, collection=True)
+        convert(dataset, parquet_file, cache=cache, source_coop_url=source_coop_url, collection=True, input_files=input_files)
         log(f"Done\n", "success")
     else:
         log(f"Using existing file {parquet_file} for {dataset}\n", "success")

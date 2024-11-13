@@ -583,14 +583,22 @@ def merge(datasets, out, crs, include, exclude, extension, compression, geoparqu
     help='(Future) source_coop extension, will be used as https://beta.source.coop/fiboa/xx-yy/',
     default=None
 )
-def publish(dataset, directory, cache, source_coop_extension):
+@click.option(
+    '--input', '-i',
+    type=click.STRING,
+    help='File(s) or URL(s) to read from. Can be used multiple times. Specific files from ZIP and 7Z archives can be picked by providing the archive path and the file path in the archive separated by a pipe sign. To pick multiple files from a single archive separate them by comma. Example: /path/to/archive.zip|file1.gpkg,subfolder/file2.gpkg',
+    callback=parse_converter_input_files,
+    multiple=True,
+    default=None
+)
+def publish(dataset, directory, cache, source_coop_extension, input):
     """
     Publish a fiboa collection on
     """
     log(f"Trying to publish on source coop CLI {__version__}\n", "success")
     try:
         directory = os.path.abspath(directory)
-        publish_(dataset, directory, cache, source_coop_extension)
+        publish_(dataset, directory, cache, source_coop_extension, input)
         log(f"Dataset published from {directory}", "success")
     except Exception as e:
         log(e, "error")
