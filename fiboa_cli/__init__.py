@@ -558,7 +558,7 @@ def merge(datasets, out, crs, include, exclude, extension, compression, geoparqu
     """
     log(f"fiboa CLI {__version__} - Merge datasets\n", "success")
     try:
-        merge_(datasets, out, crs, include, exclude, extension, compression, geoparquet1)
+        merge_(datasets, out, crs, include, exclude, list(extension), compression, geoparquet1)
     except Exception as e:
         log(e, "error")
         sys.exit(1)

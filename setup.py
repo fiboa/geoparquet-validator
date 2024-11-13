@@ -36,9 +36,6 @@ setup(
     ],
     extras_require={
         # Optional dependencies for datasets converters go here
-        # 'nl': [
-        #     "pyogrio"
-        # ]
         "ie": [
             "zipfile-deflate64"
         ]
@@ -53,7 +50,7 @@ setup(
         ]
     },
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Programming Language :: Python :: 3',
     ],
 )
