@@ -1,10 +1,8 @@
 import os
 
-from pyproj import CRS
-
 from .const import CORE_COLUMNS
 from .parquet import create_parquet
-from .util import load_parquet_data, load_parquet_schema, log, parse_metadata
+from .util import load_parquet_data, load_parquet_schema, log, parse_metadata, pick_schemas, is_schema_empty
 
 
 def improve(input, out = None, rename_columns = {}, add_sizes = False, fix_geometries = False, crs = None, compression = None, geoparquet1 = False):
@@ -63,6 +61,12 @@ def improve(input, out = None, rename_columns = {}, add_sizes = False, fix_geome
         # Compute the missing area and perimeter values
         gdf["area"] = gdf_m["area"].fillna(gdf_m.geometry.area * 0.0001)
         gdf["perimeter"] = gdf_m["perimeter"].fillna(gdf_m.geometry.length)
+
+    custom_schemas = collection.get("fiboa_custom_schemas", {})
+    custom_schemas = pick_schemas(custom_schemas, columns, rename_columns)
+    if not is_schema_empty(custom_schemas):
+        collection["fiboa_custom_schemas"] = custom_schemas
+
 
     # Write the merged dataset to the output file
     create_parquet(gdf, columns, collection, out, {}, compression=compression, geoparquet1=geoparquet1)

@@ -5,7 +5,7 @@ from geopandas import GeoDataFrame
 from shapely.geometry import shape
 
 from .types import get_geopandas_dtype, get_pyarrow_type_for_geopandas, get_pyarrow_field
-from .util import log, load_fiboa_schema, load_file, merge_schemas
+from .util import log, load_fiboa_schema, load_file, merge_schemas, is_schema_empty
 from .geopandas import to_parquet
 
 ROW_GROUP_SIZE = 25000
@@ -14,6 +14,11 @@ def create_parquet(data, columns, collection, output_file, config, missing_schem
     # Load the data schema
     fiboa_schema = load_fiboa_schema(config)
     schemas = merge_schemas(missing_schemas, fiboa_schema)
+
+    # Add the custom schemas to the collection for future use
+    if not is_schema_empty(missing_schemas):
+        collection = collection.copy()
+        collection["fiboa_custom_schemas"] = missing_schemas
 
     # Load all extension schemas
     extensions = {}

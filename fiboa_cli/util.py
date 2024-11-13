@@ -262,6 +262,10 @@ def check_ext_schema_for_cli(value, allow_none = False):
     return map_
 
 
+def is_schema_empty(schema):
+    return len(schema.get("properties", {})) == 0 and len(schema.get("required", {})) == 0
+
+
 def merge_schemas(*schemas):
     """Merge multiple schemas into one"""
     result = {
@@ -272,6 +276,22 @@ def merge_schemas(*schemas):
         schema = migrate_schema(schema)
         result["required"] += schema.get("required", [])
         result["properties"].update(schema.get("properties", {}))
+
+    return result
+
+
+def pick_schemas(schemas, properties, rename = {}):
+    """Pick and rename schemas for specific properties"""
+    result = {
+        "required": [],
+        "properties": {}
+    }
+    for prop in properties:
+        prop2 = rename[prop] if prop in rename else prop
+        if prop in schemas["required"]:
+            result["required"].append(prop2)
+        if prop in schemas["properties"]:
+            result["properties"][prop2] = schemas["properties"][prop]
 
     return result
 

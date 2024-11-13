@@ -601,7 +601,7 @@ def merge(datasets, out, crs, include, exclude, extension, compression, geoparqu
     type=click.STRING,
     help='Coordinate Reference System (CRS) to use for the GeoParquet file.',
     show_default=True,
-    default=DEFAULT_CRS,
+    default=None,
 )
 @click.option(
     '--compression', '-pc',

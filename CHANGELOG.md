@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - rename columns
 - Converter for Switzerland
 
+### Changed
+
+- `fiboa convert` writes custom schemas to collection metadata
+- `fiboa validate` uses custom schemas for validation
+- `fiboa merge` keeps custom schemas when needed
+
 ## [v0.8.0] - 2024-11-12
 
 ### Added

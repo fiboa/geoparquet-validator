@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 
-from .util import log, load_parquet_data, load_parquet_schema, load_parquet_metadata, parse_metadata, log_extensions
+from .util import log, load_parquet_data, load_parquet_schema, load_parquet_metadata, parse_metadata, log_extensions, is_schema_empty
 
 def describe(file, display_json=False, num=10, columns=None):
     metadata = load_parquet_metadata(file)
@@ -25,6 +25,10 @@ def describe(file, display_json=False, num=10, columns=None):
         log(f"fiboa version: {collection['fiboa_version']}")
         if "fiboa_extensions" in collection and isinstance(collection["fiboa_extensions"], list):
             log_extensions(collection, log)
+
+        custom_schemas = collection.get("fiboa_custom_schemas", {})
+        if not is_schema_empty(custom_schemas):
+            log("Custom schemas: " + ", ".join(custom_schemas["properties"].keys()))
 
         if (display_json):
             log(json.dumps(collection, indent=2))
