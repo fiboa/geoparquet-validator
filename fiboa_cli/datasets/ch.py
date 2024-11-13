@@ -28,8 +28,8 @@ PROVIDERS = [
     }
 ]
 LICENSE = {
-    "title": "open_by",
-    "href": "https://opendata.swiss/de/terms-of-use",
+    "title": "opendata.swiss terms of use",
+    "href": "https://opendata.swiss/en/terms-of-use",
     "type": "text/html",
     "rel": "license"
 }
