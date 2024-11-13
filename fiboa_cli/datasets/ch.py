@@ -1,5 +1,6 @@
 from ..convert_utils import convert as convert_
 import pandas as pd
+import numpy as np
 
 SOURCES = None
 DATA_ACCESS = """
@@ -42,7 +43,7 @@ COLUMNS = {
 }
 
 COLUMN_MIGRATIONS = {
-    'flaeche_m2': lambda column: column/10000,
+    'flaeche_m2': lambda column: np.where(column>0, column/10000, 0.001),
     'bezugsjahr': lambda col: pd.to_datetime(col, format='%Y')
 }
 
