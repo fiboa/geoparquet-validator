@@ -47,20 +47,8 @@ COLUMN_MIGRATIONS = {
     'bezugsjahr': lambda col: pd.to_datetime(col, format='%Y')
 }
 
-
-def migrate(gdf):
-    gdf['id'] = gdf.index
-    return gdf
-
-
 MISSING_SCHEMAS = {
     'properties': {
-        'kanton': {
-            'type': 'string'
-        },
-        'nutzung': {
-            'type': 'string'
-        },
         'administrative_area_level_1': {
             'type': 'string'
         },
@@ -71,18 +59,15 @@ MISSING_SCHEMAS = {
 }
 
 def convert(output_file, cache = None, **kwargs):
-    """
-    Converts the Austrian field boundary datasets to fiboa.
-    """
     convert_(
         output_file, cache, SOURCES,
         COLUMNS, ID, TITLE, DESCRIPTION,
-        migration=migrate,
         license=LICENSE,
         missing_schemas=MISSING_SCHEMAS,
         column_migrations=COLUMN_MIGRATIONS,
         providers=PROVIDERS,
         explode_multipolygon=True,
+        index_as_id=True,
         fid_as_index=True,
         **kwargs
     )
