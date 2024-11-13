@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `fiboa validate` uses custom schemas for validation
 - `fiboa merge` keeps custom schemas when needed
 
+### Fixed
+
+- Fix converter for Estland to use the id `ec_ee` instead of `ec_es`
+
 ## [v0.8.0] - 2024-11-12
 
 ### Added

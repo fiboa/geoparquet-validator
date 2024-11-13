@@ -41,7 +41,9 @@ COLUMNS = {
     "nutzung": "crop_name",
     'bezugsjahr': 'determination_datetime'
 }
-
+COLUMN_FILTERS = {
+    "ist_ueberlagernd": lambda col: col == False
+}
 COLUMN_MIGRATIONS = {
     'flaeche_m2': lambda column: np.where(column>0, column/10000, 0.001),
     'bezugsjahr': lambda col: pd.to_datetime(col, format='%Y')
@@ -65,6 +67,7 @@ def convert(output_file, cache = None, **kwargs):
         license=LICENSE,
         missing_schemas=MISSING_SCHEMAS,
         column_migrations=COLUMN_MIGRATIONS,
+        column_filters=COLUMN_FILTERS,
         providers=PROVIDERS,
         explode_multipolygon=True,
         index_as_id=True,
