@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- Command `fiboa improve` with helpers to
+  - change the CRS
+  - change the GeoParquet version and compression
+  - fill missing perimeter/area values
+  - fix invalid geometries
+  - rename columns
 - Converter for Switzerland
 
 ## [v0.8.0] - 2024-11-12

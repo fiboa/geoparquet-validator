@@ -224,6 +224,22 @@ def parse_converter_input_files(ctx, param, value):
     return sources
 
 
+def parse_map(value, separator = "="):
+    if value is None:
+        return {}
+    elif not isinstance(value, tuple):
+        raise click.BadParameter('Input files must be a tuple')
+    elif len(value) == 0:
+         return {}
+
+    mapping = {}
+    for v in value:
+        key, value = v.split(separator, 2)
+        mapping[key] = value
+
+    return mapping
+
+
 def name_from_uri(url):
     if "://" in url:
         try:

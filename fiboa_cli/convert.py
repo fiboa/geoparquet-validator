@@ -13,7 +13,7 @@ def convert(
         collection = False,
         compression = None,
         geoparquet1 = False,
-        mapping_file=None,
+        mapping_file = None,
     ):
     if dataset in IGNORED_DATASET_FILES:
         raise Exception(f"'{dataset}' is not a converter")

@@ -2,18 +2,11 @@ import os
 
 import pandas as pd
 
+from .const import CORE_COLUMNS
 from .parquet import create_parquet
 from .util import load_parquet_data, load_parquet_schema, log, parse_metadata
 from .version import fiboa_version
 
-DEFAULT_COLUMNS = [
-    "id",
-    "geometry",
-    "area",
-    "perimeter",
-    "determination_datetime",
-    "determination_method",
-]
 DEFAULT_CRS = "EPSG:4326"
 
 def merge(datasets, out, crs = DEFAULT_CRS, includes = [], excludes = [], extensions = [], compression = None, geoparquet1 = False):
@@ -21,7 +14,7 @@ def merge(datasets, out, crs = DEFAULT_CRS, includes = [], excludes = [], extens
     if dir:
         os.makedirs(dir, exist_ok=True)
 
-    columns = DEFAULT_COLUMNS.copy()
+    columns = CORE_COLUMNS.copy()
     columns.extend(includes)
     columns = list(set(columns) - set(excludes))
 
