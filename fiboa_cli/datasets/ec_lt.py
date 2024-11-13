@@ -1,9 +1,3 @@
-# TEMPLATE FOR A FIBOA CONVERTER
-#
-# Copy this file and rename it to something sensible.
-# The name of the file will be the name of the converter in the cli.
-# If you name it 'de_abc' you'll be able to run `fiboa convert de_abc` in the cli.
-
 from ..convert_utils import convert as convert_
 import re
 import pandas as pd
@@ -11,14 +5,18 @@ import pandas as pd
 # File to read the data from
 # Can read any tabular data format that GeoPandas can read through read_file()
 # Supported protcols: HTTP(S), GCS, S3, or the local file system
-SOURCES = "/mnt/c/Snehal/Kerner Lab/tge-fiboa/lithuania/all_parcels.gpkg"
+SOURCES = {
+     "https://zenodo.org/records/6868143/files/LT_2021.zip": ["LT/LT_2021_EC.shp"]
+}
+
 
 # Unique identifier for the collection
-ID = "fieldscapes_lithuania_2021"
+ID = "ec_lt"
 # Title of the collection
-TITLE = "Field boundaries for Lithuania (FieldScapes)"
+TITLE = "Field boundaries for Lithuania (Eurocrops, 2021)"
 # Description of the collection. Can be multiline and include CommonMark.
-DESCRIPTION = """Collection of data on agricultural land and crop areas, cultivated crops in the territory of the Republic of Lithuania.
+DESCRIPTION = """
+Collection of data on agricultural land and crop areas, cultivated crops in the territory of the Republic of Lithuania.
 
 The download service is a set of personalized spatial data of agricultural land and crop areas, cultivated crops. The service provides object geometry with descriptive (attributive) data. 
 """
@@ -32,23 +30,21 @@ PROVIDER_URL = "https://github.com/maja601/EuroCrops/wiki/Lithuania"
 # Attribution, can be None if not applicable
 ATTRIBUTION = "National Paying Agency under the Ministry of Agriculture"
 
-# License of the data, either
-# 1. a SPDX license identifier (including "dl-de/by-2-0" / "dl-de/zero-2-0"), or
 
 # https://www.geoportal.lt/metadata-catalog/catalog/search/resource/details.page?uuid=%7B7AF3F5B2-DC58-4EC5-916C-813E994B2DCF%7D
-LICENSE = "Non-commercial use only" # how to add nor-commercial licence.
 # 2. a STAC Link Object with relation type "license"
 LICENSE = {"title": "Non-commercial use only", "href": "https://www.geoportal.lt/metadata-catalog/catalog/search/resource/details.page?uuid=%7B7AF3F5B2-DC58-4EC5-916C-813E994B2DCF%7D", "type": "text/html", "rel": "license"}
 
 # Map original column names to fiboa property names
 # You also need to list any column that you may have added in the MIGRATION function (see below).
 COLUMNS = {
-    'id' : 'id', # fiboa core field
-    'GRUPE' : 'crop_type',#fiboa custom field
+    'NMA_ID' : 'id', # fiboa core field
+    'GRUPE' : 'crop_type_name',#fiboa custom field
     'Shape_Leng' : 'perimeter', # fiboa core field
     'Shape_Area' : 'area',# fiboa core field
-    'EC_trans_n' : 'crop_name_translated',
-    'EC_hcat_n' : 'HCAT_crop_name',
+    'EC_trans_n' : 'ec:translated_name',
+    'EC_hcat_n' : 'ec:hcat_name',
+    'EC_hcat_c' : 'ec:hcat_code',
     'geometry' : 'geometry'# fiboa core field
 }
 
@@ -59,7 +55,9 @@ ADD_COLUMNS = {
 }
 
 # A list of implemented extension identifiers
-EXTENSIONS = []
+EXTENSIONS = [
+    "https://fiboa.github.io/hcat-extension/v0.1.0/schema.yaml"
+]
 
 # Functions to migrate data in columns to match the fiboa specification.
 # Example: You have a column area_m in square meters and want to convert
@@ -69,22 +67,27 @@ EXTENSIONS = []
 
 COLUMN_MIGRATIONS = {
     'Shape_Area': lambda column: column * 0.0001,
+    #convert to int32
+    'EC_hcat_c': lambda column: column.astype('uint32')
 }
 
 # Filter columns to only include the ones that are relevant for the collection,
 # e.g. only rows that contain the word "agriculture" but not "forest" in the column "land_cover_type".
 # Lamda function accepts a Pandas Series and returns a Series or a Tuple with a Series and True to inverse the mask.
 COLUMN_FILTERS = {
-    # "GRUPE": lambda col: (col.isin(['Darþovës', 'Grikiai', 'Ankðtiniai javai', 'Aviþos', 'Þieminiai javai', 'Summer Cereals', 'Cukriniai runkeliai', 'Uogynai', 'Kukurûzai']), True)
+    "GRUPE": lambda col: (col.isin(['Darþovës', 'Grikiai', 'Ankðtiniai javai', 'Aviþos', 'Þieminiai javai', 'Summer Cereals', 'Vasariniai javai','Cukriniai runkeliai', 'Uogynai', 'Kukurûzai']), False)
 }
 
-# Custom function to migrate the GeoDataFrame if the other options are not sufficient
-# This should be the last resort!
-# Function signature:
-#   func(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame
+
+# There seem to be z-values in the geometry column, so using this to drop them.
+def drop_z(geometry):
+    if geometry.has_z:
+        # Convert to 2D by dropping the Z dimension
+        return shape(geometry).xy
+    return geometry
 
 def migrate(gdf):
-    gdf['id'] = range(1, len(gdf) + 1)
+    gdf['geometry'] = gdf['geometry'].apply(drop_z)
     return gdf
 
 MIGRATION = migrate
@@ -104,13 +107,7 @@ FILE_MIGRATION = None
 MISSING_SCHEMAS = {
     # "required": ["my_id"], # i.e. non-nullable properties
     "properties": {
-        "crop_type": {
-            "type": "string"
-        },
-        "crop_name_translated": {
-            "type": "string"
-        },
-        "HCAT_crop_name": {
+        "crop_type_name": {
             "type": "string"
         }
     }
@@ -162,7 +159,7 @@ def convert(output_file,  input_files = None, cache = None, source_coop_url = No
         column_additions=ADD_COLUMNS,
         column_migrations=COLUMN_MIGRATIONS,
         column_filters=COLUMN_FILTERS,
-        migration=MIGRATION,
+        migrations=MIGRATION,
         attribution=ATTRIBUTION,
         store_collection=collection,
         license=LICENSE,
