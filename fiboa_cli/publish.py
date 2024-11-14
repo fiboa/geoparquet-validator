@@ -58,7 +58,9 @@ def make_license(dataset, **kwargs):
     return text
 
 
-def make_readme(dataset, source_coop_url, file_name, stac, source_coop_extension):
+def make_readme(dataset, file_name, stac, source_coop_extension):
+    source_coop_data = f"https://data.source.coop/fiboa/{source_coop_extension}/"
+
     converter = read_converter(dataset)
     stac_data = json.load(open(stac))
     count = stac_data["assets"]["data"]["table:row_count"]
@@ -77,10 +79,10 @@ It has been converted to a fiboa GeoParquet file from data obtained from {props[
 
 ---
 
-- [Download the data as fiboa GeoParquet]({source_coop_url}/{file_name}.parquet)
+- [Download the data as fiboa GeoParquet]({source_coop_data}/{file_name}.parquet)
 - [STAC Browser](https://radiantearth.github.io/stac-browser/#/external/data.source.coop/{source_coop_extension}/stac/collection.json)
-- [STAC Collection](https://data.source.coop/fiboa/{source_coop_extension}/stac/collection.json)
-- [PMTiles](https://data.source.coop/fiboa/{source_coop_extension}/{file_name}.pmtiles)
+- [STAC Collection]({source_coop_data}/{source_coop_extension}/stac/collection.json)
+- [PMTiles]({source_coop_data}/{source_coop_extension}/{file_name}.pmtiles)
 
 ## Columns
 
@@ -115,6 +117,7 @@ def publish(dataset, directory, cache, source_coop_extension, input_files=None):
 
     parquet_file = os.path.join(directory, f"{file_name}.parquet")
     source_coop_url = f"https://source.coop/fiboa/{source_coop_extension}/"
+    source_coop_data = f"https://data.source.coop/fiboa/{source_coop_extension}/"
 
     assert requests.get(f"https://source.coop/api/v1/repositories/fiboa/{source_coop_extension}").status_code == 200, \
         f"Missing repo at {source_coop_url}"
@@ -125,7 +128,7 @@ def publish(dataset, directory, cache, source_coop_extension, input_files=None):
     done_convert = os.path.exists(parquet_file) and os.path.exists(os.path.join(stac_directory, "collection.json"))
 
     if not done_convert:
-        # fiboa convert xx_yy -o data/xx-yy.parquet -h https://beta.source.coop/fiboa/xx-yy/ --collection
+        # fiboa convert xx_yy -o data/xx-yy.parquet -h https://data.source.coop/fiboa/xx-yy/ --collection
         log(f"Converting file for {dataset} to {parquet_file}\n", "success")
         convert(dataset, parquet_file, cache=cache, source_coop_url=source_coop_url, collection=True, input_files=input_files)
         log(f"Done\n", "success")
@@ -151,7 +154,7 @@ def publish(dataset, directory, cache, source_coop_extension, input_files=None):
         if STAC_EXTENSION not in data["stac_extensions"]:
             data["stac_extensions"].append(STAC_EXTENSION)
             data["links"].append({
-                "href": f"{source_coop_url}/{file_name}.pmtiles",
+                "href": f"{source_coop_data}/{file_name}.pmtiles",
                 "type": "application/vnd.pmtiles",
                 "rel": "pmtiles"
             })
@@ -165,14 +168,13 @@ def publish(dataset, directory, cache, source_coop_extension, input_files=None):
         if not os.path.exists(path):
             log(f"Missing {required}. Generating at {path}", "warning")
             if required == "README.md":
-                text = make_readme(dataset, source_coop_url=source_coop_url, file_name=file_name, stac=stac_target, source_coop_extension=source_coop_extension)
+                text = make_readme(dataset, file_name=file_name, stac=stac_target, source_coop_extension=source_coop_extension)
             else:
                 text = make_license(dataset, source_coop_url=source_coop_url, file_name=file_name, stac=stac_target)
             with open(path, "w") as f:
                 f.write(text)
             log(f"Please complete the {path} before continuing", "warning")
             sys.exit(1)
-
 
     pm_file = os.path.join(directory, f"{file_name}.pmtiles")
     if not os.path.exists(pm_file):
