@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - fill missing perimeter/area values
   - fix invalid geometries
   - rename columns
+- Converter for Lithuania (EuroCrops)
 - Converter for Switzerland
 
 ### Changed
