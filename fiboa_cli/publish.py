@@ -54,7 +54,7 @@ def make_license(dataset, **kwargs):
         text += props["license"] + "\n\n"
     converter = read_converter(dataset)
     if hasattr(converter, "LICENSE"):
-        text += converter.LICENSE["title"]
+        text += converter.LICENSE["title"] if isinstance(converter.LICENSE, dict) else converter.LICENSE
     return text
 
 
