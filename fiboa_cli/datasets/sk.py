@@ -37,7 +37,9 @@ COLUMNS = {
     "LOKALITA_N": "municipality",
     "VYMERA": "area",
 }
-
+COLUMN_MIGRATIONS = {
+    "geometry": lambda col: col.make_valid()
+}
 MISSING_SCHEMAS = {
     "properties": {
         "crop_name": {
@@ -73,5 +75,6 @@ def convert(output_file, cache = None, **kwargs):
         providers=PROVIDERS,
         missing_schemas=MISSING_SCHEMAS,
         license=LICENSE,
+        column_migrations=COLUMN_MIGRATIONS,
         **kwargs
     )
