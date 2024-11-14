@@ -2,9 +2,9 @@ from ..convert_utils import convert as convert_
 import pandas as pd
 
 SOURCES = {
-    "https://analisi.transparenciacatalunya.cat/api/views/yh94-j2n9/files/b4299961-52ee-4fa0-a276-4594c8c094bc?download=true&filename=Cultius_DUN2023_GPKG.zip": "Cultius_DUN2023_GPKG.zip"
+    "https://analisi.transparenciacatalunya.cat/api/views/yh94-j2n9/files/b4299961-52ee-4fa0-a276-4594c8c094bc?download=true&filename=Cultius_DUN2023_GPKG.zip": ["Cultius_DUN2023_GPKG/CULTIUS_DUN2023.gpkg"]
 }
-ID = "cat"
+ID = "es_cat"
 SHORT_NAME = "Catalonia"
 TITLE = "Catalonia Crop Fields (Mapa de cultius)"
 DESCRIPTION = """
@@ -19,21 +19,23 @@ PROVIDERS = [
     }
 ]
 ATTRIBUTION = "Catalonia Department of Agriculture, Livestock, Fisheries and Food"
-
 LICENSE = {
     "title": "The Open Information Use License - Catalonia",
     "href": "https://administraciodigital.gencat.cat/ca/dades/dades-obertes/informacio-practica/llicencies/",
+    "type": "text/html",
+    "rel": "license"
 }
 COLUMNS = {
     "geometry": "geometry",
+    "id": "id",
     "campanya": "determination_datetime",
     "ha": "area",
     "cultiu": "crop_name",
 }
+
 COLUMN_MIGRATIONS = {
-    # Make year (1st january) from column "VUOSI"
     "campanya": lambda col: pd.to_datetime(col, format='%Y'),
-    # "geometry": lambda col: col.make_valid()
+    "geometry": lambda col: col.make_valid(),
 }
 
 MISSING_SCHEMAS = {
@@ -58,5 +60,8 @@ def convert(output_file, cache = None, **kwargs):
         column_migrations=COLUMN_MIGRATIONS,
         attribution=ATTRIBUTION,
         license=LICENSE,
+        layer="CULTIUS_DUN2023",
+        index_as_id=True,
+        explode_multipolygon=True,
         **kwargs
     )
