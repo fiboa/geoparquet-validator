@@ -79,10 +79,10 @@ It has been converted to a fiboa GeoParquet file from data obtained from {props[
 
 ---
 
-- [Download the data as fiboa GeoParquet]({source_coop_data}/{file_name}.parquet)
+- [Download the data as fiboa GeoParquet]({source_coop_data}{file_name}.parquet)
 - [STAC Browser](https://radiantearth.github.io/stac-browser/#/external/data.source.coop/{source_coop_extension}/stac/collection.json)
-- [STAC Collection]({source_coop_data}/{source_coop_extension}/stac/collection.json)
-- [PMTiles]({source_coop_data}/{source_coop_extension}/{file_name}.pmtiles)
+- [STAC Collection]({source_coop_data}{source_coop_extension}/stac/collection.json)
+- [PMTiles]({source_coop_data}{source_coop_extension}/{file_name}.pmtiles)
 
 ## Columns
 
@@ -154,7 +154,7 @@ def publish(dataset, directory, cache, source_coop_extension, input_files=None):
         if STAC_EXTENSION not in data["stac_extensions"]:
             data["stac_extensions"].append(STAC_EXTENSION)
             data["links"].append({
-                "href": f"{source_coop_data}/{file_name}.pmtiles",
+                "href": f"{source_coop_data}{file_name}.pmtiles",
                 "type": "application/vnd.pmtiles",
                 "rel": "pmtiles"
             })
