@@ -504,9 +504,6 @@ def rename_extension(folder, title, slug, org = "fiboa", prefix = None):
     except Exception as e:
         log(e, "error")
         sys.exit(1)
-    except Exception as e:
-        log(e, "error")
-        sys.exit(1)
 
 
 ## MERGE
