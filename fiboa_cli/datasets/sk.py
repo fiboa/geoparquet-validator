@@ -1,10 +1,9 @@
-import zipfile
-import os
-from ..convert_utils import convert as convert_, download_files
+from ..convert_utils import convert as convert_
 
 SOURCES = {
-#    "https://data.slovensko.sk/download?id=ed0b4a21-8774-4bb1-aab3-fea4ddab9010&blocksize=0": "DPB2024_20240912.zip"
-    "https://data.slovensko.sk/download?id=e39ad227-1899-4cff-b7c8-734f90aa0b59&blocksize=0": "HU2024_20240917.zip"
+    "https://data.slovensko.sk/download?id=e39ad227-1899-4cff-b7c8-734f90aa0b59&blocksize=0": [
+        "HU2024_20240917shp/HU2024_20240917.shp"
+    ]
 }
 ID = "sk"
 SHORT_NAME = "Slovakia"
@@ -56,14 +55,6 @@ MISSING_SCHEMAS = {
 
 
 def convert(output_file, cache = None, **kwargs):
-    # The zipfile has an embedded directory. This already fails at `gpd.list_layers(path)`
-    # Workaround: download + unzip, use unzipped shapefile path as source-place
-    assert cache, "Cache is required for this parser"
-    download_files(SOURCES, cache)
-    path = next(iter(SOURCES.values()))
-    with zipfile.ZipFile(os.path.join(cache, path), 'r') as zip_file:
-        zip_file.extractall(cache)
-
     convert_(
         output_file,
         cache,
