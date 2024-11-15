@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - fix invalid geometries
   - rename columns
 - Converter for Lithuania (EuroCrops)
+- Converter for Slovenia
+- Converter for Slovakia
 - Converter for Switzerland
 - `fiboa convert`: New parameter `--original-geometries` / `-og` to keep the original geometries
 
@@ -29,7 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `fiboa merge` keeps custom schemas when needed
 
 ### Removed
-- `fiboa convert`: Removed the explicit parameter `explode_multipolygon` from the converters
+- `fiboa convert`: Removed the explicit parameter `explode_multipolygon` from the converter
 
 ### Fixed
 

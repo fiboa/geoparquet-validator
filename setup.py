@@ -33,12 +33,13 @@ setup(
         "numpy>=1.20.0",
         "py7zr>=0.21.0",
         "flatdict>=4.0",
+        "rarfile>=4.0",
     ],
     extras_require={
         # Optional dependencies for datasets converters go here
         "ie": [
             "zipfile-deflate64"
-        ]
+        ],
     },
     packages=find_packages(),
     package_data={
