@@ -8,12 +8,12 @@ A command-line interface (CLI) for working with fiboa.
 
 ## Getting Started
 
-In order to make working with fiboa easier we have developed command-line interface (CLI) tools such as 
+In order to make working with fiboa easier we have developed command-line interface (CLI) tools such as
 inspection, validation and file format conversions.
 
 ### Installation
 
-You will need to have **Python 3.9** or any later version installed. 
+You will need to have **Python 3.9** or any later version installed.
 
 Run `pip install fiboa-cli` in the CLI to install the validator.
 
@@ -21,6 +21,7 @@ Run `pip install fiboa-cli` in the CLI to install the validator.
 you can for example run: `pip install fiboa-cli[xyz]` with xyz being the converter name.
 
 **Note on versions:**
+
 - fiboa CLI >= 0.3.0 works with fiboa version > 0.2.0
 - fiboa CLI < 0.3.0 works with fiboa version = 0.1.0
 
@@ -44,6 +45,7 @@ fiboa CLI supports various commands to work with the files:
     - [Merge fiboa GeoParquet files](#merge-fiboa-geoparquet-files)
     - [Create JSON Schema from fiboa Schema](#create-json-schema-from-fiboa-schema)
     - [Validate a fiboa Schema](#validate-a-fiboa-schema)
+    - [Improve a fiboa Parquet file](#improve-a-fiboa-parquet-file)
     - [Update an extension template with new names](#update-an-extension-template-with-new-names)
     - [Converter for existing datasets](#converter-for-existing-datasets)
   - [Development](#development)
@@ -121,19 +123,38 @@ To validate a fiboa Schema YAML file, you can for example run:
 
 Check `fiboa validate-schema --help` for more details.
 
+### Improve a fiboa Parquet file
+
+Various "improvements" can be applied to a fiboa GeoParquet file.
+The commands allows to
+
+- change the CRS (`--crs`)
+- change the GeoParquet version (`-gp1`) and compression (`-pc`)
+- add/fill missing perimeter/area values (`-sz`)
+- fix invalid geometries (`-g`)
+- rename columns (`-r`)
+
+Example:
+
+- `fiboa improve file.parquet -o file2.parquet -g -sz -r old=new -pc zstd`
+
+Check `fiboa improve --help` for more details.
+
 ### Update an extension template with new names
 
 Once you've created and git cloned a new extension, you can use the CLI
 to update all template placeholders with proper names.
 
 For example, if your extension is meant to have
-- the title "Timestamps Extension", 
+
+- the title "Timestamps Extension",
 - the prefix `ts` (e.g. field `ts:created` or `ts:updated`),
 - is hosted at `https://github.io/fiboa/timestamps-extension`
   (organization: `fiboa`, repository `timestamps-extension`),
 - and you run fiboa in the folder of the extension.
 
 Then the following command could be used:
+
 - `fiboa rename-extension . -t Timestamps -p ts -s timestamps-extension -o fiboa`
 
 Check `fiboa rename-extension --help` for more details.
@@ -143,13 +164,14 @@ Check `fiboa rename-extension --help` for more details.
 The CLI ships various converters for existing datasets.
 
 To get a list of available converters/datasets with title, license, etc. run:
+
 - `fiboa converters`
 
 Use any of the IDs from the list to convert an existing dataset to fiboa:
 
 - `fiboa convert de_nrw`
 
-See [Implement a converter](#implement-a-converter) for details about how to 
+See [Implement a converter](#implement-a-converter) for details about how to
 
 ## Development
 

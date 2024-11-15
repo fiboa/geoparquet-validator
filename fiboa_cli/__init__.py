@@ -6,16 +6,18 @@ import time
 import click
 import pandas as pd
 
+from .const import COMPRESSION_METHODS, CORE_COLUMNS
 from .convert import convert as convert_
 from .convert import list_all_converter_ids, list_all_converters
 from .create_geojson import create_geojson as create_geojson_
 from .create_geoparquet import create_geoparquet as create_geoparquet_
 from .describe import describe as describe_
-from .merge import merge as merge_, DEFAULT_COLUMNS, DEFAULT_CRS
+from .improve import improve as improve_
+from .merge import merge as merge_, DEFAULT_CRS
 from .jsonschema import jsonschema as jsonschema_
 from .rename_extension import rename_extension as rename_extension_
 from .util import (check_ext_schema_for_cli, log, parse_converter_input_files,
-                   valid_file_for_cli, valid_file_for_cli_with_ext,
+                   parse_map, valid_file_for_cli, valid_file_for_cli_with_ext,
                    valid_files_folders_for_cli, valid_folder_for_cli)
 from .validate import validate as validate_
 from .validate_schema import validate_schema as validate_schema_
@@ -377,7 +379,7 @@ def jsonschema(schema, out, fiboa_version, id_):
 )
 @click.option(
     '--compression', '-pc',
-    type=click.Choice(["brotli", "gzip", "lz4", "snappy", "zstd", "none"]),
+    type=click.Choice(COMPRESSION_METHODS),
     help='Compression method for the Parquet file.',
     show_default=True,
     default="brotli"
@@ -386,7 +388,7 @@ def jsonschema(schema, out, fiboa_version, id_):
     '--geoparquet1', '-gp1',
     is_flag=True,
     type=click.BOOL,
-    help='Enforces generating a GeoParquet 1.0 file bounding box. Defaults to GeoParquet 1.1 with bounding box.',
+    help='Enforces generating a GeoParquet 1.0 file. Defaults to GeoParquet 1.1 with bounding box.',
     default=False
 )
 @click.option(
@@ -395,13 +397,20 @@ def jsonschema(schema, out, fiboa_version, id_):
     help='Url of mapping file. Some converters use additional sources with mapping data.',
     default=None
 )
-def convert(dataset, out, input, cache, source_coop, collection, compression, geoparquet1, mapping_file):
+@click.option(
+    '--original-geometries', '-og',
+    is_flag=True,
+    type=click.BOOL,
+    help='Keep the source geometries as provided, i.e. this option disables that geomtries are made valid and converted to Polygons.',
+    default=False
+)
+def convert(dataset, out, input, cache, source_coop, collection, compression, geoparquet1, mapping_file, original_geometries):
     """
     Converts existing field boundary datasets to fiboa.
     """
     log(f"fiboa CLI {__version__} - Convert '{dataset}'\n", "success")
     try:
-        convert_(dataset, out, input, cache, source_coop, collection, compression, geoparquet1, mapping_file)
+        convert_(dataset, out, input, cache, source_coop, collection, compression, geoparquet1, mapping_file, original_geometries)
     except Exception as e:
         log(e, "error")
         sys.exit(1)
@@ -522,7 +531,7 @@ def rename_extension(folder, title, slug, org = "fiboa", prefix = None):
     multiple=True,
     help='Additional column names to include.',
     show_default=True,
-    default=DEFAULT_COLUMNS,
+    default=CORE_COLUMNS,
 )
 @click.option(
     '--exclude', '-e',
@@ -540,7 +549,7 @@ def rename_extension(folder, title, slug, org = "fiboa", prefix = None):
 )
 @click.option(
     '--compression', '-pc',
-    type=click.Choice(["brotli", "gzip", "lz4", "snappy", "zstd", "none"]),
+    type=click.Choice(COMPRESSION_METHODS),
     help='Compression method for the Parquet file.',
     show_default=True,
     default="brotli"
@@ -549,7 +558,7 @@ def rename_extension(folder, title, slug, org = "fiboa", prefix = None):
     '--geoparquet1', '-gp1',
     is_flag=True,
     type=click.BOOL,
-    help='Enforces generating a GeoParquet 1.0 file bounding box. Defaults to GeoParquet 1.1 with bounding box.',
+    help='Enforces generating a GeoParquet 1.0 file. Defaults to GeoParquet 1.1 with bounding box.',
     default=False
 )
 def merge(datasets, out, crs, include, exclude, extension, compression, geoparquet1):
@@ -562,7 +571,77 @@ def merge(datasets, out, crs, include, exclude, extension, compression, geoparqu
     """
     log(f"fiboa CLI {__version__} - Merge datasets\n", "success")
     try:
-        merge_(datasets, out, crs, include, exclude, extension, compression, geoparquet1)
+        merge_(datasets, out, crs, include, exclude, list(extension), compression, geoparquet1)
+    except Exception as e:
+        log(e, "error")
+        sys.exit(1)
+
+
+## IMPROVE (add area, perimeter, and fix geometries)
+@click.command()
+@click.argument('input', nargs=1, type=click.Path(exists=True))
+@click.option(
+    '--out', '-o',
+    type=click.Path(exists=False),
+    help='Path to write the GeoParquet file to. If not given, overwrites the input file.',
+    default=None
+)
+@click.option(
+    '--rename-column', '-r',
+    type=click.STRING,
+    callback=lambda ctx, param, value: parse_map(value),
+    multiple=True,
+    help='Renaming of columns. Provide the old name and the new name separated by an equal sign. Can be used multiple times.'
+)
+@click.option(
+    '--add-sizes', '-sz',
+    is_flag=True,
+    type=click.BOOL,
+    help='Computes missing sizes (area, perimeter)',
+    default=False
+)
+@click.option(
+    '--fix-geometries', '-g',
+    is_flag=True,
+    type=click.BOOL,
+    help='Tries to fix invalid geometries that are repored by the validator (uses GeoPanda\'s make_valid method internally)',
+    default=False
+)
+@click.option(
+    '--explode-geometries', '-e',
+    is_flag=True,
+    type=click.BOOL,
+    help='Converts MultiPolygons to Polygons',
+    default=False
+)
+@click.option(
+    '--crs',
+    type=click.STRING,
+    help='Coordinate Reference System (CRS) to use for the GeoParquet file.',
+    show_default=True,
+    default=None,
+)
+@click.option(
+    '--compression', '-pc',
+    type=click.Choice(COMPRESSION_METHODS),
+    help='Compression method for the Parquet file.',
+    show_default=True,
+    default="brotli"
+)
+@click.option(
+    '--geoparquet1', '-gp1',
+    is_flag=True,
+    type=click.BOOL,
+    help='Enforces generating a GeoParquet 1.0 file. Defaults to GeoParquet 1.1 with bounding box.',
+    default=False
+)
+def improve(input, out, rename_column, add_sizes, fix_geometries, explode_geometries, crs, compression, geoparquet1):
+    """
+    "Improves" a fiboa GeoParquet file according to the given parameters.
+    """
+    log(f"fiboa CLI {__version__} - Improve datasets\n", "success")
+    try:
+        improve_(input, out, rename_column, add_sizes, fix_geometries, explode_geometries, crs, compression, geoparquet1)
     except Exception as e:
         log(e, "error")
         sys.exit(1)
@@ -616,6 +695,7 @@ cli.add_command(converters)
 cli.add_command(rename_extension)
 cli.add_command(merge)
 cli.add_command(publish)
+cli.add_command(improve)
 
 if __name__ == '__main__':
     cli()

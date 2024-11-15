@@ -67,6 +67,5 @@ def convert(output_file, cache = None, **kwargs):
         license=LICENSE,
         layer_filter=lambda layer, uri: layer == LAYER,
         file_migration=file_migration,
-        explode_multipolygon=True,
         **kwargs
     )

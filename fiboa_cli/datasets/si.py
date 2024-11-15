@@ -20,7 +20,6 @@ PROVIDERS = [
         "roles": ["producer", "licensor"]
     }
 ]
-ATTRIBUTION = ""
 
 LICENSE = {
     "title": "Javno dostopni podatki: Publicly available data",
@@ -31,16 +30,24 @@ LICENSE = {
 
 COLUMNS = {
     "geometry": "geometry",
-    "GERK_PID": "id",
+    "ID": "id",
+    "GERK_PID": "block_id",
     "AREA": "area",
     "SIFRA_KMRS": "crop_code",
     "RASTLINA": "crop_name",
     "CROP_LAT_E": "crop_name_en",
 }
 
+COLUMN_MIGRATIONS = {
+    "AREA": lambda col: col / 10000,
+    "geometry": lambda col: col.make_valid()
+}
 
 MISSING_SCHEMAS = {
     "properties": {
+        "block_id": {
+            "type": "uint64"
+        },
         "crop_name": {
             "type": "string"
         },
@@ -65,7 +72,7 @@ def convert(output_file, cache = None, mapping_file=None, **kwargs):
         DESCRIPTION,
         providers=PROVIDERS,
         missing_schemas=MISSING_SCHEMAS,
-        attribution=ATTRIBUTION,
+        column_migrations=COLUMN_MIGRATIONS,
         license=LICENSE,
         **kwargs
     )

@@ -168,7 +168,6 @@ def convert(output_file, cache = None, **kwargs):
         attribution=ATTRIBUTION,
         license=LICENSE,
         # Other options:
-        # explode_multipolygon=True/False, # Converts MultiPolygons to Polygons
         # index_as_id=True/False, # Adds a column "id" with the index of the GeoDataFrame
         **kwargs
     )

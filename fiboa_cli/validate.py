@@ -207,6 +207,10 @@ def validate_parquet(file, config):
     for ext in extensions.values():
         schemas = merge_schemas(schemas, ext)
 
+    # Add custom schemas
+    custom_schemas = collection.get("fiboa_custom_schemas", {})
+    schemas = merge_schemas(schemas, custom_schemas)
+
     # Check that all required fields are present
     for key in schemas.get("required", []):
         if key not in parquet_schema.names:

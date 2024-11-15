@@ -13,7 +13,8 @@ def convert(
         collection = False,
         compression = None,
         geoparquet1 = False,
-        mapping_file=None,
+        mapping_file = None,
+        original_geometries = False,
     ):
     if dataset in IGNORED_DATASET_FILES:
         raise Exception(f"'{dataset}' is not a converter")
@@ -37,6 +38,7 @@ def convert(
         compression = compression,
         geoparquet1 = geoparquet1,
         mapping_file = mapping_file,
+        original_geometries = original_geometries,
     )
 
 def list_all_converter_ids():

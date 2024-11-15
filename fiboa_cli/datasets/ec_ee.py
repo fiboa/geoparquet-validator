@@ -8,7 +8,7 @@ from .commons.ec import add_eurocrops
 
 SOURCES = "https://zenodo.org/records/8229128/files/EE_2021.zip?download=1"
 
-ID = "ec_es"
+ID = "ec_ee"
 SHORT_NAME = "Estonia"
 TITLE = "Field boundaries for Estonia"
 DESCRIPTION = """

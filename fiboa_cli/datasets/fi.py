@@ -33,8 +33,6 @@ COLUMNS = {
 COLUMN_MIGRATIONS = {
     # Make year (1st january) from column "VUOSI"
     "VUOSI": lambda col: pd.to_datetime(col, format='%Y'),
-    # Todo: generate a generic solution for making geometries valid
-    "geometry": lambda col: col.make_valid()
 }
 
 def migrate(gdf):
