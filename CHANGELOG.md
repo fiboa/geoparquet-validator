@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for Slovenia
 - Converter for Slovakia
 - Converter for Switzerland
+- Converter for Czech
 - `fiboa convert`: New parameter `--original-geometries` / `-og` to keep the original geometries
 
 ### Changed
