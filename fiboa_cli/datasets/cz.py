@@ -3,8 +3,6 @@ import pandas as pd
 import numpy as np
 
 SOURCES = "https://mze.gov.cz/public/app/eagriapp/Files/geoprostor_zadosti23_2024-08-01_202409261243_epsg4258.zip"
-DATA_ACCESS = """
-"""
 
 ID = "cz"
 SHORT_NAME = "Czech"
@@ -54,7 +52,5 @@ def convert(output_file, cache = None, **kwargs):
         missing_schemas=MISSING_SCHEMAS,
         column_migrations=COLUMN_MIGRATIONS,
         providers=PROVIDERS,
-        explode_multipolygon=True,
-        fid_as_index=True,
         **kwargs
     )
