@@ -5,7 +5,7 @@ from .parquet import create_parquet
 from .util import load_parquet_data, load_parquet_schema, log, parse_metadata, pick_schemas, is_schema_empty
 
 
-def improve(input, out = None, rename_columns = {}, add_sizes = False, fix_geometries = False, crs = None, compression = None, geoparquet1 = False):
+def improve(input, out = None, rename_columns = {}, add_sizes = False, fix_geometries = False, explode_geometries = False, crs = None, compression = None, geoparquet1 = False):
     # Prepare and determine location of the output file
     if not out:
         out = input
@@ -31,6 +31,11 @@ def improve(input, out = None, rename_columns = {}, add_sizes = False, fix_geome
     if fix_geometries:
         gdf.geometry = gdf.geometry.make_valid()
         log("Fixed geometries", "info")
+
+    # Convert MultiPolygons to Polygons
+    if explode_geometries:
+        gdf = gdf.explode()
+        log("Exploded geometries", "info")
 
     # Rename columns
     if len(rename_columns) > 0:

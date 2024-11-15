@@ -604,6 +604,13 @@ def merge(datasets, out, crs, include, exclude, extension, compression, geoparqu
     default=False
 )
 @click.option(
+    '--explode-geometries', '-e',
+    is_flag=True,
+    type=click.BOOL,
+    help='Converts MultiPolygons to Polygons',
+    default=False
+)
+@click.option(
     '--crs',
     type=click.STRING,
     help='Coordinate Reference System (CRS) to use for the GeoParquet file.',
@@ -624,13 +631,13 @@ def merge(datasets, out, crs, include, exclude, extension, compression, geoparqu
     help='Enforces generating a GeoParquet 1.0 file. Defaults to GeoParquet 1.1 with bounding box.',
     default=False
 )
-def improve(input, out, rename_column, add_sizes, fix_geometries, crs, compression, geoparquet1):
+def improve(input, out, rename_column, add_sizes, fix_geometries, explode_geometries, crs, compression, geoparquet1):
     """
     "Improves" a fiboa GeoParquet file according to the given parameters.
     """
     log(f"fiboa CLI {__version__} - Improve datasets\n", "success")
     try:
-        improve_(input, out, rename_column, add_sizes, fix_geometries, crs, compression, geoparquet1)
+        improve_(input, out, rename_column, add_sizes, fix_geometries, explode_geometries, crs, compression, geoparquet1)
     except Exception as e:
         log(e, "error")
         sys.exit(1)
