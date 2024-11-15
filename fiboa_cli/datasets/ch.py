@@ -69,7 +69,6 @@ def convert(output_file, cache = None, **kwargs):
         column_migrations=COLUMN_MIGRATIONS,
         column_filters=COLUMN_FILTERS,
         providers=PROVIDERS,
-        explode_multipolygon=True,
         index_as_id=True,
         fid_as_index=True,
         **kwargs

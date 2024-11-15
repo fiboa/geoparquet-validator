@@ -396,13 +396,20 @@ def jsonschema(schema, out, fiboa_version, id_):
     help='Url of mapping file. Some converters use additional sources with mapping data.',
     default=None
 )
-def convert(dataset, out, input, cache, source_coop, collection, compression, geoparquet1, mapping_file):
+@click.option(
+    '--original-geometries', '-og',
+    is_flag=True,
+    type=click.BOOL,
+    help='Keep the source geometries as provided, i.e. this option disables that geomtries are made valid and converted to Polygons.',
+    default=False
+)
+def convert(dataset, out, input, cache, source_coop, collection, compression, geoparquet1, mapping_file, original_geometries):
     """
     Converts existing field boundary datasets to fiboa.
     """
     log(f"fiboa CLI {__version__} - Convert '{dataset}'\n", "success")
     try:
-        convert_(dataset, out, input, cache, source_coop, collection, compression, geoparquet1, mapping_file)
+        convert_(dataset, out, input, cache, source_coop, collection, compression, geoparquet1, mapping_file, original_geometries)
     except Exception as e:
         log(e, "error")
         sys.exit(1)
@@ -593,7 +600,7 @@ def merge(datasets, out, crs, include, exclude, extension, compression, geoparqu
     '--fix-geometries', '-g',
     is_flag=True,
     type=click.BOOL,
-    help='Tries to fix invalid geometries that are repored by the validator (uses shapely\'s make_valid method internally)',
+    help='Tries to fix invalid geometries that are repored by the validator (uses GeoPanda\'s make_valid method internally)',
     default=False
 )
 @click.option(

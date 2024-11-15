@@ -35,7 +35,6 @@ COLUMNS = {
 
 COLUMN_MIGRATIONS = {
     "campanya": lambda col: pd.to_datetime(col, format='%Y'),
-    "geometry": lambda col: col.make_valid(),
 }
 
 MISSING_SCHEMAS = {
@@ -62,6 +61,5 @@ def convert(output_file, cache = None, **kwargs):
         license=LICENSE,
         layer="CULTIUS_DUN2023",
         index_as_id=True,
-        explode_multipolygon=True,
         **kwargs
     )

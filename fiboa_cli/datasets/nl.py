@@ -80,7 +80,6 @@ def convert(output_file, cache = None, **kwargs):
         migration=migrate,
         attribution=ATTRIBUTION,
         license=LICENSE,
-        explode_multipolygon=True,
         index_as_id=True,
         **kwargs
     )

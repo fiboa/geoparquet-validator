@@ -62,6 +62,5 @@ def convert(output_file, cache = None, **kwargs):
         column_filters=COLUMN_FILTERS,
         attribution=ATTRIBUTION,
         license=LICENSE,
-        explode_multipolygon=True,
         **kwargs
     )
