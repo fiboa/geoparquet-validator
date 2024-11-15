@@ -16,6 +16,8 @@ import sys
 import zipfile
 import py7zr
 import flatdict
+import rarfile
+
 
 def convert(
         output_file, cache_path,
@@ -402,6 +404,9 @@ def download_files(uris, cache_folder = None):
             elif py7zr.is_7zfile(cache_file):
                 with py7zr.SevenZipFile(cache_file, 'r') as sz_file:
                     sz_file.extractall(zip_folder)
+            elif name.endswith(".rar"):
+                with rarfile.RarFile(cache_file, 'r') as w:
+                    w.extractall(zip_folder)
             else:
                 raise ValueError("Only ZIP and 7Z files are supported for extraction")
 
