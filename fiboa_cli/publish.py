@@ -66,6 +66,12 @@ def make_readme(dataset, file_name, stac, source_coop_extension):
     count = stac_data["assets"]["data"]["table:row_count"]
     columns = readme_attribute_table(stac_data)
     props = get_data_survey(dataset)
+    if isinstance(converter.SOURCES, str):
+        download_url = converter.SOURCES
+    elif isinstance(converter.SOURCES, dict):
+        download_url = next(iter(converter.SOURCES))
+    else:
+        download_url = "manually downloaded file"
 
     return f"""# Field boundaries for {converter.SHORT_NAME}
 
@@ -90,7 +96,7 @@ It has been converted to a fiboa GeoParquet file from data obtained from {props[
 
 ## Lineage
 
-- Data downloaded on {date.today()} from {next(iter(converter.SOURCES or []), "manually downloaded file")} .
+- Data downloaded on {date.today()} from {download_url} .
 - Converted to GeoParquet using [fiboa-cli](https://github.com/fiboa/cli), version {version.__version__}
 """
 
