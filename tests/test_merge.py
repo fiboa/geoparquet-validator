@@ -1,5 +1,3 @@
-from geopandas._compat import import_optional_dependency
-
 from fiboa_cli import merge, validate
 from click.testing import CliRunner
 from glob import glob
@@ -12,7 +10,7 @@ $ for i in at be_wa nl; do fiboa convert $i -o tests/data-files/merge/$i.parquet
 """
 
 
-def test_converter(tmp_file):
+def test_merge(tmp_file):
     # merge files in directory
     files = glob("tests/data-files/merge/*.parquet")
     runner = CliRunner()
