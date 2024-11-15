@@ -58,7 +58,7 @@ def convert(output_file, cache = None, **kwargs):
     convert_(
         output_file,
         cache,
-        os.path.join(cache, path.replace('.zip', 'shp'), path.replace('.zip', '.shp')),
+        SOURCES,
         COLUMNS,
         ID,
         TITLE,
