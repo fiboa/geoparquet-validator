@@ -280,18 +280,20 @@ def merge_schemas(*schemas):
     return result
 
 
-def pick_schemas(schemas, properties, rename = {}):
+def pick_schemas(schema, property_names, rename = {}):
     """Pick and rename schemas for specific properties"""
     result = {
         "required": [],
         "properties": {}
     }
-    for prop in properties:
+    required = schema.get("required", [])
+    properties = schema.get("properties", {})
+    for prop in property_names:
         prop2 = rename[prop] if prop in rename else prop
-        if prop in schemas["required"]:
+        if prop in required:
             result["required"].append(prop2)
-        if prop in schemas["properties"]:
-            result["properties"][prop2] = schemas["properties"][prop]
+        if prop in properties:
+            result["properties"][prop2] = properties[prop]
 
     return result
 
