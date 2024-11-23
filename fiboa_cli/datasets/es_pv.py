@@ -2,6 +2,7 @@ from .commons.data import read_data_csv
 from ..convert_utils import convert as convert_
 import requests
 import pandas as pd
+from .es import code_filter, ADD_COLUMNS, EXTENSIONS
 
 
 ID = "es_pv"
@@ -14,7 +15,6 @@ putting this system into effect was the result of a requirement imposed by the E
 all Member States. Sigpac began to be used from February 1, 2005, together with the beginning of
 the 2005 community aid application period.
 """
-EXTENSIONS = ["https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"]
 PROVIDERS = [
     {
         "name": "Basque Government",
@@ -35,16 +35,6 @@ COLUMNS = {
 COLUMN_MIGRATIONS = {
     'CAMPANA': lambda col: pd.to_datetime(col, format='%Y')
 }
-COLUMN_FILTERS = {
-    'USO': lambda col: ~col.isin("AG/CA/ED/FO/IM/IS/IV/TH/ZC/ZU/ZV".split("/")),
-}
-ADD_COLUMNS = {
-    # https://www.euskadi.eus/contenidos/informacion/pac2015_pagosdirectos/es_def/adjuntos/Anexos_PAC_marzo2015.pdf
-    # https://www.fega.gob.es/sites/default/files/files/document/AD-CIRCULAR_2-2021_EE98293_SIGC2021.PDF
-    # Very generic list
-    "crop:code_list": "https://github.com/fiboa/cli/blob/main/fiboa_cli/datasets/data-files/es_coda_uso.csv",
-}
-
 
 def migrate(gdf):
     # This actually is a land use code. Not sure if we should put this in crop:code
@@ -80,7 +70,7 @@ def convert(output_file, cache = None, **kwargs):
         TITLE,
         DESCRIPTION,
         migration=migrate,
-        column_filters=COLUMN_FILTERS,
+        column_filters={"USO": code_filter},
         providers=PROVIDERS,
         column_migrations=COLUMN_MIGRATIONS,
         column_additions=ADD_COLUMNS,
