@@ -1,7 +1,9 @@
 from os.path import join, dirname
 
 from .commons.ec import load_ec_mapping
+from ..util import log
 from ..convert_utils import convert as convert_
+import pandas as pd
 
 
 SOURCES = {
@@ -56,11 +58,18 @@ MISSING_SCHEMAS = {
 
 
 def migrate(gdf):
-    # merge adjacent polygons
-    # gdf = gdf[gdf["STATEFIPS"] == "29"]
-    gdf = gdf.explode()
-    gdf.dissolve(by=["CDL2023"], aggfunc="first").explode()
-    # gdf['geometry'] = gdf['geometry']. make_valid()
+    # "dissolve": merge adjacent polygons with the same crop
+    # geodataframe.Dissolve(method="unary") is **slow** for large datasets
+    # So we're handling this huge dataset in blocks, states are a natural grouping-method
+    states = list(gdf["STATEFIPS"].unique())
+    gdfs = []
+    for state in states:
+        log(f"Handling State {state}", "info")
+        df = gdf[gdf["STATEFIPS"] == state].explode()
+        df.dissolve(by=["CDL2023"], aggfunc="first").explode()
+        gdfs.append(df)
+    gdf = pd.concat(gdfs)
+    del gdfs
     mapping = load_ec_mapping(url=join(dirname(__file__), "data-files", "us_usda_cropland.csv"))
     original_name_mapping = {int(e["original_code"]): e["original_name"] for e in mapping}
     gdf['crop:name'] = gdf['CDL2023'].map(original_name_mapping)
