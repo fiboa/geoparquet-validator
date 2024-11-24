@@ -26,14 +26,11 @@ PROVIDERS = [
 COLUMNS = {
     "geometry": "geometry",
     "BEGINLIFE": "determination_datetime",
-    "crop:code": "crop:code",
+    "crop:code": "IDUSO24",
     "crop:name": "crop:name",
     "crop:name_en": "crop:name_en",
 }
 
-COLUMN_FILTERS = {
-    ""
-}
 COLUMN_MIGRATIONS = {
     "BEGINLIFE": lambda col: pd.to_datetime(col, format="%d/%m/%Y"),
 }
@@ -43,7 +40,6 @@ def migrate(gdf):
     # This actually is a land use code. Not sure if we should put this in crop:code
     rows = read_data_csv("es_coda_uso.csv")
     mapping_en = {row["original_code"]: row["name_en"] for row in rows}
-    gdf['crop:code'] = gdf['IDUSO24']
     gdf['crop:name'] = gdf['USO24']
     gdf['crop:name_en'] = gdf['IDUSO24'].map(mapping_en)
     return gdf
