@@ -184,15 +184,18 @@ def publish(dataset, directory, cache, source_coop_extension, input_files=None):
 
     pm_file = os.path.join(directory, f"{file_name}.pmtiles")
     if not os.path.exists(pm_file):
-        log(f"ogr2ogr geo.json", "info")
-        check_command("ogr2ogr", name="GDAL")
-        exc(f"ogr2ogr -t_srs EPSG:4326 geo.json {parquet_file}")
+        temporary = "geo.fgb"
+        try:
+            log(f"ogr2ogr {temporary}", "info")
+            check_command("ogr2ogr", name="GDAL")
+            exc(f"ogr2ogr -t_srs EPSG:4326 {temporary} {parquet_file}")
 
-        log(f"Running tippecanoe", "info")
-        check_command("tippecanoe")
-        exc(f"tippecanoe -zg --projection=EPSG:4326 -o {pm_file} -l {dataset} geo.json --drop-densest-as-needed")
-
-        os.remove("geo.json")
+            log(f"Running tippecanoe", "info")
+            check_command("tippecanoe")
+            exc(f"tippecanoe -zg --projection=EPSG:4326 -o {pm_file} -l {dataset} {temporary} --drop-densest-as-needed")
+        finally:
+            if os.path.exists(temporary):
+                os.remove(temporary)
 
     log(f"Uploading to aws", "info")
     if not os.environ.get("AWS_SECRET_ACCESS_KEY"):
