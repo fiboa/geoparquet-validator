@@ -17,7 +17,7 @@ PROVIDERS = [
     {
         "name": "Luxembourg ministry of Agriculture",
         "url": "https://agriculture.public.lu/",
-        "roles": ["licensor", "distributor"]
+        "roles": ["licensor", "producer"]
     }
 ]
 ATTRIBUTION = "Luxembourg ministry of Agriculture"
