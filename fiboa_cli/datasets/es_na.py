@@ -13,13 +13,14 @@ ID = "es_na"
 SHORT_NAME = "Spain Navarra"
 TITLE = "Spain Navarra Crop fields"
 DESCRIPTION = """
+SIGPAC Crop fields of Spain - Navarra
 """
-LICENSE = "CC-BY-4.0"
+LICENSE = "CC-BY-4.0"  # https://sigpac.navarra.es/descargas/
 ATTRIBUTION = "Comunidad Foral de Navarra"
 PROVIDERS = [
     {
-        "name": "",
-        "url": "",
+        "name": "Comunidad Foral de Navarra",
+        "url": "https://gobiernoabierto.navarra.es/",
         "roles": ["producer", "licensor"]
     }
 ]
