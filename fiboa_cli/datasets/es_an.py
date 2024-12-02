@@ -1,6 +1,7 @@
 from .commons.data import read_data_csv
 from ..convert_utils import convert as convert_
 from .es import code_filter, ADD_COLUMNS, EXTENSIONS
+import numpy as np
 
 formats = {
     2024: "https://www.juntadeandalucia.es/ssdigitales/festa/agriculturapescaaguaydesarrollorural/2024/SP24_REC_{code}.zip",
@@ -55,7 +56,7 @@ def migrate(gdf):
     mapping_en = {row["original_code"]: row["name_en"] for row in rows}
     gdf['crop:name'] = gdf['CD_USO'].map(mapping)
     gdf['crop:name_en'] = gdf['CD_USO'].map(mapping_en)
-    gdf['NU_AREA'] = gdf['NU_AREA'] / 10000
+    gdf['NU_AREA'] = np.where(gdf['NU_AREA'] == 0, gdf['geometry'].area / 10000, gdf['NU_AREA'] / 10000)
     return gdf
 
 
