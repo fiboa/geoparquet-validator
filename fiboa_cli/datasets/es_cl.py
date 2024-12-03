@@ -18,7 +18,7 @@ Free use of the data is permitted, but commercial exploitation is prohibited.
 """
 PROVIDERS = [
     {
-        "name": "epartment of Agriculture, Livestock and Rural Development. Regional Government of Castile and Leon.",
+        "name": "Department of Agriculture, Livestock and Rural Development. Regional Government of Castile and Leon",
         "url": "https://www.itacyl.es/",
         "roles": ["producer", "licensor"]
     }
