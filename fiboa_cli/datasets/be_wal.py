@@ -7,7 +7,7 @@ SOURCES = {
 }
 LAYER = "ExistingLandUseObject"
 
-ID = "be_wa"
+ID = "be_wal"
 SHORT_NAME = "Belgium, Wallonia"
 TITLE = "Belgium Wallonia: Parcellaire Agricole Anonyme"
 DESCRIPTION = """

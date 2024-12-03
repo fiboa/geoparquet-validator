@@ -6,7 +6,7 @@ import pyarrow.parquet as pq
 """
 Create input files with:
 
-$ for i in at be_wa nl; do fiboa convert $i -o tests/data-files/merge/$i.parquet -c tests/data-files/convert/$i; done
+$ for i in at be_wal nl; do fiboa convert $i -o tests/data-files/merge/$i.parquet -c tests/data-files/convert/$i; done
 """
 
 

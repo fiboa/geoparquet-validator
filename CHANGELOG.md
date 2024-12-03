@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for Slovenia
 - Converter for Slovakia
 - Converter for Switzerland
+- Converter for Czech
+- Converter for US Department of Agriculture Crop Sequence Boundaries
+- Converter for California (US) Statewide Crop Mapping
 - `fiboa convert`: New parameter `--original-geometries` / `-og` to keep the original geometries
 
 ### Changed
@@ -29,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - MultiPolygons are converted to Polygons by default
 - `fiboa validate` uses custom schemas for validation
 - `fiboa merge` keeps custom schemas when needed
+- Extended converter for Croatia; with crop_code and crop_name
 
 ### Removed
 - `fiboa convert`: Removed the explicit parameter `explode_multipolygon` from the converter

@@ -43,6 +43,11 @@ def create_parquet(data, columns, collection, output_file, config, missing_schem
     # Update the GeoDataFrame with the correct types etc.
     data = update_dataframe(data, columns, schemas)
 
+    _columns = list(data.columns)
+    duplicates = set([x for x in _columns if _columns.count(x) > 1])
+    if len(duplicates):
+        raise ValueError(f"Columns are defined multiple times: {duplicates}")
+
     # Define the fields for the schema
     pq_fields = []
     for name in columns:

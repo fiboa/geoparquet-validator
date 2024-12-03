@@ -1,5 +1,6 @@
+from .commons.data import read_data_csv
 from ..convert_utils import convert as convert_
-
+import numpy as np
 
 SOURCES = "https://www.apprrr.hr/wp-content/uploads/nipp/land_parcels.gpkg"
 
@@ -23,13 +24,17 @@ PROVIDERS = [
 
 ATTRIBUTION = "copyright © 2024. Agencija za plaćanja u poljoprivredi, ribarstvu i ruralnom razvoju"
 
-LICENSE = {"href": "https://www.apprrr.hr/prostorni-podaci-servisi/", "type": "text/html", "rel": "license"}
+LICENSE = {"title": "Prostorni podaci i servisi", "href": "https://www.apprrr.hr/prostorni-podaci-servisi/", "type": "text/html", "rel": "license"}
 
 COLUMNS = {
     'id': 'id',
-    'land_use_id': 'land_use_id',
-    'home_name': 'home_name',
+    'land_use_id': 'crop_code',
+    'crop_name': 'crop_name',
+    'crop_name_en': 'crop_name_en',
     'area': 'area',
+    'geometry': 'geometry',
+
+    'home_name': 'home_name',
     'perim': 'perimeter',
     'slope': 'slope',
     'z_avg': 'z_avg',
@@ -52,10 +57,6 @@ COLUMNS = {
     'irrigation_source': 'irrigation_source',
     'irrigation_type': 'irrigation_type',
     'jpaid': 'jpaid',
-    'geometry': 'geometry'
-}
-COLUMN_MIGRATIONS = {
-    'area': lambda column: column / 10000
 }
 
 MISSING_SCHEMAS = {
@@ -141,12 +142,30 @@ MISSING_SCHEMAS = {
         },
         'jpaid': {
             'type': 'string'
+        },
+        'crop_code': {
+            'type': 'int32'
+        },
+        'crop_name': {
+            'type': 'string'
+        },
+        'crop_name_en': {
+            'type': 'string'
         }
     }
 }
 
 
-# Conversion function, usually no changes required
+def migration(gdf):
+    rows = read_data_csv("hr_categories.csv", delimiter=";")
+    mapping = {int(row["code"]): row["name"] for row in rows}
+    mapping_en = {int(row["code"]): row["name_en"] for row in rows}
+    gdf['crop_name'] = gdf['land_use_id'].map(mapping)
+    gdf['crop_name_en'] = gdf['land_use_id'].map(mapping_en)
+    gdf['area'] = np.where(gdf['area'] == 0, gdf['geometry'].area / 10000, gdf['area'] / 10000)
+    return gdf
+
+
 def convert(output_file, cache = None, **kwargs):
     convert_(
         output_file,
@@ -156,7 +175,7 @@ def convert(output_file, cache = None, **kwargs):
         ID,
         TITLE,
         DESCRIPTION,
-        column_migrations=COLUMN_MIGRATIONS,
+        migration=migration,
         providers=PROVIDERS,
         missing_schemas=MISSING_SCHEMAS,
         attribution=ATTRIBUTION,
