@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for Slovakia
 - Converter for Switzerland
 - Converter for Czech
+- Converter for US Department of Agriculture Crop Sequence Boundaries
 - Converter for California (US) Statewide Crop Mapping
 - `fiboa convert`: New parameter `--original-geometries` / `-og` to keep the original geometries
 
