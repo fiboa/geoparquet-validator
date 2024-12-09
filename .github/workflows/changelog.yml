@@ -11,6 +11,6 @@ jobs:
     - uses: actions/checkout@v4
     - name: Check for changelog modification for large enough PR
       run: |
-        if [ $(git diff origin/main origin/${GITHUB_HEAD_REF}) | wc -l) -gt 10 ]; then
+        if [ $(git diff origin/main origin/${GITHUB_HEAD_REF} | wc -l) -gt 10 ]; then
            $(git diff --name-only origin/main origin/${GITHUB_HEAD_REF}) | grep CHANGELOG.md
         fi
