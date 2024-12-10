@@ -16,7 +16,7 @@ jobs:
     - name: Check for changelog modification for non-trivial PR
       run: |
         git fetch origin main:main
-        if [ $(git diff main HEAD | wc -l) -gt 20 ]; then
+        if [ $(git diff main HEAD fiboa_cli | wc -l) -gt 20 ]; then
            if [ -z $(git diff --name-only main HEAD | grep CHANGELOG.md) ]; then
              echo "::error::Missing CHANGELOG.md for non-trivial change" && exit 1
            fi
