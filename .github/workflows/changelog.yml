@@ -13,9 +13,10 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 2
-    - name: Check for changelog modification for large enough PR
+    - name: Check for changelog modification for non-trivial PR
       run: |
-        git fetch origin main:main
-        if [ $(git diff main HEAD | wc -l) -gt 10 ]; then
-           git diff --name-only main HEAD | grep CHANGELOG.md
+        if [ $(git diff main HEAD | wc -l) -gt 20 ]; then
+           if [ -z $(git diff --name-only main HEAD | grep CHANGELOG.md) ]; then
+             echo "::error::Missing CHANGELOG.md for non-trivial change" && exit 1
+           fi
         fi
