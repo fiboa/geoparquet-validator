@@ -1,18 +1,21 @@
 name: Check changelog for non-trivial PRs
 
 on:
-  pull_request: {}
+  pull_request:
+    branches: [ main ]
 
 jobs:
   check:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repo
+      uses: actions/checkout@v4
       with:
         fetch-depth: 2
     - name: Check for changelog modification for large enough PR
       run: |
-        if [ $(git diff origin/main origin/${GITHUB_HEAD_REF} | wc -l) -gt 10 ]; then
-           $(git diff --name-only origin/main origin/${GITHUB_HEAD_REF}) | grep CHANGELOG.md
+        git fetch origin main:main
+        if [ $(git diff main HEAD | wc -l) -gt 10 ]; then
+           $(git diff --name-only main HEAD) | grep CHANGELOG.md
         fi
