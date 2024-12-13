@@ -9,10 +9,22 @@ import re
 
 from .util import log
 from fiboa_cli import list_all_converter_ids, version
-from fiboa_cli.convert import convert, read_converter
+from fiboa_cli.convert import convert, read_converter as _read_converter
 from fiboa_cli.validate import validate
 
 STAC_EXTENSION = "https://stac-extensions.github.io/web-map-links/v1.2.0/schema.json"
+
+
+def read_converter(converter_id):
+    # Temporary to-lowercase getattr proxy to facilitate the transfer to class based converters
+    converter = _read_converter(converter_id)
+
+    class Proxy:
+        def __getattr__(self, attr):
+            if not hasattr(converter, attr):
+                attr = attr.lower()
+            return getattr(converter, attr)
+    return Proxy()
 
 
 def exc(cmd):
