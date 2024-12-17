@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for US Department of Agriculture Crop Sequence Boundaries
 - Converter for California (US) Statewide Crop Mapping
 - `fiboa convert`: New parameter `--original-geometries` / `-og` to keep the original geometries
+- Converter for Latvia (from original source)
+- Converter for Japan, currently based on supplied (non-fiboa) parquet files
+- Rewrite to class-based converters
 
 ### Changed
 
@@ -55,6 +58,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for Luxembourg
 - Converter for Ireland
 - Converter for Lacuna Labels (A region-wide, multi-year set of crop field boundary labels for Africa)
+- Require changelogs for Pull Requests
 
 ### Changed
 
