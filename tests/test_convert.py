@@ -7,16 +7,17 @@ from click.testing import CliRunner
 Create input files with: `ogr2ogr output.gpkg -limit 100 input.gpkg`
 """
 
-tests = ['at', 'be_vlg', 'br_ba_lem', 'de_sh', 'ec_lv', 'ec_si', 'fi', 'fr', 'hr', 'nl', 'nl_crop', 'pt', 'dk', 'be_wal', 'se', 'ai4sf', 'ch', 'cz', 'us_usda_cropland', 'jp', 'lv', 'ie']
+tests = ['at', 'be_vlg', 'br_ba_lem', 'de_sh', 'ec_lv', 'ec_si', 'fi', 'fr', 'hr', 'nl', 'nl_crop', 'pt', 'dk', 'be_wal', 'se', 'ai4sf', 'ch', 'cz', 'us_usda_cropland', 'jp', 'lv', 'ie', 'es_cat']
 test_path = "tests/data-files/convert"
 extra_convert_parameters = {
-    "nl_crop": ["2023"],
+    "ai4sf": ['-i', f'{test_path}/ai4sf/1_vietnam_areas.gpkg', '-i', f'{test_path}/ai4sf/4_cambodia_areas.gpkg'],
     "br_ba_lem": ["-i", f"{test_path}/br_ba_lem/LEM_dataset.zip"],
+    "ch": ["-i", f"{test_path}/ch/lwb_nutzungsflaechen_v2_0_lv95.gpkg"],
+    "es_cat": ["-i", f"{test_path}/es_cat/Cultius_DUN2023_GPKG.zip"],
     "fr": ["-m", f"{test_path}/fr/fr_2018.csv"],
     "lv": ["-i", f"{test_path}/lv/1_100.xml", "-m", f"{test_path}/lv/lv_2021.csv"],
+    "nl_crop": ["2023"],
     "se": ["-m", f"{test_path}/se/se_2021.csv"],
-    "ch": ["-i", f"{test_path}/ch/lwb_nutzungsflaechen_v2_0_lv95.gpkg"],
-    "ai4sf": ['-i', f'{test_path}/ai4sf/1_vietnam_areas.gpkg', '-i', f'{test_path}/ai4sf/4_cambodia_areas.gpkg'],
 }
 
 
