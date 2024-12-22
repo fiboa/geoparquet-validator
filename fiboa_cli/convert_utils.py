@@ -24,6 +24,7 @@ import zipfile
 import py7zr
 import flatdict
 import rarfile
+import hashlib
 
 # unmodifiable empty dict, avoids accidental mutation
 EMPTY_DICT = MappingProxyType({})
@@ -202,9 +203,9 @@ class BaseConverter:
                     name = name_from_uri(uri)
                     # if there's no file extension, it's likely a folder, which may not be unique
                     if "." not in name:
-                        name = str(i)
+                        name = hashlib.sha256(uri.encode()).hexdigest()
                 except:
-                    name = str(i)
+                    name = hashlib.sha256(uri.encode()).hexdigest()
             else:
                 name = target
 
