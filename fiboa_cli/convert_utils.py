@@ -148,6 +148,7 @@ class BaseConverter:
     sources: Optional[dict[str, str] | str] = None
     source_variants: Optional[dict[dict[str, str] | str]] = None
     variant: str = None
+    open_options = {}
 
     columns: dict[str, str] = None
     column_additions: dict[str, str] = EMPTY_DICT
@@ -432,6 +433,7 @@ class BaseConverter:
         log("Getting file(s) if not cached yet")
         paths = self.download_files(urls, cache)
 
+        kwargs.update(self.open_options)
         gdf = self.read_data(paths, **kwargs)
 
         log("GeoDataFrame created from source(s):")
