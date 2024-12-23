@@ -423,11 +423,10 @@ class BaseConverter:
         if directory:
             os.makedirs(directory, exist_ok=True)
 
-        urls = self.get_urls()
         if input_files is not None and isinstance(input_files, dict) and len(input_files) > 0:
             log("Using user provided input file(s) instead of the pre-defined file(s)", "warning")
             urls = input_files
-        elif urls is None:
+        elif (urls := self.get_urls()) is None:
             raise ValueError("No input files provided")
 
         log("Getting file(s) if not cached yet")
