@@ -4,6 +4,7 @@ import pandas as pd
 
 
 class ESCatConverter(BaseConverter):
+    # Catalonia has its own coding list, not sublass of ESBaseConverter
     source_variants = {
         "2023": {
             "https://analisi.transparenciacatalunya.cat/api/views/yh94-j2n9/files/b4299961-52ee-4fa0-a276-4594c8c094bc?download=true&filename=Cultius_DUN2023_GPKG.zip":
@@ -76,6 +77,7 @@ class ESCatConverter(BaseConverter):
         to_lower = {k: k.lower() for k in gdf.columns if k != k.lower}
         if to_lower:
             gdf.rename(columns=to_lower, inplace=True)
+
         rows = read_data_csv("es_cat.csv")
         mapping = {row["original_name"]: row["original_code"] for row in rows}
         mapping_en = {row["original_name"]: row["translated_name"] for row in rows}
