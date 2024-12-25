@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for Latvia (from original source)
 - Converter for Japan, currently based on supplied (non-fiboa) parquet files
 - Rewrite to class-based converters
+- Converter for Spain - Aragon
+- Converter for Spain - Andalusia
+- Converter for Spain - Basque Country
+- Converter for Spain - Castilla y León
+- Converter for Spain - Catalonia
+
 
 ### Changed
 
