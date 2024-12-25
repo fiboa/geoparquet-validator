@@ -15,6 +15,7 @@ from shapely.geometry import box
 
 import os
 import re
+from glob import glob
 import json
 import geopandas as gpd
 import pandas as pd
@@ -241,7 +242,7 @@ class BaseConverter:
                 elif py7zr.is_7zfile(cache_file):
                     with py7zr.SevenZipFile(cache_file, 'r') as sz_file:
                         sz_file.extractall(zip_folder)
-                elif name.endswith(".rar"):
+                elif rarfile.is_rarfile(cache_file):
                     with rarfile.RarFile(cache_file, 'r') as w:
                         w.extractall(zip_folder)
                 else:
@@ -271,6 +272,10 @@ class BaseConverter:
     def read_data(self, paths, **kwargs):
         gdfs = []
         for path, uri in paths:
+            if "*" in path:
+                lst = glob(path)
+                assert len(lst) == 1, f"Can not match {path} to a single file"
+                path = lst[0]
             log(f"Reading {path} into GeoDataFrame(s)")
             is_parquet = path.endswith(".parquet") or path.endswith(".geoparquet")
             is_json = path.endswith(".json") or path.endswith(".geojson")
