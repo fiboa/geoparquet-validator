@@ -77,7 +77,7 @@ class ANConverter(ESBaseConverter):
         }
     }
 
-    def get_urls(self):
+    def get_urls(self, **kwargs):
         if not self.variant:
             self.variant = next(iter(self.source_variants))
             log(f"Choosing first variant {self.variant}", "warning")

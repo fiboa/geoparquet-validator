@@ -42,7 +42,7 @@ class ESPVConverter(ESBaseConverter):
     use_code_attribute = "USO"
     index_as_id = True
 
-    def get_urls(self):
+    def get_urls(self, **kwargs):
         if not self.variant:
             self.variant = "2024"
             log(f"Choosing first variant {self.variant}", "warning")
