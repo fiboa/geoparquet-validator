@@ -51,7 +51,7 @@ class ESCatConverter(BaseConverter):
     }
     extensions = ["https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"]
     column_additions = {
-        "crop:code_list": "https://github.com/fiboa/cli/blob/main/fiboa_cli/datasets/data-files/es_cat.csv",
+        "crop:code_list": "https://fiboa.org/code/es/cat/crop.csv",
     }
     columns = {
         "geometry": "geometry",
