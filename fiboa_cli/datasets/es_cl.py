@@ -2,7 +2,6 @@ import re
 import os
 import requests
 
-from .commons.data import read_data_csv
 from .es import ESBaseConverter
 from .. import log
 
