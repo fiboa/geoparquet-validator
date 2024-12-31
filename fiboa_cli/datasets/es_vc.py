@@ -58,5 +58,6 @@ class ESVCConverter(ESBaseConverter):
         from bs4 import BeautifulSoup
         base = f"https://descargas.icv.gva.es/dcd/14_mediorural/03_pac/{self.variant}_SIGPAC_0050"
         soup = BeautifulSoup(requests.get(f"{base}").content, "html.parser")
-        result = {f"{base}/{e.get("href")}": ["*/RECINTO.shp"] for e in soup.find_all("a", href=re.compile(r"1403_.*RECINTOS.*"))}
+        result = {f"{base}/{e.get('href')}": ["*/RECINTO.shp"]
+                  for e in soup.find_all("a", href=re.compile("1403_.*RECINTOS.*"))}
         return result
