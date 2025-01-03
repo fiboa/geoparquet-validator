@@ -25,13 +25,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `fiboa convert`: New parameter `--original-geometries` / `-og` to keep the original geometries
 - Converter for Latvia (from original source)
 - Converter for Japan, currently based on supplied (non-fiboa) parquet files
+- Many converters implement the admin extension
 - Rewrite to class-based converters
 - Converter for Spain - Aragon
 - Converter for Spain - Andalusia
 - Converter for Spain - Basque Country
 - Converter for Spain - Castilla y León
 - Converter for Spain - Catalonia
-
 
 ### Changed
 

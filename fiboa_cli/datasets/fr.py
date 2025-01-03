@@ -1,8 +1,9 @@
+from .commons.admin import AdminConverterMixin
 from .commons.ec import EuroCropsConverterMixin, ec_url
 from ..convert_utils import BaseConverter
 
 
-class FRConverter(EuroCropsConverterMixin, BaseConverter):
+class FRConverter(AdminConverterMixin, EuroCropsConverterMixin, BaseConverter):
     # TODO, 2022 works, check (or discover) paths for other years
     source_variants = {
         "2022": {

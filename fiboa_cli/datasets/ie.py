@@ -1,8 +1,10 @@
+from .commons.admin import AdminConverterMixin
 from ..convert_gml import gml_assure_columns
-from ..convert_utils import convert as convert_, BaseConverter
+from ..convert_utils import BaseConverter
+import geopandas as gpd
 
 
-class IEConverter(BaseConverter):
+class IEConverter(AdminConverterMixin, BaseConverter):
     sources = {
       "https://osi-inspire-atom.s3-eu-west-1.amazonaws.com/IACSdata/IACS_GSAA_2022.zip": ["IACS_GSAA_2022.gml"]
     }
@@ -46,8 +48,8 @@ class IEConverter(BaseConverter):
         gdf["determination_datetime"] = gdf["observationDate"].str.replace("+01:00", "T00:00:00Z")
         return gdf
 
-    def file_migration(self, data, path, uri, layer):
-        return gml_assure_columns(data, path, uri, layer,
+    def file_migration(self, gdf: gpd.GeoDataFrame, path: str, uri: str, layer: str = None) -> gpd.GeoDataFrame:  # noqa
+        return gml_assure_columns(gdf, path, uri, layer,
                                   crop_name={"ElementPath": "specificLandUse@title", "Type": "String", "Width": 255})
 
     def layer_filter(self, layer, uri):

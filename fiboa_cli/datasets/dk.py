@@ -1,8 +1,9 @@
+from .commons.admin import AdminConverterMixin
 from .commons.ec import ec_url
 from ..convert_utils import BaseConverter
 
 
-class DKConverter(BaseConverter):
+class DKConverter(AdminConverterMixin, BaseConverter):
     source_variants = {
         str(year): f"https://landbrugsgeodata.fvm.dk/Download/Marker/Marker_{year}.zip"
         for year in range(2024, 2008-1, -1)
@@ -10,7 +11,7 @@ class DKConverter(BaseConverter):
     id = "dk"
     short_name = "Denmark"
     title = "Denmark Crop Fields (Marker)"
-    description = """The Danish Ministry of Food, Agriculture and Fisheries publishes Crop Fields (Marker) for each year."""
+    description = "The Danish Ministry of Food, Agriculture and Fisheries publishes Crop Fields (Marker) for each year."
 
     extensions = ["https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"]
     column_additions = {"crop:code_list": ec_url("nl_2020.csv")}
