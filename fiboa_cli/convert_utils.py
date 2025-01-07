@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from copy import copy
 from io import StringIO
-from types import MappingProxyType
+import inspect
 from typing import Optional
 from urllib.parse import urlencode
 
@@ -30,9 +31,6 @@ import flatdict
 import rarfile
 import hashlib
 
-# unmodifiable empty dict, avoids accidental mutation
-EMPTY_DICT = MappingProxyType({})
-
 
 def convert(
         output_file, cache,
@@ -57,9 +55,11 @@ def convert(
         geoparquet1 = False,
         original_geometries = False,
         index_as_id = False,
-        variant = None,  # noqa unused
+        year = None,  # noqa unused
         **kwargs):
     # this function is a (temporary) bridge from function-based converters to class-based converters
+    # todo: this convert-function should be removed once class-based converters have been fully implemented
+
     converter = BaseConverter(sources=urls, columns=column_map, id=id, title=title, description=description, bbox=bbox,
                               providers=providers, short_name=id,
                               extensions=extensions, missing_schemas=missing_schemas, column_additions=column_additions,
@@ -147,43 +147,52 @@ class BaseConverter:
     license: str | dict[str, str] = None
     attribution: str = None
     description: str = None
-    providers: list[dict] = None
+    providers: list[dict] = []
 
     sources: Optional[dict[str, str] | str] = None
     source_variants: Optional[dict[dict[str, str] | str]] = None
     variant: str = None
     open_options = {}
+    years: Optional[dict[dict[int, str] | str]] = None
+    year: str = None
 
-    columns: dict[str, str] = None
-    column_additions: dict[str, str] = EMPTY_DICT
-    column_filters: dict[str, callable] = EMPTY_DICT
-    column_migrations: dict[str, callable] = EMPTY_DICT
-    missing_schemas: dict[str, str] = EMPTY_DICT
-    extensions: list[str] = tuple()
+    columns: dict[str, str] = {}
+    column_additions: dict[str, str] = {}
+    column_filters: dict[str, callable] = {}
+    column_migrations: dict[str, callable] = {}
+    missing_schemas: dict[str, str] = {}
+    extensions: list[str] = []
 
     index_as_id = False
 
     def __init__(self, **kwargs):
         # This init method allows you to override all properties & methods
         # It's a bit hacky but allows a gradual conversion from function-based to class-based converters
+        # todo remove this once class-based converters have been fully implemented
         self.__dict__.update({k: v for k, v in kwargs.items() if v is not None})
         for key in ("id", "short_name", "title", "license", "columns"):
             assert getattr(self, key) is not None, f"{self.__class__.__name__} misses required attribute {key}"
+
+        # In BaseConverter and mixins we use class-based members as instance based-members
+        # Every instance should be allowed to modify its member attributes, so here we make a copy of dicts/lists
+        for key, item in inspect.getmembers(self):
+            if not key.startswith("_") and isinstance(item, (list, dict)):
+                setattr(self, key, copy(item))
 
     @property
     def ID(self):  # noqa backwards compatibility for function-based converters
         return self.id
 
-    def migrate(self, gdf):
+    def migrate(self, gdf) -> gpd.GeoDataFrame:
         return gdf
 
     def file_migration(self, gdf: gpd.GeoDataFrame, path: str, uri: str, layer: str = None) -> gpd.GeoDataFrame:  # noqa
         return gdf
 
-    def layer_filter(self, layer, uri):  # noqa
+    def layer_filter(self, layer: str, uri: str) -> bool:
         return True
 
-    def post_migrate(self, gdf):
+    def post_migrate(self, gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         return gdf
 
     def download_files(self, uris, cache_folder=None):
@@ -261,15 +270,15 @@ class BaseConverter:
 
     def get_urls(self, **kwargs):
         urls = self.sources
-        if not urls and self.source_variants:
-            if self.variant is None:
-                self.variant = next(iter(self.source_variants))
-                log(f"Choosing first variant {self.variant}", "warning")
-            if self.variant in self.source_variants:
-                urls = self.source_variants[self.variant]
+        if not urls and self.years:
+            opts = ", ".join([str(s) for s in self.years.keys()])
+            if self.year is None:
+                self.year = next(iter(self.years))
+                log(f"Choosing first available year {self.year} from {opts}", "warning")
+            if self.year in self.years:
+                urls = self.years[self.year]
             else:
-                opts = ", ".join(self.source_variants.keys())
-                raise ValueError(f"Unknown variant '{self.variant}', choose from {opts}")
+                raise ValueError(f"Unknown year '{self.year}', choose from {opts}")
         return urls
 
     def read_data(self, paths, **kwargs):
@@ -335,6 +344,10 @@ class BaseConverter:
                     log(f"Column '{key}' not found in dataset, skipping filter", "warning")
         return gdf
 
+    def get_title(self):
+        title = self.title.strip()
+        return f"{title} ({self.year})" if self.year else title
+
     def create_collection(self, gdf, source_coop_url):
         """
         Creates a collection for the field boundary datasets.
@@ -348,7 +361,7 @@ class BaseConverter:
             "fiboa_extensions": self.extensions,
             "type": "Collection",
             "id": self.id.strip(),
-            "title": self.title.strip(),
+            "title": self.get_title(),
             "description": self.description.strip(),
             "license": "proprietary",
             "providers": self.providers,
@@ -417,9 +430,9 @@ class BaseConverter:
 
         return collection
 
-    def convert(self, output_file, cache=None, input_files=None, source_coop_url=None, store_collection=False, variant=None, compression=None, geoparquet1=False, mapping_file=None, original_geometries=False, **kwargs):
+    def convert(self, output_file, cache=None, input_files=None, source_coop_url=None, store_collection=False, year=None, compression=None, geoparquet1=False, mapping_file=None, original_geometries=False, **kwargs):
         columns = self.columns.copy()
-        self.variant = variant
+        self.year = year
         """
         Converts a field boundary datasets to fiboa.
         """
@@ -482,6 +495,9 @@ class BaseConverter:
             gdf.geometry = gdf.geometry.make_valid()
             gdf = gdf.explode()
             gdf = gdf[np.logical_and(gdf.geometry.type == "Polygon", gdf.geometry.is_valid)]
+            if gdf.geometry.array.has_z.any():
+                log("Removing Z geometry dimension", "info")
+                gdf.geometry = gdf.geometry.force_2d()
 
         gdf = self.post_migrate(gdf)
 

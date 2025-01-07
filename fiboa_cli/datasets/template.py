@@ -7,7 +7,7 @@
 from ..convert_utils import BaseConverter
 
 
-class TemplateConverter(BaseConverter):
+class TemplateConverter(BaseConverter):  # change this class name to your use case
     # File(s) to read the data from, usually publicly accessible URLs.
     # Can read any (zipped) tabular data format that GeoPandas can read through read_file() or read_parquet().
     # Supported protocols: HTTP(S), GCS, S3, or the local file system
@@ -26,16 +26,16 @@ class TemplateConverter(BaseConverter):
     #   "https://fiboa.example/north_america.zip": ["us.gpkg", "canaga.gpkg"]
     # }
 
-    # If multiple variants are available (e.g. different years), you can replace sources by source_variants.
+    # If multiple years are available, you can replace sources by years.
     # The dict-key can be used on the cli command line, the value will be used as 'sources'
     #
-    # source_variants = {
-    #    "2023": "https://fiboa.example/file_2023.xyz"
-    #    "2024": "https://fiboa.example/file_2023.xyz"
+    # years = {
+    #    2023: "https://fiboa.example/file_2023.xyz"
+    #    2024: "https://fiboa.example/file_2023.xyz"
     # }
 
     # Override filter function for the layer in the file(s) to read.
-    # def layer_filter(self, layer, uri):
+    # def layer_filter(self, layer: str, uri: str) -> bool:
     #     return True
 
     # Unique identifier for the collection

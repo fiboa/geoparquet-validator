@@ -41,16 +41,16 @@ class IEConverter(AdminConverterMixin, BaseConverter):
         }
     }
 
-    def migrate(self, gdf):
+    def migrate(self, gdf) -> gpd.GeoDataFrame:
         # crop_name can be multiple: "crop1, crop2, crop3". We only read the main crop (first).
         gdf['crop_name'] = gdf['crop_name'].str.split(', ').str.get(0)
         gdf = gdf[gdf['crop_name'] != 'Void']  # Exclude non-agriculture fields
         gdf["determination_datetime"] = gdf["observationDate"].str.replace("+01:00", "T00:00:00Z")
         return gdf
 
-    def file_migration(self, gdf: gpd.GeoDataFrame, path: str, uri: str, layer: str = None) -> gpd.GeoDataFrame:  # noqa
+    def file_migration(self, gdf: gpd.GeoDataFrame, path: str, uri: str, layer: str = None) -> gpd.GeoDataFrame:
         return gml_assure_columns(gdf, path, uri, layer,
                                   crop_name={"ElementPath": "specificLandUse@title", "Type": "String", "Width": 255})
 
-    def layer_filter(self, layer, uri):
+    def layer_filter(self, layer: str, uri: str) -> bool:
         return layer == "ExistingLandUseObject"

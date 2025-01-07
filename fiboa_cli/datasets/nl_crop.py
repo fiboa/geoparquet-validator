@@ -2,18 +2,19 @@ from .commons.admin import AdminConverterMixin
 from .commons.ec import ec_url
 from ..convert_utils import BaseConverter
 import pandas as pd
+import geopandas as gpd
 
 # see https://service.pdok.nl/rvo/brpgewaspercelen/atom/v1_0/basisregistratie_gewaspercelen_brp.xml
 base = "https://service.pdok.nl/rvo/brpgewaspercelen/atom/v1_0/downloads"
 
 
 class NLCropConverter(AdminConverterMixin, BaseConverter):
-    source_variants = {
-        "2024": f"{base}/brpgewaspercelen_concept_2024.gpkg",
-        "2023": f"{base}/brpgewaspercelen_definitief_2023.gpkg",
-        "2022": f"{base}/brpgewaspercelen_definitief_2022.gpkg",
-        "2021": f"{base}/brpgewaspercelen_definitief_2021.gpkg",
-        "2020": f"{base}/brpgewaspercelen_definitief_2020.gpkg",
+    years = {
+        2024: f"{base}/brpgewaspercelen_concept_2024.gpkg",
+        2023: f"{base}/brpgewaspercelen_definitief_2023.gpkg",
+        2022: f"{base}/brpgewaspercelen_definitief_2022.gpkg",
+        2021: f"{base}/brpgewaspercelen_definitief_2021.gpkg",
+        2020: f"{base}/brpgewaspercelen_definitief_2020.gpkg",
         # {r: {base}/brpgewaspercelen_definitief_{r}.zip for r in range(2009, 2020)}
     }
 
@@ -67,7 +68,7 @@ class NLCropConverter(AdminConverterMixin, BaseConverter):
     column_additions = {"crop:code_list": ec_url("nl_2020.csv")}
     index_as_id = True
 
-    def migrate(self, gdf):
+    def migrate(self, gdf) -> gpd.GeoDataFrame:
         # Projection is in CRS 28992 (RD New), this is the area calculation method of the source organization
         # todo: remove in favor of generic solution for area calculation
         gdf['area'] = gdf.area / 10000

@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- Rewrite to class-based converters
+- Converter for Spain - Aragon
+- Converter for Spain - Andalusia
+- Converter for Spain - Balearic Islands
+- Converter for Spain - Basque Country
+- Converter for Spain - Catalonia
+- Converter for Spain - Cantabria
+- Converter for Spain - Castilla y León
+- Converter for Spain - Castilla-La Mancha
+- Converter for Spain - Canary Islands
+- Converter for Spain - Extremadura
+- Converter for Spain - Galicia
+- Converter for Spain - Madrid
+- Converter for Spain - Navarra
+- Converter for Spain - Valencia
+- Start to use `https://fiboa.org/code/` prefixed codes for our own code lists
+
+## [v0.9.0] - 2025-01-07
+
 ### Added
 
 - Command `fiboa improve` with helpers to
@@ -22,16 +43,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for Czech
 - Converter for US Department of Agriculture Crop Sequence Boundaries
 - Converter for California (US) Statewide Crop Mapping
-- `fiboa convert`: New parameter `--original-geometries` / `-og` to keep the original geometries
 - Converter for Latvia (from original source)
 - Converter for Japan, currently based on supplied (non-fiboa) parquet files
 - Many converters implement the admin extension
-- Rewrite to class-based converters
-- Converter for Spain - Aragon
-- Converter for Spain - Andalusia
-- Converter for Spain - Basque Country
-- Converter for Spain - Castilla y León
-- Converter for Spain - Catalonia
+- `fiboa convert`: New parameter `--original-geometries` / `-og` to keep the original geometries
 
 ### Changed
 
@@ -42,13 +57,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `fiboa validate` uses custom schemas for validation
 - `fiboa merge` keeps custom schemas when needed
 - Extended converter for Croatia; with crop_code and crop_name
+- Many converters implement the admin extension
 
 ### Removed
+
 - `fiboa convert`: Removed the explicit parameter `explode_multipolygon` from the converter
 
 ### Fixed
 
 - Fix converter for Estland to use the id `ec_ee` instead of `ec_es`
+- Assure tests don't download external sources
 
 ## [v0.8.0] - 2024-11-12
 
@@ -375,7 +393,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release
 
-[Unreleased]: <https://github.com/fiboa/cli/compare/v0.8.0...main>
+[Unreleased]: <https://github.com/fiboa/cli/compare/v0.9.0...main>
+[v0.9.0]: <https://github.com/fiboa/cli/compare/v0.8.0...v0.9.0>
 [v0.8.0]: <https://github.com/fiboa/cli/compare/v0.7.0...v0.8.0>
 [v0.7.0]: <https://github.com/fiboa/cli/compare/v0.6.0...v0.7.0>
 [v0.6.0]: <https://github.com/fiboa/cli/compare/v0.5.0...v0.6.0>

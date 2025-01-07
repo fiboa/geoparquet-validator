@@ -53,7 +53,6 @@ MISSING_SCHEMAS = {
 def migrate(gdf):
     mapping = load_ec_mapping(url=join(dirname(__file__), "data-files", "us_ca_scm.csv"))
     original_name_mapping = {e["original_code"]: e["original_name"] for e in mapping}
-    gdf["geometry"] = gdf["geometry"].force_2d()
     gdf['crop:name'] = gdf['MAIN_CROP'].map(original_name_mapping)
     return gdf
 
