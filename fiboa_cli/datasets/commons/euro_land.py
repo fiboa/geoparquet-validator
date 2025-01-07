@@ -45,7 +45,8 @@ class BaseEuroLandConverter(BaseConverter):
                 "type": "string"
             },
             "organic": {
-                "type": "uint8"
+                "type": "uint8",
+                "enum": [0,1,2]
             },
         }
     }

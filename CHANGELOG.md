@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for Spain - Navarra
 - Converter for Spain - Valencia
 - Start to use `https://fiboa.org/code/` prefixed codes for our own code lists
+- Use only unix line-endings in source files
 
 ## [v0.9.0] - 2025-01-07
 
