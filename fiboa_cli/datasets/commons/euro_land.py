@@ -1,7 +1,7 @@
 from fiboa_cli.convert_utils import BaseConverter
 
 
-class BaseEuroLandConverter(BaseConverter):
+class EuroLandBaseConverter(BaseConverter):
     """
     Datasets have been published by the
     [Euroland project](https://europe-land.eu/news/harmonized-database-of-european-land-use-data-published/)

@@ -89,7 +89,7 @@ def read_converter(_id):
     if not hasattr(module, "convert"):
         try:
             clazz = next(v for v in module.__dict__.values()
-                         if type(v) is type and issubclass(v, BaseConverter) and not v.__name__.startswith("Base"))
+                         if type(v) is type and issubclass(v, BaseConverter) and "BaseConverter" not in v.__name__)
             return clazz()
         except StopIteration:
             log("Missing convert function or Converter class for module {_id}", "warning")

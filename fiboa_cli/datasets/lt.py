@@ -1,8 +1,8 @@
 from fiboa_cli.datasets.commons.ec import ec_url
-from fiboa_cli.datasets.commons.euro_land import BaseEuroLandConverter
+from fiboa_cli.datasets.commons.euro_land import EuroLandBaseConverter
 
 
-class LTConverter(BaseEuroLandConverter):
+class LTConverter(EuroLandBaseConverter):
     id = "lt"
     short_name = "Lithuania"
     title = "Lithuania crop fields"
