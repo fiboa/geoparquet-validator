@@ -16,9 +16,9 @@ PROVIDERS = [
         "roles": ["producer", "licensor"]
     }
 ]
-EXTENSIONS = [
+EXTENSIONS = {
     "https://fiboa.github.io/flik-extension/v0.1.0/schema.yaml"
-]
+}
 COLUMNS = {
     'geometry': 'geometry',
     'FB_ID': ['flik', 'id'], # make flik id a dedicated column to align with NRW etc.

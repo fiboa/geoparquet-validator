@@ -20,10 +20,10 @@ class EuroLandBaseConverter(BaseConverter):
     crop_code_list = ec_url(ec_mapping_csv)
     """
     crop_code_list = None  # e.g. ec_url(ec_mapping_csv)
-    extensions = [
+    extensions = {
         "https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml",
         "https://fiboa.github.io/hcat-extension/v0.1.0/schema.yaml"
-    ]
+    }
     columns = {
         "geometry": "geometry",
         "field_id": "id",

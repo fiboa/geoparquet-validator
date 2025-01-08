@@ -19,7 +19,7 @@ and area information.
 
 Relevant datasets are; Country blocks (Lauku Bloki), Fields (Lauki) and Landscape elements.
 """
-EXTENSIONS = ["https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"]
+EXTENSIONS = {"https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"}
 PROVIDERS = [
     {
         "name": "Rural Support Service Republic of Latvia (Lauku atbalsta dienests)",

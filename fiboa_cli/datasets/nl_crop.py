@@ -64,7 +64,7 @@ class NLCropConverter(AdminConverterMixin, BaseConverter):
         # Add 15th of may to original "year" (jaar) column
         'jaar': lambda col: pd.to_datetime(col, format='%Y') + pd.DateOffset(months=4, days=14)
     }
-    extensions = ["https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"]
+    extensions = {"https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"}
     column_additions = {"crop:code_list": ec_url("nl_2020.csv")}
     index_as_id = True
 

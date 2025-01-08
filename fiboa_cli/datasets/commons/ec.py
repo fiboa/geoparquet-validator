@@ -41,11 +41,8 @@ In the data you'll find this as additional attributes:
         }
     ]
 
-    EXTENSIONS = getattr(base, "EXTENSIONS", None) or []
-    EXTENSIONS = list(EXTENSIONS) + [
-        "https://fiboa.github.io/hcat-extension/v0.1.0/schema.yaml"
-    ]
-
+    EXTENSIONS = getattr(base, "EXTENSIONS", None) or set()
+    EXTENSIONS.add("https://fiboa.github.io/hcat-extension/v0.1.0/schema.yaml")
     COLUMNS = base.COLUMNS | {
         'EC_trans_n': 'ec:translated_name',
         'EC_hcat_n': 'ec:hcat_name',

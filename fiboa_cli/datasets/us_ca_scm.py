@@ -19,7 +19,7 @@ seek to address resource management issues, regulatory compliance issues, enviro
 urban and economic development, and other issues.
 """
 
-EXTENSIONS = ["https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"]
+EXTENSIONS = {"https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"}
 PROVIDERS = [
     {
         "name": "California Department of Water Resources",

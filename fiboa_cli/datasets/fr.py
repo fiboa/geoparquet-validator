@@ -52,7 +52,7 @@ class FRConverter(AdminConverterMixin, EuroCropsConverterMixin, BaseConverter):
         "rel": "license"
     }
     ec_mapping_csv = "fr_2018.csv"
-    extensions = ["https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"]
+    extensions = {"https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"}
     column_additions = {"crop:code_list": ec_url(ec_mapping_csv)}
 
     columns = {

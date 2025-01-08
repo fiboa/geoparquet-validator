@@ -38,9 +38,9 @@ COLUMNS = {
     # 0000-01-01T00:00:00.000Z and 9999-12-31T00:00:00.000Z should be converted to None
 }
 
-EXTENSIONS = [
+# EXTENSIONS = {
 #    "https://fiboa.github.io/timestamps-extension/v0.1.0/schema.yaml"
-]
+# }
 
 def MIGRATION(gdf):
     gdf['area'] = gdf.apply(lambda row: convert_from_unit(row, "area", AREA_CONVERSION_FACTORS), axis=1)

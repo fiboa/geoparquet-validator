@@ -37,9 +37,9 @@ LICENSE = {
     "rel": "license"
 }
 
-EXTENSIONS = [
+EXTENSIONS = {
     "https://fiboa.github.io/planet-extension/v0.1.0/schema.yaml"
-]
+}
 
 COLUMNS = {
     "polygon_id": "id", #fiboa core field

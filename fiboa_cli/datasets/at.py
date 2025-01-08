@@ -33,9 +33,9 @@ COLUMNS = {
     'FART_ID': 'fart_id',
     'GEO_DATERF': 'determination_datetime'
 }
-EXTENSIONS = [
+EXTENSIONS = {
     "https://fiboa.github.io/inspire-extension/v0.2.0/schema.yaml"
-]
+}
 MISSING_SCHEMAS = {
     'properties': {
         'ref_art': {

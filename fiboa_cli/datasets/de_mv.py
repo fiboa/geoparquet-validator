@@ -24,9 +24,9 @@ LICENSE = {
     "rel": "license"
 }
 
-EXTENSIONS = [
+EXTENSIONS = {
     "https://fiboa.github.io/flik-extension/v0.1.0/schema.yaml"
-]
+}
 
 COLUMNS = {
     'geometry': 'geometry',

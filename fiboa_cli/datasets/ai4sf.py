@@ -98,9 +98,9 @@ COLUMNS = {
     'geometry' : 'geometry',
 }
 
-EXTENSIONS = [
+EXTENSIONS = {
     'https://fiboa.github.io/administrative-division-extension/v0.1.0/schema.yaml'
-]
+}
 
 COLUMN_MIGRATIONS = {
     'country': lambda col: col.map({'cambodia': 'KH', 'vietnam': 'VN'})

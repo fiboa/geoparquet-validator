@@ -1,6 +1,7 @@
 from .dictobject import DictObject
 import re
 
+
 def add_admin(base, country, subdivision = None):
     """
     Add admin columns to the dataset.
@@ -8,8 +9,8 @@ def add_admin(base, country, subdivision = None):
     if isinstance(base, dict):
         base = DictObject(base)
 
-    extensions = base.EXTENSIONS.copy() if hasattr(base, 'EXTENSIONS') else []
-    extensions.append("https://fiboa.github.io/administrative-division-extension/v0.1.0/schema.yaml")
+    extensions = set(getattr(base, 'EXTENSIONS', None) or set())
+    extensions.add("https://fiboa.github.io/administrative-division-extension/v0.1.0/schema.yaml")
 
     columns = base.COLUMNS.copy()
     add_columns = base.ADD_COLUMNS.copy() if hasattr(base, 'ADD_COLUMNS') else {}
@@ -39,9 +40,9 @@ class AdminConverterMixin:
         assert re.match("[A-Z]{2}", self.admin_country_code), \
             f"Country code should be 2 uppercase letters, not {self.admin_country_code}"
 
-        self.extensions = list(self.extensions) + ["https://fiboa.github.io/administrative-division-extension/v0.1.0/schema.yaml"]
-        self.column_additions = {**self.column_additions, "admin:country_code": self.admin_country_code}
-        self.columns = {**self.columns, "admin:country_code": "admin:country_code"}
+        self.extensions.add("https://fiboa.github.io/administrative-division-extension/v0.1.0/schema.yaml")
+        self.column_additions["admin:country_code"] = self.admin_country_code
+        self.columns["admin:country_code"] = "admin:country_code"
 
         if self.admin_subdivision_code:
             self.columns["admin:subdivision_code"] = "admin:subdivision_code"

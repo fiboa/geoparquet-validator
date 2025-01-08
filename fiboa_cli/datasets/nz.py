@@ -31,7 +31,7 @@ created in 2017. The current update has incorporated data from the 2019 – 2020
         }
     ]
     license = "CC-BY-4.0"
-    extensions = ['https://fiboa.github.io/administrative-division-extension/v0.1.0/schema.yaml']
+    extensions = {'https://fiboa.github.io/administrative-division-extension/v0.1.0/schema.yaml'}
     index_as_id = True
     columns = {
         "id": "id",

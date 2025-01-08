@@ -40,7 +40,7 @@ def convert(
         bbox = None,
         providers = [],
         source_coop_url = None,
-        extensions = [],
+        extensions = set(),
         missing_schemas = {},
         column_additions = {},
         column_filters = {},
@@ -161,7 +161,7 @@ class BaseConverter:
     column_filters: dict[str, callable] = {}
     column_migrations: dict[str, callable] = {}
     missing_schemas: dict[str, str] = {}
-    extensions: list[str] = []
+    extensions: set[str] = set()
 
     index_as_id = False
 
@@ -176,7 +176,7 @@ class BaseConverter:
         # In BaseConverter and mixins we use class-based members as instance based-members
         # Every instance should be allowed to modify its member attributes, so here we make a copy of dicts/lists
         for key, item in inspect.getmembers(self):
-            if not key.startswith("_") and isinstance(item, (list, dict)):
+            if not key.startswith("_") and isinstance(item, (list, dict, set)):
                 setattr(self, key, copy(item))
 
     @property
@@ -358,7 +358,7 @@ class BaseConverter:
 
         collection = {
             "fiboa_version": fiboa_version,
-            "fiboa_extensions": self.extensions,
+            "fiboa_extensions": list(self.extensions),
             "type": "Collection",
             "id": self.id.strip(),
             "title": self.get_title(),

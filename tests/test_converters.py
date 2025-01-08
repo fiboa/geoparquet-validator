@@ -39,3 +39,6 @@ def test_mutability2():
 
     assert len(converter_1.providers) == 2
     assert len(m.providers) == 1
+
+    m.extensions.add("test")
+    assert "test" not in converter_1.extensions

@@ -82,7 +82,7 @@ class TemplateConverter(BaseConverter):  # change this class name to your use ca
     }
 
     # A list of implemented extension identifiers
-    extensions = []
+    extensions = set()
 
     # Functions to migrate data in columns to match the fiboa specification.
     # Example: You have a column area_m in square meters and want to convert

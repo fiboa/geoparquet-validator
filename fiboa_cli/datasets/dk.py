@@ -14,7 +14,7 @@ class DKConverter(AdminConverterMixin, BaseConverter):
     title = "Denmark Crop Fields (Marker)"
     description = "The Danish Ministry of Food, Agriculture and Fisheries publishes Crop Fields (Marker) for each year."
 
-    extensions = ["https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"]
+    extensions = {"https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"}
     column_additions = {"crop:code_list": ec_url("nl_2020.csv")}
 
     providers = [

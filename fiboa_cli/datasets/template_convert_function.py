@@ -78,7 +78,7 @@ ADD_COLUMNS = {
 }
 
 # A list of implemented extension identifiers
-EXTENSIONS = []
+EXTENSIONS = set()
 
 # Functions to migrate data in columns to match the fiboa specification.
 # Example: You have a column area_m in square meters and want to convert
