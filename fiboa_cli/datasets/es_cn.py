@@ -31,10 +31,10 @@ class ESCNConverter(BaseConverter):
     ]
     license = "CC-BY-4.0"  # as stated in https://datos.canarias.es/portal/aviso-legal-y-condiciones-de-uso
     attribution = "Gobierno de Canarias"
-    extensions = [
+    extensions = {
         "https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml",
         "https://fiboa.github.io/administrative-division-extension/v0.1.0/schema.yaml"
-    ]
+    }
     columns = {
         "id": "id",
         "geometry": "geometry",

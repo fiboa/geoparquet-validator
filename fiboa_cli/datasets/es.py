@@ -15,10 +15,10 @@ class ESBaseConverter(BaseConverter):
     """
     use_code_attribute = "uso_sigpac"
 
-    extensions = [
+    extensions = {
         "https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml",
         "https://fiboa.github.io/administrative-division-extension/v0.1.0/schema.yaml"
-    ]
+    }
     column_additions = {
         # https://www.euskadi.eus/contenidos/informacion/pac2015_pagosdirectos/es_def/adjuntos/Anexos_PAC_marzo2015.pdf
         # https://www.fega.gob.es/sites/default/files/files/document/AD-CIRCULAR_2-2021_EE98293_SIGC2021.PDF
