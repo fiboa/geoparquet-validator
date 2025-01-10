@@ -10,6 +10,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Rewrite to class-based converters
+- Converter for Spain - Aragon
+- Converter for Spain - Andalusia
+- Converter for Spain - Balearic Islands
+- Converter for Spain - Basque Country
+- Converter for Spain - Catalonia
+- Converter for Spain - Cantabria
+- Converter for Spain - Castilla y León
+- Converter for Spain - Castilla-La Mancha
+- Converter for Spain - Canary Islands
+- Converter for Spain - Extremadura
+- Converter for Spain - Galicia
+- Converter for Spain - Madrid
+- Converter for Spain - Navarra
+- Converter for Spain - Valencia
+- Start to use `https://fiboa.org/code/` prefixed codes for our own code lists
 - Use only unix line-endings in source files
 - Use set instead of list for Converter.extensions
 
@@ -33,7 +48,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for Latvia (from original source)
 - Converter for Japan, currently based on supplied (non-fiboa) parquet files
 - Many converters implement the admin extension
-- Assure tests don't download external sources
 - `fiboa convert`: New parameter `--original-geometries` / `-og` to keep the original geometries
 
 ### Changed

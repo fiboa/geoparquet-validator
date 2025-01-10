@@ -16,14 +16,17 @@ from shapely.geometry import box
 
 import os
 import re
+from glob import glob
 import json
 import geopandas as gpd
 import pandas as pd
+import numpy as np
 import sys
 import zipfile
 import py7zr
 import flatdict
 import rarfile
+import hashlib
 
 
 def convert(
@@ -51,7 +54,6 @@ def convert(
         index_as_id = False,
         year = None,  # noqa unused
         **kwargs):
-
     # this function is a (temporary) bridge from function-based converters to class-based converters
     # todo: this convert-function should be removed once class-based converters have been fully implemented
 
@@ -120,7 +122,7 @@ def normalize_geojson_properties(feature):
     return feature
 
 
-def read_geojson(path, **kwargs):
+def read_geojson(path, layer=None, **kwargs):
     with open(path, **kwargs) as f:
         obj = json.load(f)
 
@@ -131,7 +133,7 @@ def read_geojson(path, **kwargs):
 
     obj["features"] = list(map(normalize_geojson_properties, obj["features"]))
 
-    return gpd.GeoDataFrame.from_features(obj, crs = "EPSG:4326")
+    return gpd.GeoDataFrame.from_features(obj, crs="EPSG:4326")
 
 
 class BaseConverter:
@@ -145,6 +147,9 @@ class BaseConverter:
     providers: list[dict] = []
 
     sources: Optional[dict[str, str] | str] = None
+    source_variants: Optional[dict[dict[str, str] | str]] = None
+    variant: str = None
+    open_options = {}
     years: Optional[dict[dict[int, str] | str]] = None
     year: str = None
 
@@ -209,9 +214,9 @@ class BaseConverter:
                     name = name_from_uri(uri)
                     # if there's no file extension, it's likely a folder, which may not be unique
                     if "." not in name:
-                        name = str(i)
+                        name = hashlib.sha256(uri.encode()).hexdigest()
                 except:
-                    name = str(i)
+                    name = hashlib.sha256(uri.encode()).hexdigest()
             else:
                 name = target
 
@@ -246,11 +251,11 @@ class BaseConverter:
                 elif py7zr.is_7zfile(cache_file):
                     with py7zr.SevenZipFile(cache_file, 'r') as sz_file:
                         sz_file.extractall(zip_folder)
-                elif name.endswith(".rar"):
+                elif rarfile.is_rarfile(cache_file):
                     with rarfile.RarFile(cache_file, 'r') as w:
                         w.extractall(zip_folder)
                 else:
-                    raise ValueError(f"Only ZIP and 7Z files are supported for extraction: {cache_file}")
+                    raise ValueError(f"Only ZIP and 7Z files are supported for extraction, fails for: {cache_file}")
 
             if is_archive:
                 for filename in target:
@@ -260,7 +265,7 @@ class BaseConverter:
 
         return paths
 
-    def get_urls(self):
+    def get_urls(self, **kwargs):
         urls = self.sources
         if not urls and self.years:
             opts = ", ".join([str(s) for s in self.years.keys()])
@@ -276,6 +281,10 @@ class BaseConverter:
     def read_data(self, paths, **kwargs):
         gdfs = []
         for path, uri in paths:
+            if "*" in path:
+                lst = glob(path)
+                assert len(lst) == 1, f"Can not match {path} to a single file"
+                path = lst[0]
             log(f"Reading {path} into GeoDataFrame(s)")
             is_parquet = path.endswith(".parquet") or path.endswith(".geoparquet")
             is_json = path.endswith(".json") or path.endswith(".geojson")
@@ -432,28 +441,29 @@ class BaseConverter:
         if directory:
             os.makedirs(directory, exist_ok=True)
 
-        urls = self.get_urls()
         if input_files is not None and isinstance(input_files, dict) and len(input_files) > 0:
             log("Using user provided input file(s) instead of the pre-defined file(s)", "warning")
             urls = input_files
-        elif urls is None:
+        elif (urls := self.get_urls(cache=cache)) is None:
             raise ValueError("No input files provided")
 
         log("Getting file(s) if not cached yet")
         paths = self.download_files(urls, cache)
 
+        kwargs.update(self.open_options)
         gdf = self.read_data(paths, **kwargs)
 
         log("GeoDataFrame created from source(s):")
         # Make it so that everything is shown, don't output ... if there are too many columns or rows
         pd.set_option('display.max_columns', None)
         pd.set_option('display.max_rows', None)
+
+        hash_before = hash_df(gdf.head())
         print(gdf.head())
 
         if self.index_as_id:
             gdf["id"] = gdf.index
 
-        hash_before = hash_df(gdf)
         # 1. Run global migration
         log("Applying global migrations")
         gdf = self.migrate(gdf)
@@ -482,13 +492,14 @@ class BaseConverter:
         if not original_geometries:
             gdf.geometry = gdf.geometry.make_valid()
             gdf = gdf.explode()
+            gdf = gdf[np.logical_and(gdf.geometry.type == "Polygon", gdf.geometry.is_valid)]
             if gdf.geometry.array.has_z.any():
                 log("Removing Z geometry dimension", "info")
                 gdf.geometry = gdf.geometry.force_2d()
 
         gdf = self.post_migrate(gdf)
 
-        if hash_before != hash_df(gdf):
+        if hash_before != hash_df(gdf.head()):
             log("GeoDataFrame after migrations and filters:")
             print(gdf.head())
 
@@ -541,7 +552,10 @@ class BaseConverter:
 
 
 def hash_df(df):
-    # dataframe is unhashable, simple way to
+    # dataframe is unhashable, this is a simple way to create a dafaframe-hash
     buf = StringIO()
     df.info(buf=buf)
     return hash(buf.getvalue())
+
+
+
