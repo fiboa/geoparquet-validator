@@ -460,12 +460,13 @@ class BaseConverter:
         # Make it so that everything is shown, don't output ... if there are too many columns or rows
         pd.set_option('display.max_columns', None)
         pd.set_option('display.max_rows', None)
+
+        hash_before = hash_df(gdf.head())
         print(gdf.head())
 
         if self.index_as_id:
             gdf["id"] = gdf.index
 
-        hash_before = hash_df(gdf)
         # 1. Run global migration
         log("Applying global migrations")
         gdf = self.migrate(gdf)
@@ -501,7 +502,7 @@ class BaseConverter:
 
         gdf = self.post_migrate(gdf)
 
-        if hash_before != hash_df(gdf):
+        if hash_before != hash_df(gdf.head()):
             log("GeoDataFrame after migrations and filters:")
             print(gdf.head())
 
@@ -554,7 +555,7 @@ class BaseConverter:
 
 
 def hash_df(df):
-    # dataframe is unhashable, simple way to
+    # dataframe is unhashable, this is a simple way to create a dafaframe-hash
     buf = StringIO()
     df.info(buf=buf)
     return hash(buf.getvalue())
