@@ -1,8 +1,7 @@
 import re
 
-from fiboa_cli.convert_utils import EsriRESTConverterMixin
+from fiboa_cli.converter_rest import EsriRESTConverterMixin
 from fiboa_cli.datasets.es import ESBaseConverter
-import pandas as pd
 
 
 class ESCBConverter(EsriRESTConverterMixin, ESBaseConverter):

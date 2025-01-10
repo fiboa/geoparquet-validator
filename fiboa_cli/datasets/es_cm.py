@@ -2,7 +2,7 @@ import re
 
 import requests
 
-from fiboa_cli.convert_utils import EsriRESTConverterMixin
+from fiboa_cli.converter_rest import EsriRESTConverterMixin
 from fiboa_cli.datasets.es import ESBaseConverter
 
 
