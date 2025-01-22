@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- Rewrite to class-based converters
+- Use only unix line-endings in source files
+- Use set instead of list for Converter.extensions
+
+## [v0.9.0] - 2025-01-07
+
 ### Added
 
 - Command `fiboa improve` with helpers to
@@ -22,7 +30,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Converter for Czech
 - Converter for US Department of Agriculture Crop Sequence Boundaries
 - Converter for California (US) Statewide Crop Mapping
-- `fiboa convert`: New parameter `--original-geometries` / `-og` to keep the original geometries
 - Converter for Latvia (from original source)
 - Converter for Japan, currently based on supplied (non-fiboa) parquet files
 - Many converters implement the admin extension
@@ -35,6 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Checks for LICENSE.txt, if missing generate one based on the converter file
   - Generates pmtiles file
   - Checks AWS-environment vars, synchronizes parquet + pmtiles + README/LICENSE to source coop repo
+- `fiboa convert`: New parameter `--original-geometries` / `-og` to keep the original geometries
 
 ### Changed
 
@@ -45,13 +53,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `fiboa validate` uses custom schemas for validation
 - `fiboa merge` keeps custom schemas when needed
 - Extended converter for Croatia; with crop_code and crop_name
+- Many converters implement the admin extension
 
 ### Removed
+
 - `fiboa convert`: Removed the explicit parameter `explode_multipolygon` from the converter
 
 ### Fixed
 
 - Fix converter for Estland to use the id `ec_ee` instead of `ec_es`
+- Assure tests don't download external sources
 
 ## [v0.8.0] - 2024-11-12
 
@@ -378,7 +389,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release
 
-[Unreleased]: <https://github.com/fiboa/cli/compare/v0.8.0...main>
+[Unreleased]: <https://github.com/fiboa/cli/compare/v0.9.0...main>
+[v0.9.0]: <https://github.com/fiboa/cli/compare/v0.8.0...v0.9.0>
 [v0.8.0]: <https://github.com/fiboa/cli/compare/v0.7.0...v0.8.0>
 [v0.7.0]: <https://github.com/fiboa/cli/compare/v0.6.0...v0.7.0>
 [v0.6.0]: <https://github.com/fiboa/cli/compare/v0.5.0...v0.6.0>

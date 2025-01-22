@@ -15,9 +15,9 @@ PROVIDERS = [
     }
 ]
 LICENSE = "dl-de/zero-2-0"
-EXTENSIONS = [
+EXTENSIONS = {
     "https://fiboa.github.io/flik-extension/v0.1.0/schema.yaml"
-]
+}
 COLUMNS = {
     'geometry': 'geometry',
     'fachguelti': 'determination_datetime',

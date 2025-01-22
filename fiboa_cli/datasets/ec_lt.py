@@ -48,11 +48,6 @@ MISSING_SCHEMAS = {
     }
 }
 
-def MIGRATION(gdf):
-    # There seem to be z-values in the geometry column, so using this to convertt to 2D
-    gdf.geometry = gdf.geometry.force_2d()
-    return gdf
-
 ID, SHORT_NAME, TITLE, DESCRIPTION, PROVIDERS, EXTENSIONS, COLUMNS, LICENSE = add_eurocrops(vars(), 2021)
 
 # Conversion function, usually no changes required

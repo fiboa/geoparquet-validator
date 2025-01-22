@@ -15,9 +15,9 @@ PROVIDERS = [
 ]
 ATTRIBUTION = "© ML/SLA Niedersachsen (2024), dl-de/by-2-0 (www.govdata.de/dl-de/by-2-0), Daten bearbeitet"
 LICENSE = "dl-de/by-2-0"
-EXTENSIONS = [
+EXTENSIONS = {
     "https://fiboa.github.io/flik-extension/v0.1.0/schema.yaml"
-]
+}
 COLUMNS = {
     'geometry': 'geometry',
     'FLIK': ['id', 'flik'], # make flik id a dedicated column to align with NRW etc.

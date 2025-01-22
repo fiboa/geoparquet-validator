@@ -20,7 +20,7 @@ NASS needed a representative field to predict crop planting based on common crop
 CSB represents non-confidential single crop field boundaries over a set time frame. It does not contain personal identifying information. The boundaries captured are of crops grown only, not ownership boundaries or tax parcels (unit of property). The data are from satellite imagery and publicly available data, it does not come from producers or agencies like the Farm Service Agency.
 """
 
-EXTENSIONS = ["https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"]
+EXTENSIONS = {"https://fiboa.github.io/crop-extension/v0.1.0/schema.yaml"}
 PROVIDERS = [
     {
         "name": "United States Department of Agriculture",

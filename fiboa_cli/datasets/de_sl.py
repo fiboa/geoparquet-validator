@@ -41,10 +41,9 @@ PROVIDERS = [
 ]
 ATTRIBUTION = "© GDI-SL 2024"
 LICENSE = "cc-by-4.0"
-EXTENSIONS = [
+EXTENSIONS = {
     "https://fiboa.github.io/flik-extension/v0.1.0/schema.yaml"
-]
-
+}
 COLUMNS = {
     'geometry': 'geometry',
     'identifier': 'id',

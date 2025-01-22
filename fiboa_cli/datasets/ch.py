@@ -43,9 +43,9 @@ COLUMNS = {
     "nutzung": "crop_name",
     'bezugsjahr': 'determination_datetime'
 }
-EXTENSIONS = [
+EXTENSIONS = {
     'https://fiboa.github.io/administrative-division-extension/v0.1.0/schema.yaml'
-]
+}
 ADD_COLUMNS = {
     'admin:country_code': 'CH'
 }

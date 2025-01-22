@@ -9,7 +9,7 @@ from .version import fiboa_version
 
 DEFAULT_CRS = "EPSG:4326"
 
-def merge(datasets, out, crs = DEFAULT_CRS, includes = [], excludes = [], extensions = [], compression = None, geoparquet1 = False):
+def merge(datasets, out, crs = DEFAULT_CRS, includes = [], excludes = [], extensions = set(), compression = None, geoparquet1 = False):
     dir = os.path.dirname(out)
     if dir:
         os.makedirs(dir, exist_ok=True)
@@ -53,7 +53,7 @@ def merge(datasets, out, crs = DEFAULT_CRS, includes = [], excludes = [], extens
     # Create collection metadata
     collection = {
         "fiboa_version": fiboa_version,
-        "fiboa_extensions": extensions,
+        "fiboa_extensions": list(extensions),
     }
 
     # Add custom schemas

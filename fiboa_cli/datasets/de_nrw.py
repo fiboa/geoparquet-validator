@@ -14,10 +14,10 @@ PROVIDERS = [
         "roles": ["producer", "licensor"]
     }
 ]
-EXTENSIONS = [
+EXTENSIONS = {
     "https://fiboa.github.io/inspire-extension/v0.2.0/schema.yaml",
     "https://fiboa.github.io/flik-extension/v0.1.0/schema.yaml"
-]
+}
 COLUMNS = {
     'geometry': 'geometry',
     'ID': 'id',
