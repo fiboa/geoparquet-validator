@@ -521,6 +521,7 @@ class BaseConverter:
         log("GeoDataFrame fully migrated:")
         print(gdf.head())
 
+        gdf.sort_values('geometry', inplace=True, ignore_index=True)
         collection = self.create_collection(gdf, source_coop_url=source_coop_url)
 
         log("Creating GeoParquet file: " + output_file)
